@@ -117,43 +117,43 @@ public:
 	int aiFlags() const { return aiFlags_; }
 };
 
-class HostSpec : public Specifier {
+class Host : public Specifier {
 public:
 	static const int NUMERIC;
 
-	HostSpec(const std::string &spec = "", int aiFlags = 0)
+	Host(const std::string &spec = "", int aiFlags = 0)
 	: Specifier(spec, aiFlags)
 	{}
 };
 
-const int HostSpec::NUMERIC = AI_NUMERICHOST;
+const int Host::NUMERIC = AI_NUMERICHOST;
 
-class Ip : public HostSpec {
+class Ip : public Host {
 public:
 	static const Ip ANY;
 
 	explicit Ip(const std::string &ip = "", int aiFlags = 0)
-	: HostSpec(ip, aiFlags | NUMERIC)
+	: Host(ip, aiFlags | NUMERIC)
 	{}
 };
 
 const Ip Ip::ANY("");
 
-class ServSpec : public Specifier {
+class Service : public Specifier {
 public:
 	static const int NUMERIC;
 
-	explicit ServSpec(const std::string &spec = "", int aiFlags = 0)
+	explicit Service(const std::string &spec = "", int aiFlags = 0)
 	: Specifier(spec, aiFlags)
 	{}
 };
 
-const int ServSpec::NUMERIC = AI_NUMERICSERV;
+const int Service::NUMERIC = AI_NUMERICSERV;
 
-class Port : public ServSpec {
+class Port : public Service {
 public:
 	Port(const std::string &port = "", int aiFlags = 0)
-	: ServSpec(port, aiFlags | NUMERIC)
+	: Service(port, aiFlags | NUMERIC)
 	{}
 };
 
@@ -168,7 +168,7 @@ public:
 
 	Socket(int type) : type_(type) {}
 
-	void connect(const HostSpec &targetHost, const ServSpec &targetServ);
+	void connect(const Host &targetHost, const Service &targetServ);
 	const Fd &fd() const { return fd_; }
 };
 
@@ -177,7 +177,7 @@ const int Socket::STREAM = SOCK_STREAM;
 const int Socket::DGRAM = SOCK_DGRAM;
 
 void
-Socket::connect(const HostSpec &targetHost, const ServSpec &targetServ)
+Socket::connect(const Host &targetHost, const Service &targetServ)
 {
 	int ret;
 	struct addrinfo hints, *res;
@@ -312,9 +312,9 @@ Poller::add(const Fd &fd)
 
 class Client : public Noncopyable {
 	Poller &poller_;
-	HostSpec targetHost_;
-	ServSpec targetServ_;
-	HostSpec sourceHost_;
+	Host targetHost_;
+	Service targetServ_;
+	Host sourceHost_;
 	StreamSock sock_;
 
 public:
@@ -322,14 +322,14 @@ public:
 	: poller_(poller)
 	{}
 
-	void setTarget(const HostSpec &targetHost, const ServSpec &targetServ);
+	void setTarget(const Host &targetHost, const Service &targetServ);
 	void connect();
 
 	const Fd &fd() const { return sock_.fd(); }
 };
 
 void
-Client::setTarget(const HostSpec &targetHost, const ServSpec &targetServ)
+Client::setTarget(const Host &targetHost, const Service &targetServ)
 {
 	targetHost_ = targetHost;
 	targetServ_ = targetServ;
@@ -346,17 +346,19 @@ class Control {
 	Client client_;
 
 public:
-	Control();
+	Control(int argc, char *argv[]);
 
 	void onFdStdin();
 	void onFdSock();
 	int run() { return poller_.run(); }
 };
 
-Control::Control()
+Control::Control(int argc, char *argv[])
 : client_(poller_)
 {
-	client_.setTarget(Ip("127.0.0.1"), Port("8080"));
+	if (argc != 3) throw std::runtime_error("argc must be 3");
+//	client_.setTarget(Ip("127.0.0.1"), Port("8080"));
+	client_.setTarget(Host(argv[1]), Service(argv[2]));
 	client_.connect();
 
 	poller_.add(Fd::STDIN, *this, &Control::onFdStdin);
@@ -398,7 +400,7 @@ Control::onFdSock()
 }
 
 int
-main()
+main(int argc, char *argv[])
 {
-	return Control().run();
+	return Control(argc, argv).run();
 }
