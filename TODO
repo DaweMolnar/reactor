@@ -1,0 +1,5 @@
+timers (regular, one-shot) x (diligent, lazy)
+autoconnect client
+server
+SO_BINDTODEVICE
+SO_REUSEADDR
