@@ -38,6 +38,9 @@ public:
 	int get() const { return fd_; }
 	int release();
 	void reset(int fd = INVALID) { release(); fd_ = fd; }
+
+	size_t read(void *buffer, size_t size) const;
+	size_t write(const void *buffer, size_t length) const;
 };
 
 const Fd Fd::STDIN(STDIN_FILENO);
@@ -55,6 +58,26 @@ Fd::release(void)
 	}
 
 	return fd;
+}
+
+size_t
+Fd::read(void *buffer, size_t size)
+const
+{
+	ssize_t ret = ::read(get(), buffer, size);
+
+	if (ret < 0) throw std::runtime_error("read");
+	return (size_t)ret;
+}
+
+size_t
+Fd::write(const void *buffer, size_t length)
+const
+{
+	ssize_t ret = ::write(get(), buffer, length);
+
+	if (ret < 0) throw std::runtime_error("write");
+	return (size_t)ret;
 }
 
 class Specifier {
@@ -123,7 +146,7 @@ public:
 	Socket(int type) : type_(type) {}
 
 	void connect(const HostSpec &targetHost, const ServSpec &targetServ);
-	Fd &fd() { return fd_; }
+	const Fd &fd() const { return fd_; }
 };
 
 const int Socket::ANY = 0;
@@ -209,7 +232,7 @@ public:
 	Poller() : quit_(false) {}
 	~Poller();
 
-	int main(void);
+	int run();
 	void quit() { quit_ = true; }
 	void add(const Fd &fd);
 
@@ -231,7 +254,7 @@ Poller::~Poller()
 }
 
 int
-Poller::main(void)
+Poller::run(void)
 {
 	while (!quit_) {
 		int ret = poll(&fds_[0], fds_.size(), -1);
@@ -278,6 +301,8 @@ public:
 
 	void setTarget(const HostSpec &targetHost, const ServSpec &targetServ);
 	void connect();
+
+	const Fd &fd() const { return sock_.fd(); }
 };
 
 void
@@ -293,77 +318,64 @@ Client::connect()
 	sock_.connect(targetHost_, targetServ_);
 }
 
-#if 1
-int
-main()
+class Control {
+	Poller poller_;
+	Client client_;
+
+public:
+	Control();
+
+	void onFdStdin();
+	void onFdSock();
+	int run() { return poller_.run(); }
+};
+
+Control::Control()
+: client_(poller_)
 {
-	Poller poller;
-//	Client client(poller);
+	client_.setTarget(Ip("127.0.0.1"), Port("8080"));
+	client_.connect();
 
-//	client.setTarget(Ip("127.0.0.1"), Port("8080"));
-//	client.connect();
-	poller.add(Fd::STDIN, poller, &Poller::quit);
-
-	return poller.main();
+	poller_.add(Fd::STDIN, *this, &Control::onFdStdin);
+	poller_.add(client_.fd(), *this, &Control::onFdSock);
 }
-#else
-int
-main()
+
+void
+Control::onFdStdin()
 {
-	int ret;
-	StreamSock sock;
+	char buf[128];
+	size_t rd = Fd::STDIN.read(buf, sizeof(buf));
 
-	sock.connect(Ip("127.0.0.1"), Port("8080"));
+	if (!rd) {
+		poller_.quit();
+	} else {
+		size_t wr = client_.fd().write(buf, rd);
 
-	while (!0) {
-		struct pollfd pfd[2];
-
-		pfd[0].fd = 0;
-		pfd[0].events = POLLIN;
-		pfd[1].fd = sock.fd().get();
-		pfd[1].events = POLLIN;
-
-		ret = poll(pfd, ARRAY_LENGTH(pfd), -1);
-		if (ret == -1) {
-			perror("poll");
-			break;
-		} else if (pfd[0].revents & POLLIN) {
-			char buf[128];
-			ssize_t rd = read(0, buf, sizeof(buf));
-			if (rd < 0) {
-				perror("read");
-				ret = rd;
-				break;
-			} if (!rd) {
-				fprintf(stderr, "EOF from stdin");
-				ret = EXIT_SUCCESS;
-				break;
-			} else {
-				ssize_t wr = write(sock.fd().get(), buf, rd);
-				if (wr != rd) {
-					fprintf(stderr, "partial send (%ld != %ld)", wr, rd);
-				}
-			}
-		} else if (pfd[1].revents & POLLIN) {
-			char buf[128];
-			ssize_t rd = read(sock.fd().get(), buf, sizeof(buf));
-			if (rd < 0) {
-				perror("read");
-				ret = rd;
-				break;
-			} else if (!rd) {
-				fprintf(stderr, "EOF from peer");
-				ret = EXIT_SUCCESS;
-				break;
-			} else {
-				ssize_t wr = write(1, buf, rd);
-				if (wr != rd) {
-					fprintf(stderr, "partial send (%ld != %ld)", wr, rd);
-				}
-			}
+		if (wr != rd) {
+			throw std::runtime_error("partial send");
 		}
 	}
-
-	return ret;
 }
-#endif
+
+void
+Control::onFdSock()
+{
+	char buf[128];
+	size_t rd = client_.fd().read(buf, sizeof(buf));
+
+	if (!rd) {
+		poller_.quit();
+	} else {
+		size_t wr = Fd::STDOUT.write(buf, rd);
+
+		if (wr != rd) {
+			throw std::runtime_error("partial send");
+		}
+	}
+}
+
+int
+main()
+{
+	return Control().run();
+}
