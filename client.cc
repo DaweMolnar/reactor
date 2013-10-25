@@ -222,6 +222,7 @@ public:
 class Action {
 public:
 	virtual ~Action() {}
+	virtual Action *clone() const = 0;
 
 	virtual void perform() = 0;
 };
@@ -241,8 +242,17 @@ public:
 	, method_(method)
 	{}
 
+	virtual Action *clone() const { return new ActionMethod<T>(*this); }
+
 	virtual void perform() { (object_.*method_)(); }
 };
+
+template <class T>
+ActionMethod<T>
+genActionMethod(T &object, void (T::*method)())
+{
+	return ActionMethod<T>(object, method);
+}
 
 class Poller : public Noncopyable {
 	typedef std::map<int, Action *> FdHandlers;
@@ -259,12 +269,11 @@ public:
 	void quit() { quit_ = true; }
 	void add(const Fd &fd);
 
-	template <class T>
 	void
-	add(const Fd &fd, T &object, void (T::*method)())
+	add(const Fd &fd, const Action &action)
 	{
 		add(fd);
-		fdHandlers_.insert(std::make_pair(fd.get(), new ActionMethod<T>(object, method)));
+		fdHandlers_.insert(std::make_pair(fd.get(), action.clone()));
 	}
 };
 
@@ -361,8 +370,8 @@ Control::Control(int argc, char *argv[])
 	client_.setTarget(Host(argv[1]), Service(argv[2]));
 	client_.connect();
 
-	poller_.add(Fd::STDIN, *this, &Control::onFdStdin);
-	poller_.add(client_.fd(), *this, &Control::onFdSock);
+	poller_.add(Fd::STDIN, genActionMethod(*this, &Control::onFdStdin));
+	poller_.add(client_.fd(), genActionMethod(*this, &Control::onFdSock));
 }
 
 void
