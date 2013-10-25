@@ -9,8 +9,31 @@
 #include <vector>
 #include <cerrno>
 #include <map>
+#include <sstream>
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
+
+class ErrnoException : std::runtime_error {
+	static std::string construct(const std::string &name);
+
+public:
+	explicit ErrnoException(const std::string &name);
+};
+
+std::string
+ErrnoException::construct(const std::string &name)
+{
+	std::ostringstream oss;
+	char buf[512];
+
+	strerror_r(errno, buf, sizeof(buf));
+	oss << name << ": " << buf;
+	return oss.str();
+}
+
+ErrnoException::ErrnoException(const std::string &name)
+: std::runtime_error(construct(name))
+{}
 
 class Noncopyable {
 	Noncopyable(const Noncopyable &);
@@ -66,7 +89,7 @@ const
 {
 	ssize_t ret = ::read(get(), buffer, size);
 
-	if (ret < 0) throw std::runtime_error("read");
+	if (ret < 0) throw ErrnoException("read");
 	return (size_t)ret;
 }
 
@@ -76,7 +99,7 @@ const
 {
 	ssize_t ret = ::write(get(), buffer, length);
 
-	if (ret < 0) throw std::runtime_error("write");
+	if (ret < 0) throw ErrnoException("write");
 	return (size_t)ret;
 }
 
@@ -259,7 +282,7 @@ Poller::run(void)
 	while (!quit_) {
 		int ret = poll(&fds_[0], fds_.size(), -1);
 		if (ret < 0) {
-			throw std::runtime_error(strerror(errno));
+			throw ErrnoException("poll");
 		}
 		for (size_t i = 0; i < fds_.size(); ++i) {
 			if (fds_[i].revents) {
