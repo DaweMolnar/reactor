@@ -6,7 +6,9 @@ forming a leader followers reactor. This stuff is going to be a base of one (or 
 
 I am doing this in my freetime so this is free to play with.
 
-My first (and second) reactor were made in a rush so they are overcomplicated. I want to make simple but generic code which
-is reusable.
+My first (and second) reactors were made in a rush so they are overcomplicated (and overtemplated). I want to make simple but
+generic code which is reusable.
 
 I hate comments. I think dentifier names have to be self descriptive.
+
+No screenshot this time :)
