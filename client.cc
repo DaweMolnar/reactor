@@ -10,6 +10,9 @@
 #include <cerrno>
 #include <map>
 #include <sstream>
+#include <sys/time.h> // gettimeofday()
+#include <queue>
+#include <set>
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
 
@@ -254,16 +257,96 @@ genActionMethod(T &object, void (T::*method)())
 	return ActionMethod<T>(object, method);
 }
 
+class DiffTime {
+	int64_t diff_;
+
+public:
+	explicit DiffTime(int64_t diff) : diff_(diff) {}
+
+	int64_t raw() const { return diff_; }
+};
+
+class Time {
+	uint64_t time_;
+
+public:
+	static Time now();
+
+	explicit Time(uint64_t time = 0) : time_(time) {}
+
+	DiffTime operator-(const Time &rhs) const { return DiffTime(time_ - rhs.time_); }
+
+	Time operator+(const DiffTime &rhs) const { return Time(time_ + rhs.raw()); }
+	Time &operator+=(const DiffTime &rhs) { time_ += rhs.raw(); return *this; }
+	Time operator-(const DiffTime &rhs) const { return Time(time_ - rhs.raw()); }
+	Time &operator-=(const DiffTime &rhs) { time_ -= rhs.raw(); return *this; }
+
+	bool operator<(const Time &rhs) const { return time_ < rhs.time_; }
+
+	time_t unixtime() const { return time_ >> 32; }
+	uint32_t fraction(uint32_t multiplier) const { return ((time_ & 0xffffffff) * multiplier) >> 32; }
+	uint32_t msFraction() const { return fraction(1000); }
+	uint32_t usFraction() const { return fraction(1000 * 1000); }
+	uint32_t nsFraction() const { return fraction(1000 * 1000 * 1000); }
+};
+
+Time
+now()
+{
+	struct timeval tv;
+	int ret = gettimeofday(&tv, 0);
+	if (ret) throw ErrnoException("gettimeofday");
+	return Time(((uint64_t)tv.tv_sec << 32) | (((uint64_t)tv.tv_usec << 32) / 1000000));
+}
+
+class Timer {
+	Time deadline_;
+	bool oneShot_;
+
+public:
+	bool operator<(const Timer &rhs) const { return deadline_ < rhs.deadline_; }
+};
+
+class ActionsGuard {
+	typedef std::set<Action *> Actions;
+
+	Actions actions_;
+
+public:
+	~ActionsGuard() { clear(); }
+
+	void add(Action *action) { actions_.insert(action); }
+	void remove(Action *action) { delete action; actions_.erase(action); }
+	void remove(const Action &action);
+	void clear();
+};
+
+void
+ActionsGuard::clear()
+{
+	for (Actions::iterator i(actions_.begin()); i != actions_.end(); ++i) {
+		delete *i;
+	}
+	actions_.clear();
+}
+
 class Poller : public Noncopyable {
 	typedef std::map<int, Action *> FdHandlers;
+	typedef std::pair<Timer, Action *> TimerAction;
+	class TimerActionComparator : public std::less<TimerAction> {
+	public:
+		bool operator() (const TimerAction &a, const TimerAction &b) const { return a.first < b.first; }
+	};
+	typedef std::priority_queue<TimerAction, std::vector<TimerAction>, TimerActionComparator> Timers;
 
+	ActionsGuard guard_;
 	std::vector<struct pollfd> fds_;
 	FdHandlers fdHandlers_;
 	bool quit_;
+	Timers timers_;
 
 public:
 	Poller() : quit_(false) {}
-	~Poller();
 
 	int run();
 	void quit() { quit_ = true; }
@@ -272,18 +355,12 @@ public:
 	void
 	add(const Fd &fd, const Action &action)
 	{
+		Action *a = action.clone();
 		add(fd);
-		fdHandlers_.insert(std::make_pair(fd.get(), action.clone()));
+		guard_.add(a);
+		fdHandlers_.insert(std::make_pair(fd.get(), a));
 	}
 };
-
-Poller::~Poller()
-{
-	for (FdHandlers::iterator i(fdHandlers_.begin()); i != fdHandlers_.end(); ++i) {
-		delete i->second;
-	}
-	fdHandlers_.clear();
-}
 
 int
 Poller::run(void)
