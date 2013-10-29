@@ -258,23 +258,46 @@ genActionMethod(T &object, void (T::*method)())
 }
 
 class DiffTime {
-	int64_t diff_;
+	int64_t raw_;
+
+	explicit DiffTime(int64_t raw) : raw_(raw) {}
 
 public:
-	explicit DiffTime(int64_t diff) : diff_(diff) {}
+	static DiffTime raw(int64_t raw) { return DiffTime(raw); }
+	static DiffTime ms(int32_t ms);
 
-	int64_t raw() const { return diff_; }
+	int64_t raw() const { return raw_; }
+	int32_t ms() const;
+	bool positive() const { return raw_ > 0; }
 };
+
+DiffTime
+DiffTime::ms(int32_t ms)
+{
+	int64_t i = (int64_t)(ms / 1000) << 32;
+	int64_t frac = ((int64_t)(ms % 1000) << 32) / 1000;
+	return DiffTime(i | frac);
+}
+
+int32_t
+DiffTime::ms() const
+{
+	int64_t i = raw_ >> 32;
+	int64_t frac = ((raw_ & 0xffffffff) * 1000) >> 32;
+	return i * 1000 + frac;
+}
 
 class Time {
 	uint64_t time_;
 
+	explicit Time(uint64_t time) : time_(time) {}
+
 public:
 	static Time now();
 
-	explicit Time(uint64_t time = 0) : time_(time) {}
+	Time() : time_(0) {}
 
-	DiffTime operator-(const Time &rhs) const { return DiffTime(time_ - rhs.time_); }
+	DiffTime operator-(const Time &rhs) const { return DiffTime::raw(time_ - rhs.time_); }
 
 	Time operator+(const DiffTime &rhs) const { return Time(time_ + rhs.raw()); }
 	Time &operator+=(const DiffTime &rhs) { time_ += rhs.raw(); return *this; }
@@ -291,7 +314,7 @@ public:
 };
 
 Time
-now()
+Time::now()
 {
 	struct timeval tv;
 	int ret = gettimeofday(&tv, 0);
@@ -300,11 +323,21 @@ now()
 }
 
 class Timer {
-	Time deadline_;
+	DiffTime interval_;
+	Time expiration_;
 	bool oneShot_;
 
 public:
-	bool operator<(const Timer &rhs) const { return deadline_ < rhs.deadline_; }
+	Timer(const DiffTime &interval, bool oneShot = false)
+	: interval_(interval)
+	, expiration_(Time::now() + interval)
+	, oneShot_(oneShot)
+	{}
+
+	bool operator<(const Timer &rhs) const { return expiration_ < rhs.expiration_; }
+	void operator++() { expiration_ += interval_; }
+
+	const Time &expiration() const { return expiration_; }
 };
 
 class ActionsGuard {
@@ -359,28 +392,56 @@ public:
 	void quit() { quit_ = true; }
 	void add(const Fd &fd);
 
-	void
-	add(const Fd &fd, const Action &action)
-	{
-		Action *a = guard_.reproduce(action);
-		add(fd);
-		fdHandlers_.insert(std::make_pair(fd.get(), a));
-	}
+	void add(const Fd &fd, const Action &action);
+	void add(const Timer &timer, const Action &action);
 };
+
+void
+Poller::add(const Fd &fd, const Action &action)
+{
+	Action *a = guard_.reproduce(action);
+	add(fd);
+	fdHandlers_.insert(std::make_pair(fd.get(), a));
+}
+
+void
+Poller::add(const Timer &timer, const Action &action)
+{
+	Action *a = guard_.reproduce(action);
+	timers_.push(std::make_pair(timer, a));
+}
 
 int
 Poller::run(void)
 {
 	while (!quit_) {
-		int ret = poll(&fds_[0], fds_.size(), -1);
+		int ret;
+		int ms = -1;
+
+		while (!timers_.empty()) {
+			TimerAction ta(timers_.top());
+			const DiffTime dt(ta.first.expiration() - Time::now());
+
+			if (!dt.positive()) {
+				timers_.pop();
+				ta.second->perform();
+				++ta.first;
+				timers_.push(ta);
+			} else {
+				ms = dt.ms();
+				break;
+			}
+		}
+		ret = poll(&fds_[0], fds_.size(), ms);
 		if (ret < 0) {
 			throw ErrnoException("poll");
-		}
-		for (size_t i = 0; i < fds_.size(); ++i) {
-			if (fds_[i].revents) {
-				FdHandlers::iterator j(fdHandlers_.find(fds_[i].fd));
-				if (j != fdHandlers_.end()) {
-					j->second->perform();
+		} else if (ret > 0) {
+			for (size_t i = 0; i < fds_.size(); ++i) {
+				if (fds_[i].revents) {
+					FdHandlers::iterator j(fdHandlers_.find(fds_[i].fd));
+					if (j != fdHandlers_.end()) {
+						j->second->perform();
+					}
 				}
 			}
 		}
@@ -442,6 +503,7 @@ public:
 
 	void onFdStdin();
 	void onFdSock();
+	void onTimer();
 	int run() { return poller_.run(); }
 };
 
@@ -455,6 +517,7 @@ Control::Control(int argc, char *argv[])
 
 	poller_.add(Fd::STDIN, genActionMethod(*this, &Control::onFdStdin));
 	poller_.add(client_.fd(), genActionMethod(*this, &Control::onFdSock));
+	poller_.add(Timer(DiffTime::ms(1000)), genActionMethod(*this, &Control::onTimer));
 }
 
 void
@@ -489,6 +552,12 @@ Control::onFdSock()
 			throw std::runtime_error("partial send");
 		}
 	}
+}
+
+void
+Control::onTimer()
+{
+	fprintf(stderr, "timer\n");
 }
 
 int
