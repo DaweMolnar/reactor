@@ -315,9 +315,8 @@ class ActionsGuard {
 public:
 	~ActionsGuard() { clear(); }
 
-	void add(Action *action) { actions_.insert(action); }
-	void remove(Action *action) { delete action; actions_.erase(action); }
-	void remove(const Action &action);
+	Action *reproduce(const Action &action);
+	void forget(const Action &action);
 	void clear();
 };
 
@@ -328,6 +327,14 @@ ActionsGuard::clear()
 		delete *i;
 	}
 	actions_.clear();
+}
+
+Action *
+ActionsGuard::reproduce(const Action &action)
+{
+	Action *a = action.clone();
+	actions_.insert(a);
+	return a;
 }
 
 class Poller : public Noncopyable {
@@ -355,9 +362,8 @@ public:
 	void
 	add(const Fd &fd, const Action &action)
 	{
-		Action *a = action.clone();
+		Action *a = guard_.reproduce(action);
 		add(fd);
-		guard_.add(a);
 		fdHandlers_.insert(std::make_pair(fd.get(), a));
 	}
 };
