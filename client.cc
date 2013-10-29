@@ -328,12 +328,16 @@ class Timer {
 	size_t counter_;
 	size_t limit_;
 
+protected:
+	bool lazy_;
+
 public:
 	Timer(const DiffTime &interval, size_t limit = 0)
 	: interval_(interval)
 	, expiration_(Time::now() + interval)
 	, counter_(0)
 	, limit_(limit)
+	, lazy_(false)
 	{}
 
 	bool operator<(const Timer &rhs) const { return expiration_ < rhs.expiration_; }
@@ -341,6 +345,7 @@ public:
 	bool next();
 
 	const Time &expiration() const { return expiration_; }
+	bool lazy() const { return lazy_; }
 };
 
 bool
@@ -355,7 +360,16 @@ Timer::next()
 	}
 }
 
-class ActionsGuard {
+class LazyTimer : public Timer {
+public:
+	LazyTimer(const DiffTime &interval, size_t limit = 0)
+	: Timer(interval, limit)
+	{
+		lazy_ = true;
+	}
+};
+
+class ActionsGuard : public Noncopyable {
 	typedef std::set<Action *> Actions;
 
 	Actions actions_;
@@ -385,23 +399,71 @@ ActionsGuard::reproduce(const Action &action)
 	return a;
 }
 
-class Poller : public Noncopyable {
-	typedef std::map<int, Action *> FdHandlers;
+class Timers : public Noncopyable {
+public:
 	typedef std::pair<Timer, Action *> TimerAction;
+
+private:
 	class TimerActionComparator : public std::less<TimerAction> {
 	public:
 		bool operator() (const TimerAction &a, const TimerAction &b) const { return a.first < b.first; }
 	};
-	typedef std::priority_queue<TimerAction, std::vector<TimerAction>, TimerActionComparator> Timers;
+	typedef std::priority_queue<TimerAction, std::vector<TimerAction>, TimerActionComparator> Queue;
+
+	Queue queue_;
+	ActionsGuard &guard_;
+
+public:
+	Timers(ActionsGuard &guard)
+	: guard_(guard)
+	{}
+
+	void add(const TimerAction &timerAction);
+	int fireAllButUnexpired();
+};
+
+void
+Timers::add(const TimerAction &timerAction)
+{
+	queue_.push(timerAction);
+}
+
+int
+Timers::fireAllButUnexpired()
+{
+	while (!queue_.empty()) {
+		TimerAction ta(queue_.top());
+		const DiffTime dt(ta.first.expiration() - Time::now());
+
+		if (!dt.positive()) {
+			queue_.pop();
+			ta.second->perform();
+			if (ta.first.next()) {
+				queue_.push(ta);
+			} else {
+//				guard_.forget(ta.second); TODO
+			}
+		} else {
+			return dt.ms();
+		}
+	}
+	return -1;
+}
+
+class Poller : public Noncopyable {
+	typedef std::map<int, Action *> FdHandlers;
 
 	ActionsGuard guard_;
 	std::vector<struct pollfd> fds_;
 	FdHandlers fdHandlers_;
+	Timers timers_, lazyTimers_;
 	bool quit_;
-	Timers timers_;
 
 public:
-	Poller() : quit_(false) {}
+	Poller()
+	: timers_(guard_)
+	, lazyTimers_(guard_)
+	, quit_(false) {}
 
 	int run();
 	void quit() { quit_ = true; }
@@ -423,7 +485,8 @@ void
 Poller::add(const Timer &timer, const Action &action)
 {
 	Action *a = guard_.reproduce(action);
-	timers_.push(std::make_pair(timer, a));
+	Timers &timers(timer.lazy() ? lazyTimers_ : timers_);
+	timers.add(std::make_pair(timer, a));
 }
 
 int
@@ -431,23 +494,8 @@ Poller::run(void)
 {
 	while (!quit_) {
 		int ret;
-		int ms = -1;
+		int ms = timers_.fireAllButUnexpired();
 
-		while (!timers_.empty()) {
-			TimerAction ta(timers_.top());
-			const DiffTime dt(ta.first.expiration() - Time::now());
-
-			if (!dt.positive()) {
-				timers_.pop();
-				ta.second->perform();
-				if (ta.first.next()) {
-					timers_.push(ta);
-				}
-			} else {
-				ms = dt.ms();
-				break;
-			}
-		}
 		ret = poll(&fds_[0], fds_.size(), ms);
 		if (ret < 0) {
 			throw ErrnoException("poll");
@@ -461,6 +509,7 @@ Poller::run(void)
 				}
 			}
 		}
+		lazyTimers_.fireAllButUnexpired();
 	}
 	return EXIT_SUCCESS;
 }
@@ -533,7 +582,7 @@ Control::Control(int argc, char *argv[])
 
 	poller_.add(Fd::STDIN, genActionMethod(*this, &Control::onFdStdin));
 	poller_.add(client_.fd(), genActionMethod(*this, &Control::onFdSock));
-	poller_.add(Timer(DiffTime::ms(1000), 3), genActionMethod(*this, &Control::onTimer));
+	poller_.add(LazyTimer(DiffTime::ms(1000), 3), genActionMethod(*this, &Control::onTimer));
 }
 
 void
