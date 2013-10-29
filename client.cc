@@ -325,20 +325,35 @@ Time::now()
 class Timer {
 	DiffTime interval_;
 	Time expiration_;
-	bool oneShot_;
+	size_t counter_;
+	size_t limit_;
 
 public:
-	Timer(const DiffTime &interval, bool oneShot = false)
+	Timer(const DiffTime &interval, size_t limit = 0)
 	: interval_(interval)
 	, expiration_(Time::now() + interval)
-	, oneShot_(oneShot)
+	, counter_(0)
+	, limit_(limit)
 	{}
 
 	bool operator<(const Timer &rhs) const { return expiration_ < rhs.expiration_; }
-	void operator++() { expiration_ += interval_; }
+
+	bool next();
 
 	const Time &expiration() const { return expiration_; }
 };
+
+bool
+Timer::next()
+{
+	++counter_;
+	if (counter_ == limit_) {
+		return false;
+	} else {
+		expiration_ += interval_;
+		return true;
+	}
+}
 
 class ActionsGuard {
 	typedef std::set<Action *> Actions;
@@ -425,8 +440,9 @@ Poller::run(void)
 			if (!dt.positive()) {
 				timers_.pop();
 				ta.second->perform();
-				++ta.first;
-				timers_.push(ta);
+				if (ta.first.next()) {
+					timers_.push(ta);
+				}
 			} else {
 				ms = dt.ms();
 				break;
@@ -517,7 +533,7 @@ Control::Control(int argc, char *argv[])
 
 	poller_.add(Fd::STDIN, genActionMethod(*this, &Control::onFdStdin));
 	poller_.add(client_.fd(), genActionMethod(*this, &Control::onFdSock));
-	poller_.add(Timer(DiffTime::ms(1000)), genActionMethod(*this, &Control::onTimer));
+	poller_.add(Timer(DiffTime::ms(1000), 3), genActionMethod(*this, &Control::onTimer));
 }
 
 void
