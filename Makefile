@@ -1,6 +1,7 @@
 TARGETS := client
 
 CPPFLAGS := -Wall -Wextra -pedantic
+#-Weffc++
 
 .PHONY: all
 all: $(TARGETS)
