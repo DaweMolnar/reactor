@@ -378,9 +378,16 @@ public:
 	~ActionsGuard() { clear(); }
 
 	Action *reproduce(const Action &action);
-	void forget(const Action &action);
+	void forget(Action *action);
 	void clear();
 };
+
+void
+ActionsGuard::forget(Action *action)
+{
+	actions_.erase(action);
+	delete action;
+}
 
 void
 ActionsGuard::clear()
@@ -441,7 +448,7 @@ Timers::fireAllButUnexpired()
 			if (ta.first.next()) {
 				queue_.push(ta);
 			} else {
-//				guard_.forget(ta.second); TODO
+				guard_.forget(ta.second);
 			}
 		} else {
 			return dt.ms();
