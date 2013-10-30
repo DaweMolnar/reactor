@@ -266,6 +266,8 @@ public:
 	static DiffTime raw(int64_t raw) { return DiffTime(raw); }
 	static DiffTime ms(int32_t ms);
 
+	DiffTime() : raw_(0) {}
+
 	int64_t raw() const { return raw_; }
 	int32_t ms() const;
 	bool positive() const { return raw_ > 0; }
@@ -426,7 +428,7 @@ public:
 	{}
 
 	void add(const TimerAction &timerAction);
-	int fireAllButUnexpired();
+	bool fireAllButUnexpired(DiffTime *remaining = 0);
 };
 
 void
@@ -435,8 +437,8 @@ Timers::add(const TimerAction &timerAction)
 	queue_.push(timerAction);
 }
 
-int
-Timers::fireAllButUnexpired()
+bool
+Timers::fireAllButUnexpired(DiffTime *remaining)
 {
 	while (!queue_.empty()) {
 		TimerAction ta(queue_.top());
@@ -451,10 +453,13 @@ Timers::fireAllButUnexpired()
 				guard_.forget(ta.second);
 			}
 		} else {
-			return dt.ms();
+			if (remaining) {
+				*remaining = dt;
+			}
+			return true;
 		}
 	}
-	return -1;
+	return false;
 }
 
 class Poller : public Noncopyable {
@@ -501,8 +506,13 @@ Poller::run(void)
 {
 	while (!quit_) {
 		int ret;
-		int ms = timers_.fireAllButUnexpired();
+		DiffTime remaining;
+		bool isTickingTimer = timers_.fireAllButUnexpired(&remaining);
+		int ms = -1;
 
+		if (isTickingTimer) {
+			ms = remaining.ms();
+		}
 		ret = poll(&fds_[0], fds_.size(), ms);
 		if (ret < 0) {
 			throw ErrnoException("poll");
@@ -589,7 +599,7 @@ Control::Control(int argc, char *argv[])
 
 	poller_.add(Fd::STDIN, genActionMethod(*this, &Control::onFdStdin));
 	poller_.add(client_.fd(), genActionMethod(*this, &Control::onFdSock));
-	poller_.add(LazyTimer(DiffTime::ms(1000), 3), genActionMethod(*this, &Control::onTimer));
+	poller_.add(Timer(DiffTime::ms(1000), 3), genActionMethod(*this, &Control::onTimer));
 }
 
 void
