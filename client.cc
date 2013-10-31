@@ -462,78 +462,24 @@ Timers::fireAllButUnexpired(DiffTime *remaining)
 	return false;
 }
 
-class Poller : public Noncopyable {
-	typedef std::map<int, Action *> FdHandlers;
+class Demuxer : public Noncopyable {
+public:
+	virtual ~Demuxer() {}
 
-	ActionsGuard guard_;
+	virtual void add(const Fd &fd) = 0;
+	virtual void demux(const DiffTime *interval, std::vector<int> &fds) = 0;
+};
+
+class PollDemuxer : public Demuxer {
 	std::vector<struct pollfd> fds_;
-	FdHandlers fdHandlers_;
-	Timers timers_, lazyTimers_;
-	bool quit_;
 
 public:
-	Poller()
-	: timers_(guard_)
-	, lazyTimers_(guard_)
-	, quit_(false) {}
-
-	int run();
-	void quit() { quit_ = true; }
-	void add(const Fd &fd);
-
-	void add(const Fd &fd, const Action &action);
-	void add(const Timer &timer, const Action &action);
+	virtual void add(const Fd &fd);
+	virtual void demux(const DiffTime *interval, std::vector<int> &fds);
 };
 
 void
-Poller::add(const Fd &fd, const Action &action)
-{
-	Action *a = guard_.reproduce(action);
-	add(fd);
-	fdHandlers_.insert(std::make_pair(fd.get(), a));
-}
-
-void
-Poller::add(const Timer &timer, const Action &action)
-{
-	Action *a = guard_.reproduce(action);
-	Timers &timers(timer.lazy() ? lazyTimers_ : timers_);
-	timers.add(std::make_pair(timer, a));
-}
-
-int
-Poller::run(void)
-{
-	while (!quit_) {
-		int ret;
-		DiffTime remaining;
-		bool isTickingTimer = timers_.fireAllButUnexpired(&remaining);
-		int ms = -1;
-
-		if (isTickingTimer) {
-			ms = remaining.ms();
-			if (ms < 0) ms = 0;
-		}
-		ret = poll(&fds_[0], fds_.size(), ms);
-		if (ret < 0) {
-			throw ErrnoException("poll");
-		} else if (ret > 0) {
-			for (size_t i = 0; i < fds_.size(); ++i) {
-				if (fds_[i].revents) {
-					FdHandlers::iterator j(fdHandlers_.find(fds_[i].fd));
-					if (j != fdHandlers_.end()) {
-						j->second->perform();
-					}
-				}
-			}
-		}
-		lazyTimers_.fireAllButUnexpired();
-	}
-	return EXIT_SUCCESS;
-}
-
-void
-Poller::add(const Fd &fd)
+PollDemuxer::add(const Fd &fd)
 {
 	if (fd.valid()) {
 		struct pollfd pfd;
@@ -546,16 +492,105 @@ Poller::add(const Fd &fd)
 	}
 }
 
+void
+PollDemuxer::demux(const DiffTime *interval, std::vector<int> &fds)
+{
+	int ms = interval ? interval->ms() : -1;
+	int ret = poll(&fds_[0], fds_.size(), ms);
+
+	if (ret < 0) {
+		throw ErrnoException("poll");
+	} else {
+		fds.resize(ret);
+		if (ret > 0) {
+			size_t k = 0;
+
+			for (size_t i = 0; i < fds_.size(); ++i) {
+				if (fds_[i].revents) {
+					fds[k++] = fds_[i].fd;
+				}
+			}
+		}
+	}
+}
+
+class Dispatcher : public Noncopyable {
+	typedef std::map<int, Action *> FdHandlers;
+
+	ActionsGuard guard_;
+	FdHandlers fdHandlers_;
+	Timers timers_, lazyTimers_;
+	bool quit_;
+	Demuxer &demuxer_;
+
+public:
+	Dispatcher(Demuxer &demuxer)
+	: timers_(guard_)
+	, lazyTimers_(guard_)
+	, quit_(false)
+	, demuxer_(demuxer)
+	{}
+
+	void step();
+	int run();
+	void quit() { quit_ = true; }
+
+	void add(const Fd &fd, const Action &action);
+	void add(const Timer &timer, const Action &action);
+};
+
+void
+Dispatcher::add(const Fd &fd, const Action &action)
+{
+	Action *a = guard_.reproduce(action);
+	demuxer_.add(fd);
+	fdHandlers_.insert(std::make_pair(fd.get(), a));
+}
+
+void
+Dispatcher::add(const Timer &timer, const Action &action)
+{
+	Action *a = guard_.reproduce(action);
+	Timers &timers(timer.lazy() ? lazyTimers_ : timers_);
+	timers.add(std::make_pair(timer, a));
+}
+
+void
+Dispatcher::step()
+{
+	DiffTime remaining;
+	bool isTickingTimer = timers_.fireAllButUnexpired(&remaining);
+	std::vector<int> fds;
+
+	demuxer_.demux(isTickingTimer ? &remaining : 0, fds);
+	for (size_t i = 0; i < fds.size(); ++i) {
+		FdHandlers::iterator j(fdHandlers_.find(fds[i]));
+		if (j == fdHandlers_.end()) {
+			throw std::runtime_error("invalid fd");
+		} else {
+			j->second->perform();
+		}
+	}
+	lazyTimers_.fireAllButUnexpired();
+}
+
+int
+Dispatcher::run()
+{
+	while (!quit_) step();
+	return EXIT_SUCCESS;
+}
+
 class Client : public Noncopyable {
-	Poller &poller_;
+	Dispatcher &dispatcher_;
 	Host targetHost_;
 	Service targetServ_;
 	Host sourceHost_;
 	StreamSock sock_;
 
 public:
-	Client(Poller &poller)
-	: poller_(poller)
+	Client(Dispatcher &dispatcher)
+	: dispatcher_(dispatcher)
 	{}
 
 	void setTarget(const Host &targetHost, const Service &targetServ);
@@ -578,7 +613,8 @@ Client::connect()
 }
 
 class Control {
-	Poller poller_;
+	PollDemuxer pollDemuxer_;
+	Dispatcher dispatcher_;
 	Client client_;
 
 public:
@@ -587,20 +623,21 @@ public:
 	void onFdStdin();
 	void onFdSock();
 	void onTimer();
-	int run() { return poller_.run(); }
+	int run() { return dispatcher_.run(); }
 };
 
 Control::Control(int argc, char *argv[])
-: client_(poller_)
+: dispatcher_(pollDemuxer_)
+, client_(dispatcher_)
 {
 	if (argc != 3) throw std::runtime_error("argc must be 3");
 //	client_.setTarget(Ip("127.0.0.1"), Port("8080"));
 	client_.setTarget(Host(argv[1]), Service(argv[2]));
 	client_.connect();
 
-	poller_.add(Fd::STDIN, genActionMethod(*this, &Control::onFdStdin));
-	poller_.add(client_.fd(), genActionMethod(*this, &Control::onFdSock));
-	poller_.add(Timer(DiffTime::ms(1000), 3), genActionMethod(*this, &Control::onTimer));
+	dispatcher_.add(Fd::STDIN, genActionMethod(*this, &Control::onFdStdin));
+	dispatcher_.add(client_.fd(), genActionMethod(*this, &Control::onFdSock));
+	dispatcher_.add(Timer(DiffTime::ms(1000), 3), genActionMethod(*this, &Control::onTimer));
 }
 
 void
@@ -610,7 +647,7 @@ Control::onFdStdin()
 	size_t rd = Fd::STDIN.read(buf, sizeof(buf));
 
 	if (!rd) {
-		poller_.quit();
+		dispatcher_.quit();
 	} else {
 		size_t wr = client_.fd().write(buf, rd);
 
@@ -627,7 +664,7 @@ Control::onFdSock()
 	size_t rd = client_.fd().read(buf, sizeof(buf));
 
 	if (!rd) {
-		poller_.quit();
+		dispatcher_.quit();
 	} else {
 		size_t wr = Fd::STDOUT.write(buf, rd);
 
