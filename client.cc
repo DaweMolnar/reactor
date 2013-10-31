@@ -440,11 +440,11 @@ Timers::add(const TimerAction &timerAction)
 bool
 Timers::fireAllButUnexpired(DiffTime *remaining)
 {
-	while (!queue_.empty()) {
+	for (int i = queue_.size(); !queue_.empty(); --i) {
 		TimerAction ta(queue_.top());
 		const DiffTime dt(ta.first.expiration() - Time::now());
 
-		if (!dt.positive()) {
+		if (!dt.positive() && (i >= 0)) {
 			queue_.pop();
 			ta.second->perform();
 			if (ta.first.next()) {
@@ -512,6 +512,7 @@ Poller::run(void)
 
 		if (isTickingTimer) {
 			ms = remaining.ms();
+			if (ms < 0) ms = 0;
 		}
 		ret = poll(&fds_[0], fds_.size(), ms);
 		if (ret < 0) {
