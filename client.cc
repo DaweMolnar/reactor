@@ -13,6 +13,7 @@
 #include <sys/time.h> // gettimeofday()
 #include <queue>
 #include <set>
+#include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
 
@@ -478,6 +479,8 @@ public:
 	virtual void demux(const DiffTime *interval, std::vector<int> &fds);
 };
 
+typedef PollDemuxer DefaultDemuxer;
+
 void
 PollDemuxer::add(const Fd &fd)
 {
@@ -521,14 +524,14 @@ class Dispatcher : public Noncopyable {
 	FdHandlers fdHandlers_;
 	Timers timers_, lazyTimers_;
 	bool quit_;
-	Demuxer &demuxer_;
+	std::auto_ptr<Demuxer> demuxer_;
 
 public:
-	Dispatcher(Demuxer &demuxer)
+	Dispatcher(Demuxer *demuxer = 0)
 	: timers_(guard_)
 	, lazyTimers_(guard_)
 	, quit_(false)
-	, demuxer_(demuxer)
+	, demuxer_(demuxer ? demuxer : new DefaultDemuxer())
 	{}
 
 	void step();
@@ -543,7 +546,7 @@ void
 Dispatcher::add(const Fd &fd, const Action &action)
 {
 	Action *a = guard_.reproduce(action);
-	demuxer_.add(fd);
+	demuxer_->add(fd);
 	fdHandlers_.insert(std::make_pair(fd.get(), a));
 }
 
@@ -562,7 +565,7 @@ Dispatcher::step()
 	bool isTickingTimer = timers_.fireAllButUnexpired(&remaining);
 	std::vector<int> fds;
 
-	demuxer_.demux(isTickingTimer ? &remaining : 0, fds);
+	demuxer_->demux(isTickingTimer ? &remaining : 0, fds);
 	for (size_t i = 0; i < fds.size(); ++i) {
 		FdHandlers::iterator j(fdHandlers_.find(fds[i]));
 		if (j == fdHandlers_.end()) {
@@ -613,7 +616,6 @@ Client::connect()
 }
 
 class Control {
-	PollDemuxer pollDemuxer_;
 	Dispatcher dispatcher_;
 	Client client_;
 
@@ -627,8 +629,7 @@ public:
 };
 
 Control::Control(int argc, char *argv[])
-: dispatcher_(pollDemuxer_)
-, client_(dispatcher_)
+: client_(dispatcher_)
 {
 	if (argc != 3) throw std::runtime_error("argc must be 3");
 //	client_.setTarget(Ip("127.0.0.1"), Port("8080"));
