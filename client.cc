@@ -191,7 +191,7 @@ public:
 	{}
 };
 
-class Socket {
+class Socket : public Noncopyable {
 	Fd fd_;
 	int type_;
 
