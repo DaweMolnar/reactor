@@ -12,3 +12,5 @@ generic code which is reusable.
 I hate comments. I think identifier names have to be self descriptive.
 
 No screenshot this time :)
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Kodest/reactor/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
