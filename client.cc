@@ -1,3 +1,5 @@
+#include "ErrnoException.hh"
+
 #include <netdb.h>
 #include <cstring>
 #include <cstdio>
@@ -17,28 +19,6 @@
 #include <fcntl.h> // blocking
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class ErrnoException : std::runtime_error {
-	static std::string construct(const std::string &name);
-
-public:
-	explicit ErrnoException(const std::string &name);
-};
-
-std::string
-ErrnoException::construct(const std::string &name)
-{
-	std::ostringstream oss;
-	char buf[512];
-
-	strerror_r(errno, buf, sizeof(buf));
-	oss << name << ": " << buf;
-	return oss.str();
-}
-
-ErrnoException::ErrnoException(const std::string &name)
-: std::runtime_error(construct(name))
-{}
 
 class Noncopyable {
 	Noncopyable(const Noncopyable &);
