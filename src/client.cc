@@ -1,5 +1,5 @@
 #include "ErrnoException.hh"
-#include "Noncopyable.hh"
+#include "Fd.hh"
 
 #include <netdb.h>
 #include <cstring>
@@ -19,32 +19,6 @@
 #include <fcntl.h> // blocking
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class Fd : public Noncopyable {
-	int fd_;
-
-public:
-	enum { INVALID = -1 };
-
-	static const Fd STDIN;
-	static const Fd STDOUT;
-	static const Fd STDERR;
-
-	explicit Fd(int fd = INVALID) : fd_(fd) {}
-	~Fd() { release(); }
-
-	bool valid() const { return fd_ != INVALID; }
-
-	int get() const { return fd_; }
-	int release();
-	void reset(int fd = INVALID) { release(); fd_ = fd; }
-
-	size_t read(void *buffer, size_t size) const;
-	size_t write(const void *buffer, size_t length) const;
-
-	bool blocking() const;
-	void blocking(bool block);
-};
 
 const Fd Fd::STDIN(STDIN_FILENO);
 const Fd Fd::STDOUT(STDOUT_FILENO);
