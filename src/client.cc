@@ -1,4 +1,5 @@
 #include "ErrnoException.hh"
+#include "Noncopyable.hh"
 
 #include <netdb.h>
 #include <cstring>
@@ -9,7 +10,6 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
-#include <cerrno>
 #include <map>
 #include <sstream>
 #include <sys/time.h> // gettimeofday()
@@ -19,14 +19,6 @@
 #include <fcntl.h> // blocking
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class Noncopyable {
-	Noncopyable(const Noncopyable &);
-	Noncopyable &operator=(const Noncopyable &);
-
-public:
-	Noncopyable(void) {}
-};
 
 class Fd : public Noncopyable {
 	int fd_;
