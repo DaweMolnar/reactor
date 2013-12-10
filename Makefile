@@ -8,7 +8,8 @@ endif
 all: $(TARGETS)
 
 client_TESTABLE_SOURCES := \
-	src/ErrnoException.cc
+	src/ErrnoException.cc \
+	src/Fd.cc
 
 client_SOURCES := \
 	$(client_TESTABLE_SOURCES) \

@@ -3,6 +3,8 @@
 
 #include "Noncopyable.hh"
 
+#include <cstddef>
+
 class Fd : public Noncopyable {
 	int fd_;
 
