@@ -16,6 +16,7 @@ client_SOURCES := \
 
 testUnits_SOURCES := \
 	$(client_TESTABLE_SOURCES) \
+	tests/unit/ErrnoTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros

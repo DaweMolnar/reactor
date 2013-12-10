@@ -12,12 +12,12 @@
 #include <cerrno>
 
 ErrnoException::ErrnoException(const std::string &name)
-: errno_(errno)
+: errorCode_(errno)
 , name_(name)
 {
 	std::ostringstream oss;
 	char buf[256];
-	int error = strerror_r(errno_, buf, sizeof(buf));
+	int error = strerror_r(errorCode_, buf, sizeof(buf));
 
 	oss << name_ << ": ";
 	if (!error) {
@@ -25,6 +25,6 @@ ErrnoException::ErrnoException(const std::string &name)
 	} else {
 		oss << "[strerror_r() failure]";
 	}
-	oss << " (" << errno_ << ")";
+	oss << " (" << errorCode_ << ")";
 	what_ = oss.str();
 }
