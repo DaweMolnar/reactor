@@ -23,7 +23,7 @@ ErrnoException::ErrnoException(const std::string &name)
 	if (!error) {
 		oss << buf;
 	} else {
-		oss << "[strerror_r() failure]";
+		oss << "[strerror_r() failure (" << error << ")]";
 	}
 	oss << " (" << errorCode_ << ")";
 	what_ = oss.str();
