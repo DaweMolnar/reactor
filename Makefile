@@ -12,7 +12,8 @@ client_TESTABLE_SOURCES := \
 	src/Fd.cc \
 	src/Host.cc \
 	src/Ip.cc \
-	src/Service.cc
+	src/Service.cc \
+	src/Socket.cc
 
 client_SOURCES := \
 	$(client_TESTABLE_SOURCES) \
