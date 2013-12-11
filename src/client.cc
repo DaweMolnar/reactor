@@ -1,5 +1,6 @@
 #include "ErrnoException.hh"
 #include "Fd.hh"
+#include "Specifier.hh"
 
 #include <netdb.h>
 #include <cstring>
@@ -18,20 +19,6 @@
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class Specifier {
-	std::string spec_;
-	int aiFlags_;
-
-public:
-	Specifier(const std::string &spec = "", int aiFlags = 0)
-	: spec_(spec)
-	, aiFlags_(aiFlags)
-	{}
-
-	const std::string &spec() const { return spec_; }
-	int aiFlags() const { return aiFlags_; }
-};
 
 class Host : public Specifier {
 public:
