@@ -1,9 +1,5 @@
 #include "ErrnoException.hh"
-#include "Fd.hh"
-#include "Specifier.hh"
-#include "Host.hh"
-#include "Ip.hh"
-#include "Service.hh"
+#include "Socket.hh"
 
 #include <netdb.h>
 #include <cstring>
@@ -22,21 +18,6 @@
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class Socket : public Noncopyable {
-	Fd fd_;
-	int type_;
-
-public:
-	static const int ANY;
-	static const int STREAM;
-	static const int DGRAM;
-
-	Socket(int type) : type_(type) {}
-
-	void connect(const Host &targetHost, const Service &targetServ);
-	const Fd &fd() const { return fd_; }
-};
 
 const int Socket::ANY = 0;
 const int Socket::STREAM = SOCK_STREAM;
