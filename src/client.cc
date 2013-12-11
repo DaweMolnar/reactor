@@ -3,6 +3,7 @@
 #include "Specifier.hh"
 #include "Host.hh"
 #include "Ip.hh"
+#include "Service.hh"
 
 #include <netdb.h>
 #include <cstring>
@@ -21,15 +22,6 @@
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class Service : public Specifier {
-public:
-	static const int NUMERIC;
-
-	explicit Service(const std::string &spec = "", int aiFlags = 0)
-	: Specifier(spec, aiFlags)
-	{}
-};
 
 const int Service::NUMERIC = AI_NUMERICSERV;
 
