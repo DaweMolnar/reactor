@@ -1,6 +1,7 @@
 #include "ErrnoException.hh"
 #include "Fd.hh"
 #include "Specifier.hh"
+#include "Host.hh"
 
 #include <netdb.h>
 #include <cstring>
@@ -19,15 +20,6 @@
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class Host : public Specifier {
-public:
-	static const int NUMERIC;
-
-	Host(const std::string &spec = "", int aiFlags = 0)
-	: Specifier(spec, aiFlags)
-	{}
-};
 
 const int Host::NUMERIC = AI_NUMERICHOST;
 
