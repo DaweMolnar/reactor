@@ -23,8 +23,6 @@
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
 
-const int Service::NUMERIC = AI_NUMERICSERV;
-
 class Port : public Service {
 public:
 	Port(const std::string &port = "", int aiFlags = 0)

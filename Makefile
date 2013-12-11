@@ -11,7 +11,8 @@ client_TESTABLE_SOURCES := \
 	src/ErrnoException.cc \
 	src/Fd.cc \
 	src/Host.cc \
-	src/Ip.cc
+	src/Ip.cc \
+	src/Service.cc
 
 client_SOURCES := \
 	$(client_TESTABLE_SOURCES) \
