@@ -21,8 +21,6 @@
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
 
-const int Host::NUMERIC = AI_NUMERICHOST;
-
 class Ip : public Host {
 public:
 	static const Ip ANY;
