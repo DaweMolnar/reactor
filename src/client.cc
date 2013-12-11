@@ -22,8 +22,6 @@
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
 
-const Ip Ip::ANY("");
-
 class Service : public Specifier {
 public:
 	static const int NUMERIC;

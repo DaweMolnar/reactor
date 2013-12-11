@@ -10,7 +10,8 @@ all: $(TARGETS)
 client_TESTABLE_SOURCES := \
 	src/ErrnoException.cc \
 	src/Fd.cc \
-	src/Host.cc
+	src/Host.cc \
+	src/Ip.cc
 
 client_SOURCES := \
 	$(client_TESTABLE_SOURCES) \
