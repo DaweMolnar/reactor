@@ -20,18 +20,6 @@
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
 
-bool
-Timer::next()
-{
-	++counter_;
-	if (counter_ == iterationLimit_) {
-		return false;
-	} else {
-		expiration_ += interval_;
-		return true;
-	}
-}
-
 class LazyTimer : public Timer {
 public:
 	LazyTimer(const DiffTime &interval, size_t iterationLimit = 0)

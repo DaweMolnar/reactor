@@ -15,7 +15,8 @@ client_TESTABLE_SOURCES := \
 	src/Service.cc \
 	src/Socket.cc \
 	src/DiffTime.cc \
-	src/Time.cc
+	src/Time.cc \
+	src/Timer.cc
 
 client_SOURCES := \
 	$(client_TESTABLE_SOURCES) \

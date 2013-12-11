@@ -3,6 +3,8 @@
 
 #include "Time.hh"
 
+#include <stddef.h>
+
 class Timer {
 	DiffTime interval_;
 	Time expiration_;
