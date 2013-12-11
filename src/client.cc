@@ -2,6 +2,7 @@
 #include "StreamSock.hh"
 #include "ActionMethod.hh"
 #include "LazyTimer.hh"
+#include "ActionsGuard.hh"
 
 #include <stdint.h>
 #include <cstring>
@@ -19,19 +20,6 @@
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class ActionsGuard : public Noncopyable {
-	typedef std::set<Action *> Actions;
-
-	Actions actions_;
-
-public:
-	~ActionsGuard() { clear(); }
-
-	Action *copy(const Action &action);
-	void release(Action *action);
-	void clear();
-};
 
 void
 ActionsGuard::release(Action *action)
