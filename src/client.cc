@@ -1,7 +1,7 @@
 #include "ErrnoException.hh"
 #include "StreamSock.hh"
 #include "ActionMethod.hh"
-#include "Timer.hh"
+#include "LazyTimer.hh"
 
 #include <stdint.h>
 #include <cstring>
@@ -19,15 +19,6 @@
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class LazyTimer : public Timer {
-public:
-	LazyTimer(const DiffTime &interval, size_t iterationLimit = 0)
-	: Timer(interval, iterationLimit)
-	{
-		lazy_ = true;
-	}
-};
 
 class ActionsGuard : public Noncopyable {
 	typedef std::set<Action *> Actions;
