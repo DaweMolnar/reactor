@@ -22,7 +22,7 @@ public:
 
 	bool operator<(const Time &rhs) const { return time_ < rhs.time_; }
 
-	time_t unixtime() const { return time_ >> 32; }
+//	time_t unixtime() const { return time_ >> 32; }
 	uint32_t fraction(uint32_t multiplier) const { return ((time_ & 0xffffffff) * multiplier) >> 32; }
 	uint32_t msFraction() const { return fraction(1000); }
 	uint32_t usFraction() const { return fraction(1000 * 1000); }
