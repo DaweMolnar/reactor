@@ -1,5 +1,6 @@
 #include "ErrnoException.hh"
 #include "StreamSock.hh"
+#include "Action.hh"
 
 #include <stdint.h>
 #include <cstring>
@@ -18,14 +19,6 @@
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class Action {
-public:
-	virtual ~Action() {}
-	virtual Action *clone() const = 0;
-
-	virtual void perform() = 0;
-};
 
 template <class T>
 class ActionMethod : public Action {
