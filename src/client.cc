@@ -2,6 +2,7 @@
 #include "Fd.hh"
 #include "Specifier.hh"
 #include "Host.hh"
+#include "Ip.hh"
 
 #include <netdb.h>
 #include <cstring>
@@ -20,15 +21,6 @@
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class Ip : public Host {
-public:
-	static const Ip ANY;
-
-	explicit Ip(const std::string &ip = "", int aiFlags = 0)
-	: Host(ip, aiFlags | NUMERIC)
-	{}
-};
 
 const Ip Ip::ANY("");
 
