@@ -1,5 +1,5 @@
 #include "ErrnoException.hh"
-#include "Socket.hh"
+#include "StreamSock.hh"
 
 #include <stdint.h>
 #include <cstring>
@@ -18,16 +18,6 @@
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class StreamSock : public Socket {
-public:
-	StreamSock() : Socket(STREAM) {}
-};
-
-class DgramSock : public Socket {
-public:
-	DgramSock() : Socket(DGRAM) {}
-};
 
 class Action {
 public:
