@@ -28,13 +28,13 @@ class ActionsGuard : public Noncopyable {
 public:
 	~ActionsGuard() { clear(); }
 
-	Action *reproduce(const Action &action);
-	void forget(Action *action);
+	Action *copy(const Action &action);
+	void release(Action *action);
 	void clear();
 };
 
 void
-ActionsGuard::forget(Action *action)
+ActionsGuard::release(Action *action)
 {
 	actions_.erase(action);
 	delete action;
@@ -50,7 +50,7 @@ ActionsGuard::clear()
 }
 
 Action *
-ActionsGuard::reproduce(const Action &action)
+ActionsGuard::copy(const Action &action)
 {
 	Action *a = action.clone();
 	actions_.insert(a);
@@ -99,7 +99,7 @@ Timers::fireAllButUnexpired(DiffTime *remaining)
 			if (ta.first.next()) {
 				queue_.push(ta);
 			} else {
-				guard_.forget(ta.second);
+				guard_.release(ta.second);
 			}
 		} else {
 			if (remaining) {
@@ -193,7 +193,7 @@ public:
 void
 Dispatcher::add(const Fd &fd, const Action &action)
 {
-	Action *a = guard_.reproduce(action);
+	Action *a = guard_.copy(action);
 	demuxer_->add(fd);
 	fdHandlers_.insert(std::make_pair(fd.get(), a));
 }
@@ -201,7 +201,7 @@ Dispatcher::add(const Fd &fd, const Action &action)
 void
 Dispatcher::add(const Timer &timer, const Action &action)
 {
-	Action *a = guard_.reproduce(action);
+	Action *a = guard_.copy(action);
 	Timers &timers(timer.lazy() ? lazyTimers_ : timers_);
 	timers.add(std::make_pair(timer, a));
 }
