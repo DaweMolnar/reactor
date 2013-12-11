@@ -23,13 +23,6 @@
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
 
-class Port : public Service {
-public:
-	Port(const std::string &port = "", int aiFlags = 0)
-	: Service(port, aiFlags | NUMERIC)
-	{}
-};
-
 class Socket : public Noncopyable {
 	Fd fd_;
 	int type_;
