@@ -24,17 +24,17 @@ class Timer {
 	DiffTime interval_;
 	Time expiration_;
 	size_t counter_;
-	size_t limit_;
+	size_t iterationLimit_;
 
 protected:
 	bool lazy_;
 
 public:
-	Timer(const DiffTime &interval, size_t limit = 0)
+	Timer(const DiffTime &interval, size_t iterationLimit = 0)
 	: interval_(interval)
 	, expiration_(Time::now() + interval)
 	, counter_(0)
-	, limit_(limit)
+	, iterationLimit_(iterationLimit)
 	, lazy_(false)
 	{}
 
@@ -50,7 +50,7 @@ bool
 Timer::next()
 {
 	++counter_;
-	if (counter_ == limit_) {
+	if (counter_ == iterationLimit_) {
 		return false;
 	} else {
 		expiration_ += interval_;
@@ -60,8 +60,8 @@ Timer::next()
 
 class LazyTimer : public Timer {
 public:
-	LazyTimer(const DiffTime &interval, size_t limit = 0)
-	: Timer(interval, limit)
+	LazyTimer(const DiffTime &interval, size_t iterationLimit = 0)
+	: Timer(interval, iterationLimit)
 	{
 		lazy_ = true;
 	}
