@@ -9,5 +9,5 @@ before_install:
 script:
   - make all check
 after_success:
-  - test $CC = gcc && find out/testUnits.d/src/ -name '*.o' | xargs gcov -p -o out/testUnits.d/src/
+  - test $CC = gcc && find out/testUnits.d/src/ -name '*.o' | while read f; do gcov -p -o $f $f; done
   - test $CC = gcc && coveralls --no-gcov --build-root "${PWD}" --exclude tests/
