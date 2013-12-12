@@ -36,7 +36,7 @@ CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
 CPPFLAGS += -MD
 
 
-testUnits_OBJECTS := $(addprefix out/testUnits.d/,$(addsuffix .o,$(basename $(testUnits_SOURCES))))
+testUnits_OBJECTS := $(sort $(addprefix out/testUnits.d/,$(addsuffix .o,$(basename $(testUnits_SOURCES)))))
 -include $(addsuffix .d,$(basename $(testUnits_OBJECTS)))
 
 out/testUnits.d/%.o: %.cc
@@ -57,7 +57,7 @@ out/testUnits: $(testUnits_OBJECTS)
 	$Q$(CXX) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION)
 
 
-client_OBJECTS := $(addprefix out/client.d/,$(addsuffix .o,$(basename $(client_SOURCES))))
+client_OBJECTS := $(sort $(addprefix out/client.d/,$(addsuffix .o,$(basename $(client_SOURCES)))))
 -include $(addsuffix .d,$(basename $(client_OBJECTS)))
 
 out/client.d/%.o: %.cc
