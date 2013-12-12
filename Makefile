@@ -20,7 +20,8 @@ client_TESTABLE_SOURCES := \
 	src/ActionsGuard.cc \
 	src/Timers.cc \
 	src/PollDemuxer.cc \
-	src/Dispatcher.cc
+	src/Dispatcher.cc \
+	src/Client.cc
 
 client_SOURCES := \
 	$(client_TESTABLE_SOURCES) \

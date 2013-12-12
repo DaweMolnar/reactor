@@ -21,19 +21,6 @@
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
 
-void
-Client::setTarget(const Host &targetHost, const Service &targetServ)
-{
-	targetHost_ = targetHost;
-	targetServ_ = targetServ;
-}
-
-void
-Client::connect()
-{
-	sock_.connect(targetHost_, targetServ_);
-}
-
 class Control {
 	Dispatcher dispatcher_;
 	Client client_;
