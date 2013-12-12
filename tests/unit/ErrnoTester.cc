@@ -7,6 +7,7 @@
 class ErrnoTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(ErrnoTester);
 	CPPUNIT_TEST(testConstruction);
+	CPPUNIT_TEST(testDynamicConstruction);
 	CPPUNIT_TEST(testGetters);
 	CPPUNIT_TEST(testStrerrorFailure);
 	CPPUNIT_TEST_SUITE_END();
@@ -16,6 +17,12 @@ public:
 	testConstruction()
 	{
 		ErrnoException e("bind");
+	}
+
+	void
+	testDynamicConstruction()
+	{
+		delete new ErrnoException("select");
 	}
 
 	void
