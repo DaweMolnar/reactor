@@ -2,7 +2,7 @@
 #include "StreamSock.hh"
 #include "ActionMethod.hh"
 #include "LazyTimer.hh"
-#include "ActionsGuard.hh"
+#include "Timers.hh"
 
 #include <stdint.h>
 #include <cstring>
@@ -15,34 +15,10 @@
 #include <vector>
 #include <map>
 #include <sstream>
-#include <queue>
 #include <set>
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class Timers : public Noncopyable {
-public:
-	typedef std::pair<Timer, Action *> TimerAction;
-
-private:
-	class TimerActionComparator : public std::less<TimerAction> {
-	public:
-		bool operator() (const TimerAction &a, const TimerAction &b) const { return a.first < b.first; }
-	};
-	typedef std::priority_queue<TimerAction, std::vector<TimerAction>, TimerActionComparator> Queue;
-
-	Queue queue_;
-	ActionsGuard &guard_;
-
-public:
-	Timers(ActionsGuard &guard)
-	: guard_(guard)
-	{}
-
-	void add(const TimerAction &timerAction);
-	bool fireAllButUnexpired(DiffTime *remaining = 0);
-};
 
 void
 Timers::add(const TimerAction &timerAction)
