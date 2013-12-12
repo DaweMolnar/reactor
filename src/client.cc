@@ -5,6 +5,7 @@
 #include "Timers.hh"
 #include "PollDemuxer.hh"
 #include "Dispatcher.hh"
+#include "Client.hh"
 
 #include <stdint.h>
 #include <cstring>
@@ -19,24 +20,6 @@
 #include <set>
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class Client : public Noncopyable {
-	Dispatcher &dispatcher_;
-	Host targetHost_;
-	Service targetServ_;
-	Host sourceHost_;
-	StreamSock sock_;
-
-public:
-	Client(Dispatcher &dispatcher)
-	: dispatcher_(dispatcher)
-	{}
-
-	void setTarget(const Host &targetHost, const Service &targetServ);
-	void connect();
-
-	const Fd &fd() const { return sock_.fd(); }
-};
 
 void
 Client::setTarget(const Host &targetHost, const Service &targetServ)
