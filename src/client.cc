@@ -3,14 +3,13 @@
 #include "ActionMethod.hh"
 #include "LazyTimer.hh"
 #include "Timers.hh"
-#include "Demuxer.hh"
+#include "PollDemuxer.hh"
 
 #include <stdint.h>
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
-#include <poll.h>
 #include <string>
 #include <stdexcept>
 #include <vector>
@@ -20,14 +19,6 @@
 #include <memory> // auto_ptr
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
-
-class PollDemuxer : public Demuxer {
-	std::vector<struct pollfd> fds_;
-
-public:
-	virtual void add(const Fd &fd);
-	virtual void demux(const DiffTime *interval, std::vector<int> &fds);
-};
 
 typedef PollDemuxer DefaultDemuxer;
 
