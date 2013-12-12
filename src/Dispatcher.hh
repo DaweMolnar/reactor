@@ -4,11 +4,10 @@
 #include "Noncopyable.hh"
 #include "ActionsGuard.hh"
 #include "Timers.hh"
+#include "DefaultDemuxer.hh"
 
 #include <map>
 #include <memory> // auto_ptr
-
-typedef PollDemuxer DefaultDemuxer;
 
 class Dispatcher : public Noncopyable {
 	typedef std::map<int, Action *> FdHandlers;
