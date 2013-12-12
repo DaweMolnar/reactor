@@ -1,25 +1,7 @@
-#include "ErrnoException.hh"
-#include "StreamSock.hh"
-#include "ActionMethod.hh"
-#include "LazyTimer.hh"
-#include "Timers.hh"
-#include "PollDemuxer.hh"
-#include "Dispatcher.hh"
 #include "Client.hh"
+#include "ActionMethod.hh"
 
-#include <stdint.h>
-#include <cstring>
-#include <cstdio>
-#include <cstdlib>
-#include <unistd.h>
-#include <string>
 #include <stdexcept>
-#include <vector>
-#include <map>
-#include <sstream>
-#include <set>
-
-#define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))
 
 class Control {
 	Dispatcher dispatcher_;
@@ -84,7 +66,7 @@ Control::onFdSock()
 void
 Control::onTimer()
 {
-	fprintf(stderr, "timer\n");
+	Fd::STDERR.write("timer\n", 6);
 }
 
 int
