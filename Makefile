@@ -30,6 +30,7 @@ client_SOURCES := \
 testUnits_SOURCES := \
 	$(client_TESTABLE_SOURCES) \
 	tests/unit/ErrnoTester.cc \
+	tests/unit/FdTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
@@ -44,6 +45,12 @@ out/testUnits.d/%.o: %.cc
 	$(if $Q,@echo "  CC    $@")
 	$Q$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< $(OUTPUT_OPTION)
 
+testUnits_WRAPPED_SYMBOLS := \
+	close
+
+LINKER_FLAG := -Wl,
+
+out/testUnits: LDFLAGS += $(addprefix $(LINKER_FLAG)--wrap=,$(testUnits_WRAPPED_SYMBOLS))
 out/testUnits: LDLIBS += $(shell cppunit-config --libs)
 out/testUnits: CPPFLAGS += -I.
 
