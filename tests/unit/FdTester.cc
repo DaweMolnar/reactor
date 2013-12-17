@@ -2,28 +2,136 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <stack>
+#include <stdexcept>
+#include <queue>
 #include <unistd.h>
 
-#define REDIRECT_MOCK_C_FUNCTION1(name, ret, t1, p1) \
+#define REDIRECT_MOCK_C_FUNCTION1(name, ret, t1, n1) \
 	extern "C" { \
 		ret __real_ ## name (t1); \
 		ret (*__wrap_ ## name ## _ptr)(t1) = __real_ ## name; \
-		ret __wrap_ ## name (t1 p1) { return __wrap_ ## name ## _ptr(p1); } \
+		ret __wrap_ ## name (t1 n1) { return __wrap_ ## name ## _ptr(n1); } \
+	} // extern "C"
+
+#define REDIRECT_MOCK_C_FUNCTION2(name, ret, t1, n1, t2, n2) \
+	extern "C" { \
+		ret __real_ ## name (t1, t2); \
+		ret (*__wrap_ ## name ## _ptr)(t1, t2) = __real_ ## name; \
+		ret __wrap_ ## name (t1 n1, t2 n2) { return __wrap_ ## name ## _ptr(n1, n2); } \
+	} // extern "C"
+
+#define REDIRECT_MOCK_C_FUNCTION3(name, ret, t1, n1, t2, n2, t3, n3) \
+	extern "C" { \
+		ret __real_ ## name (t1, t2, t3); \
+		ret (*__wrap_ ## name ## _ptr)(t1, t2, t3) = __real_ ## name; \
+		ret __wrap_ ## name (t1 n1, t2 n2, t3 n3) { return __wrap_ ## name ## _ptr(n1, n2, n3); } \
 	} // extern "C"
 
 REDIRECT_MOCK_C_FUNCTION1(close, void, int, fd)
+REDIRECT_MOCK_C_FUNCTION3(read, ssize_t, int, fd, void *, buf, size_t, count)
+REDIRECT_MOCK_C_FUNCTION3(write, ssize_t, int, fd, const void *, buf, size_t, count)
 
-static void
-mock_close(int fd)
+class MockException : public std::runtime_error {
+public:
+	MockException(const std::string &name, const std::string &reason)
+	: std::runtime_error(name + ": " + reason)
+	{
+	}
+};
+
+class Mocked : public Noncopyable {
+	const std::string name_;
+	std::queue<int> queue_;
+
+public:
+	Mocked(const std::string &name);
+	virtual ~Mocked();
+
+	const std::string &name() const { return name_; }
+
+	void expect(int value);
+	int expectedInt();
+};
+
+
+class MockRegistry : public Noncopyable {
+	typedef std::map<std::string, Mocked *> Mockeds;
+
+	Mockeds mockeds_;
+
+	MockRegistry() {}
+
+	static MockRegistry &getInstance();
+
+public:
+	static void add(Mocked *mocked);
+	static void remove(const Mocked *mocked);
+	static Mocked &find(const std::string &name);
+};
+
+MockRegistry &
+MockRegistry::getInstance()
 {
-	CPPUNIT_ASSERT_EQUAL(42, fd);
+	static MockRegistry instance;
+	return instance;
 }
 
-class Mocked {
-public:
-	virtual ~Mocked() {}
-};
+void
+MockRegistry::add(Mocked *mocked)
+{
+	MockRegistry &mr = getInstance();
+	mr.mockeds_.insert(std::make_pair(mocked->name(), mocked));
+}
+
+void
+MockRegistry::remove(const Mocked *mocked)
+{
+	MockRegistry &mr = getInstance();
+	mr.mockeds_.erase(mocked->name());
+}
+
+Mocked &
+MockRegistry::find(const std::string &name)
+{
+	MockRegistry &mr = getInstance();
+	Mockeds::iterator i = mr.mockeds_.find(name);
+	if (i != mr.mockeds_.end()) {
+		return *(i->second);
+	} else {
+		throw MockException(name, "no such mock");
+	}
+}
+
+Mocked::Mocked(const std::string &name)
+: name_(name)
+{
+	MockRegistry::add(this);
+}
+
+Mocked::~Mocked()
+{
+	MockRegistry::remove(this);
+	if (!queue_.empty()) {
+//		throw MockException(name_, "expected call is missing");
+	}
+}
+
+void
+Mocked::expect(int value)
+{
+	queue_.push(value);
+}
+
+int
+Mocked::expectedInt()
+{
+	if (queue_.empty()) {
+		throw MockException(name_, "unexpected call");
+	}
+	int result = queue_.front();
+	queue_.pop();
+	return result;
+}
 
 template <typename F>
 class MockedFunction : public Mocked {
@@ -31,8 +139,9 @@ class MockedFunction : public Mocked {
 	F orig_;
 
 public:
-	MockedFunction(F *wrap, F mock)
-	: wrap_(wrap)
+	MockedFunction(const std::string &name, F *wrap, F mock)
+	: Mocked(name)
+	, wrap_(wrap)
 	, orig_(*wrap_)
 	{
 		*wrap_ = mock;
@@ -47,27 +156,59 @@ public:
 
 template <typename F>
 MockedFunction<F> *
-createMockedFunction(F *wrap, F mock)
+createMockedFunction(const std::string &name, F *wrap, F mock)
 {
-	return new MockedFunction<F>(wrap, mock);
+	return new MockedFunction<F>(name, wrap, mock);
 }
 
-#define MOCK_FUNCTION(name) \
-	std::auto_ptr<Mocked> name(createMockedFunction(&__wrap_ ## name ## _ptr, mock_ ## name))
+#define MOCK_FUNCTION(name, mock_name) \
+	std::auto_ptr<Mocked> name(createMockedFunction(#name, &__wrap_ ## name ## _ptr, mock_name))
 
 class FdTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(FdTester);
 	CPPUNIT_TEST(testConstruction);
+	CPPUNIT_TEST(testRead);
 	CPPUNIT_TEST_SUITE_END();
+
+	static void
+	mock_close(int fd)
+	{
+		Mocked &m = MockRegistry::find("close");
+		CPPUNIT_ASSERT_EQUAL(m.expectedInt(), fd);
+	}
+
+	static ssize_t
+	mock_read(int fd, void *buf, size_t count)
+	{
+		(void)buf;
+		(void)count;
+		Mocked &m = MockRegistry::find("read");
+		CPPUNIT_ASSERT_EQUAL(m.expectedInt(), fd);
+		return m.expectedInt();
+	}
 
 public:
 	void
 	testConstruction()
 	{
-		MOCK_FUNCTION(close);
+		MOCK_FUNCTION(close, mock_close);
 		Fd fd(42);
+		close->expect(42);
 	}
 
+	void
+	testRead()
+	{
+		MOCK_FUNCTION(close, mock_close);
+		MOCK_FUNCTION(read, mock_read);
+		Fd fd(43);
+		char buf[23];
+
+		close->expect(43);
+		read->expect(43);
+		read->expect(45);
+		CPPUNIT_ASSERT_EQUAL((size_t)45, fd.read(buf, sizeof(buf)));
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FdTester);

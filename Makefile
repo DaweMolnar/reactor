@@ -46,7 +46,9 @@ out/testUnits.d/%.o: %.cc
 	$Q$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< $(OUTPUT_OPTION)
 
 testUnits_WRAPPED_SYMBOLS := \
-	close
+	close \
+	read \
+	write
 
 LINKER_FLAG := -Wl,
 
