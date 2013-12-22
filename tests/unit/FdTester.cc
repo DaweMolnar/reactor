@@ -4,6 +4,7 @@
 #include <src/MockException.hh>
 #include <src/PrimitiveCastException.hh>
 #include <src/Primitive.hh>
+#include <src/PrimitiveByFormatFactory.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -16,11 +17,6 @@
 REDIRECT_MOCK_C_FUNCTION1(close, void, int, fd)
 REDIRECT_MOCK_C_FUNCTION3(read, ssize_t, int, fd, void *, buf, size_t, count)
 REDIRECT_MOCK_C_FUNCTION3(write, ssize_t, int, fd, const void *, buf, size_t, count)
-
-class PrimitiveByFormatFactory {
-public:
-	static PrimitiveBase *create(const std::string &conversionSpecification, va_list ap);
-};
 
 PrimitiveBase *
 PrimitiveByFormatFactory::create(const std::string &conversionSpecification, va_list ap)
