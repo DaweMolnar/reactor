@@ -52,7 +52,8 @@ out/testUnits.d/%.o: %.cc
 testUnits_WRAPPED_SYMBOLS := \
 	close \
 	read \
-	write
+	write \
+	fcntl
 
 LINKER_FLAG := -Wl,
 
