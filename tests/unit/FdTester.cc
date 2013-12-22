@@ -39,9 +39,35 @@ public:
 	}
 };
 
+class Integer;
+
+class PrimitiveVisitor {
+public:
+	virtual ~PrimitiveVisitor() {}
+
+	virtual void visit(Integer &integer) = 0;
+};
+
+class Primitive {
+public:
+	virtual ~Primitive() {}
+
+	virtual void accept(PrimitiveVisitor &visitor) = 0;
+};
+
+class Integer : public Primitive {
+	int value_;
+
+public:
+	explicit Integer(int value) : value_(value) {}
+
+	int value() const { return value_; }
+	virtual void accept(PrimitiveVisitor &visitor) { visitor.visit(*this); }
+};
+
 class Mocked : public Noncopyable {
 	const std::string name_;
-	std::queue<int> queue_;
+	std::queue<Primitive *> queue_;
 
 public:
 	Mocked(const std::string &name);
@@ -124,7 +150,24 @@ Mocked::~Mocked()
 void
 Mocked::expect(int value)
 {
-	queue_.push(value);
+	queue_.push(new Integer(value));
+}
+
+class IntegerVisitor : public PrimitiveVisitor {
+	int result_;
+
+public:
+	IntegerVisitor() : result_(0) {}
+
+	virtual void visit(Integer &integer);
+
+	int result() const { return result_; }
+};
+
+void
+IntegerVisitor::visit(Integer &integer)
+{
+	result_ = integer.value();
 }
 
 int
@@ -133,9 +176,12 @@ Mocked::expectedInt()
 	if (queue_.empty()) {
 		throw MockException(name_, "unexpected call");
 	}
-	int result = queue_.front();
+	IntegerVisitor iv;
+	Primitive *value = queue_.front();
+	value->accept(iv);
+	delete value;
 	queue_.pop();
-	return result;
+	return iv.result();
 }
 
 template <typename F>
@@ -186,9 +232,9 @@ class FdTester : public CppUnit::TestFixture {
 	mock_read(int fd, void *buf, size_t count)
 	{
 		(void)buf;
-		(void)count;
 		Mocked &m = MockRegistry::find("read");
 		CPPUNIT_ASSERT_EQUAL(m.expectedInt(), fd);
+		CPPUNIT_ASSERT_EQUAL(m.expectedInt(), (int)count);
 		return m.expectedInt();
 	}
 
@@ -211,6 +257,7 @@ public:
 
 		close->expect(43);
 		read->expect(43);
+		read->expect(sizeof(buf));
 		read->expect(45);
 		CPPUNIT_ASSERT_EQUAL((size_t)45, fd.read(buf, sizeof(buf)));
 	}
