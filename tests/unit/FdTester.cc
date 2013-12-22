@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <queue>
 #include <unistd.h>
+#include <cstdarg>
+#include <sstream>
 
 #define REDIRECT_MOCK_C_FUNCTION1(name, ret, t1, n1) \
 	extern "C" { \
@@ -47,47 +49,57 @@ public:
 	virtual const char *what() const throw() { return "incompatible types"; }
 };
 
-class Integer;
-class Pointer;
+template <typename T> class Primitive;
+
+typedef Primitive<int> Integer;
+typedef Primitive<void *> Pointer;
 
 class PrimitiveVisitor {
 public:
 	virtual ~PrimitiveVisitor() {}
 
-	virtual void visit(Integer &integer) = 0;
-	virtual void visit(Pointer &pointer) = 0;
+	virtual void visit(Integer &) = 0;
+	virtual void visit(Pointer &) = 0;
 };
 
-class Primitive {
+class PrimitiveBase {
 public:
-	virtual ~Primitive() {}
+	virtual ~PrimitiveBase() {}
 
 	virtual void accept(PrimitiveVisitor &visitor) = 0;
 };
 
-class Integer : public Primitive {
-	int value_;
+template <typename T>
+class Primitive : public PrimitiveBase {
+	T value_;
 
 public:
-	explicit Integer(int value) : value_(value) {}
+	explicit Primitive(const T &value) : value_(value) {}
 
-	int value() const { return value_; }
+	const T &value() const { return value_; }
 	virtual void accept(PrimitiveVisitor &visitor) { visitor.visit(*this); }
 };
 
-class Pointer : public Primitive {
-	void *value_;
-
+class PrimitiveByFormatFactory {
 public:
-	explicit Pointer(void *value) : value_(value) {}
-
-	void *value() const { return value_; }
-	virtual void accept(PrimitiveVisitor &visitor) { visitor.visit(*this); }
+	static PrimitiveBase *create(const std::string &conversionSpecification, va_list ap);
 };
+
+PrimitiveBase *
+PrimitiveByFormatFactory::create(const std::string &conversionSpecification, va_list ap)
+{
+	if (conversionSpecification == "d") {
+		return new Integer(va_arg(ap, int));
+	} else if (conversionSpecification == "p") {
+		return new Pointer(va_arg(ap, void *));
+	} else {
+		throw std::runtime_error("unknown conversion specification (" + conversionSpecification + ")");
+	}
+}
 
 class Mocked : public Noncopyable {
 	const std::string name_;
-	std::queue<Primitive *> queue_;
+	std::queue<PrimitiveBase *> queue_;
 
 public:
 	Mocked(const std::string &name);
@@ -95,8 +107,21 @@ public:
 
 	const std::string &name() const { return name_; }
 
-	void expect(int value);
-	void expect(void *value);
+	template <typename T>
+	void
+	expect(const T &value)
+	{
+		queue_.push(new Primitive<T>(value));
+	}
+
+	void expectByConversionSpecification(const std::string &conversionSpecification, va_list ap);
+	void vexpectf(const char *format, va_list ap);
+	void expectf(
+	/* 1   hidden this */
+	/*<2>*/const char *format,
+	/*<3>*/...
+	) __attribute__((format(printf, 2, 3)));
+
 	int expectedInt();
 	void *expectedPointer();
 };
@@ -170,15 +195,40 @@ Mocked::~Mocked()
 }
 
 void
-Mocked::expect(int value)
+Mocked::expectByConversionSpecification(const std::string &conversionSpecifier, va_list ap)
 {
-	queue_.push(new Integer(value));
+	queue_.push(PrimitiveByFormatFactory::create(conversionSpecifier, ap));
 }
 
 void
-Mocked::expect(void *value)
+Mocked::vexpectf(const char *format, va_list ap)
 {
-	queue_.push(new Pointer(value));
+	std::ostringstream oss;
+
+	for (int i = 0; format[i]; ++i) {
+		if (format[i] == '%') {
+			if (oss.tellp()) {
+				expectByConversionSpecification(oss.str(), ap);
+			}
+			oss.str(std::string());
+			oss.clear();
+		} else {
+			oss << format[i];
+		}
+	}
+	if (oss.tellp()) {
+		expectByConversionSpecification(oss.str(), ap);
+	}
+}
+
+void
+Mocked::expectf(const char *format, ...)
+{
+	va_list ap;
+
+	va_start(ap, format);
+	vexpectf(format, ap);
+	va_end(ap);
 }
 
 class IntegerVisitor : public PrimitiveVisitor {
@@ -206,7 +256,7 @@ Mocked::expectedInt()
 		throw MockException(name_, "unexpected call");
 	}
 	IntegerVisitor iv;
-	Primitive *value = queue_.front();
+	PrimitiveBase *value = queue_.front();
 	value->accept(iv);
 	delete value;
 	queue_.pop();
@@ -238,7 +288,7 @@ Mocked::expectedPointer()
 		throw MockException(name_, "unexpected call");
 	}
 	PointerVisitor pv;
-	Primitive *value = queue_.front();
+	PrimitiveBase *value = queue_.front();
 	value->accept(pv);
 	delete value;
 	queue_.pop();
@@ -292,7 +342,6 @@ class FdTester : public CppUnit::TestFixture {
 	static ssize_t
 	mock_read(int fd, void *buf, size_t count)
 	{
-		(void)buf;
 		Mocked &m = MockRegistry::find("read");
 		CPPUNIT_ASSERT_EQUAL(m.expectedInt(), fd);
 		CPPUNIT_ASSERT_EQUAL(m.expectedPointer(), (void *)buf);
@@ -318,10 +367,7 @@ public:
 		char buf[23];
 
 		close->expect(43);
-		read->expect(43);
-		read->expect((void *)buf);
-		read->expect(sizeof(buf));
-		read->expect(45);
+		read->expectf("%d%p%d%d", 43, (void *)buf, (int)sizeof(buf), 45);
 		CPPUNIT_ASSERT_EQUAL((size_t)45, fd.read(buf, sizeof(buf)));
 	}
 };
