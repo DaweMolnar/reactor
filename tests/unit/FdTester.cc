@@ -18,6 +18,7 @@ class FdTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST(testSetBlockingThrows);
 	CPPUNIT_TEST(testSetBlockingNoChange);
 	CPPUNIT_TEST(testSetBlockingChange);
+	CPPUNIT_TEST(testReset);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -38,6 +39,8 @@ public:
 		char buf[23];
 
 		close->expect(43);
+		read->expectf("%d%p%d%d", 43, (void *)buf, (int)sizeof(buf), -1);
+		CPPUNIT_ASSERT_THROW(fd.read(buf, sizeof(buf)), ErrnoException);
 		read->expectf("%d%p%d%d", 43, (void *)buf, (int)sizeof(buf), 45);
 		CPPUNIT_ASSERT_EQUAL((size_t)45, fd.read(buf, sizeof(buf)));
 	}
@@ -51,6 +54,8 @@ public:
 		char buf[6];
 
 		close->expect(78);
+		write->expectf("%d%p%d%d", 78, (void *)buf, (int)sizeof(buf), -1);
+		CPPUNIT_ASSERT_THROW(fd.write(buf, sizeof(buf)), ErrnoException);
 		write->expectf("%d%p%d%d", 78, (void *)buf, (int)sizeof(buf), (int)sizeof(buf));
 		CPPUNIT_ASSERT_EQUAL(sizeof(buf), fd.write(buf, sizeof(buf)));
 	}
@@ -63,10 +68,12 @@ public:
 		Fd fd(20);
 
 		close->expect(20);
+		fcntl->expectf("%d%d%d%d", 20, F_GETFL, 0, -1);
+		CPPUNIT_ASSERT_THROW(fd.blocking(), ErrnoException);
 		fcntl->expectf("%d%d%d%d", 20, F_GETFL, 0, 0);
-		CPPUNIT_ASSERT_EQUAL(false, fd.blocking());
-		fcntl->expectf("%d%d%d%d", 20, F_GETFL, 0, O_NONBLOCK);
 		CPPUNIT_ASSERT_EQUAL(true, fd.blocking());
+		fcntl->expectf("%d%d%d%d", 20, F_GETFL, 0, O_NONBLOCK);
+		CPPUNIT_ASSERT_EQUAL(false, fd.blocking());
 	}
 
 	void
@@ -112,6 +119,17 @@ public:
 		fcntl->expectf("%d%d%d%d", 24, F_GETFL, 0, O_ASYNC | O_NONBLOCK);
 		fcntl->expectf("%d%d%d%d", 24, F_SETFL, O_ASYNC, 0);
 		CPPUNIT_ASSERT_NO_THROW(fd.blocking(true));
+	}
+
+	void
+	testReset()
+	{
+		MOCK_FUNCTION_DEFAULT(close);
+		Fd fd(33);
+
+		close->expect(33);
+		fd.reset(34);
+		close->expect(34);
 	}
 };
 

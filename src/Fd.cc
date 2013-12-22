@@ -28,7 +28,9 @@ const
 {
 	ssize_t ret = ::read(get(), buffer, size);
 
-	if (ret < 0) throw ErrnoException("read");
+	if (ret < 0) {
+		throw ErrnoException("read");
+	}
 	return (size_t)ret;
 }
 
@@ -38,7 +40,9 @@ const
 {
 	ssize_t ret = ::write(get(), buffer, length);
 
-	if (ret < 0) throw ErrnoException("write");
+	if (ret < 0) {
+		throw ErrnoException("write");
+	}
 	return (size_t)ret;
 }
 
@@ -46,7 +50,11 @@ bool
 Fd::blocking()
 const
 {
-	return fcntl(get(), F_GETFL, 0) & O_NONBLOCK;
+	int ret = fcntl(get(), F_GETFL, 0);
+	if (ret < 0) {
+		throw ErrnoException("fcntl");
+	}
+	return !(ret & O_NONBLOCK);
 }
 
 void
