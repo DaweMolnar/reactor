@@ -39,13 +39,23 @@ public:
 	}
 };
 
+template <typename F, typename T>
+class PrimitiveCastException : public std::bad_cast {
+public:
+	virtual ~PrimitiveCastException() throw() {}
+
+	virtual const char *what() const throw() { return "incompatible types"; }
+};
+
 class Integer;
+class Pointer;
 
 class PrimitiveVisitor {
 public:
 	virtual ~PrimitiveVisitor() {}
 
 	virtual void visit(Integer &integer) = 0;
+	virtual void visit(Pointer &pointer) = 0;
 };
 
 class Primitive {
@@ -65,6 +75,16 @@ public:
 	virtual void accept(PrimitiveVisitor &visitor) { visitor.visit(*this); }
 };
 
+class Pointer : public Primitive {
+	void *value_;
+
+public:
+	explicit Pointer(void *value) : value_(value) {}
+
+	void *value() const { return value_; }
+	virtual void accept(PrimitiveVisitor &visitor) { visitor.visit(*this); }
+};
+
 class Mocked : public Noncopyable {
 	const std::string name_;
 	std::queue<Primitive *> queue_;
@@ -76,7 +96,9 @@ public:
 	const std::string &name() const { return name_; }
 
 	void expect(int value);
+	void expect(void *value);
 	int expectedInt();
+	void *expectedPointer();
 };
 
 
@@ -153,6 +175,12 @@ Mocked::expect(int value)
 	queue_.push(new Integer(value));
 }
 
+void
+Mocked::expect(void *value)
+{
+	queue_.push(new Pointer(value));
+}
+
 class IntegerVisitor : public PrimitiveVisitor {
 	int result_;
 
@@ -160,6 +188,7 @@ public:
 	IntegerVisitor() : result_(0) {}
 
 	virtual void visit(Integer &integer);
+	virtual void visit(Pointer &pointer) { (void)pointer; throw PrimitiveCastException<Pointer, int>(); }
 
 	int result() const { return result_; }
 };
@@ -182,6 +211,38 @@ Mocked::expectedInt()
 	delete value;
 	queue_.pop();
 	return iv.result();
+}
+
+class PointerVisitor : public PrimitiveVisitor {
+	void *result_;
+
+public:
+	PointerVisitor() : result_(0) {}
+
+	virtual void visit(Integer &integer) { (void)integer; throw PrimitiveCastException<Integer, void *>(); }
+	virtual void visit(Pointer &pointer);
+
+	void *result() const { return result_; }
+};
+
+void
+PointerVisitor::visit(Pointer &pointer)
+{
+	result_ = pointer.value();
+}
+
+void *
+Mocked::expectedPointer()
+{
+	if (queue_.empty()) {
+		throw MockException(name_, "unexpected call");
+	}
+	PointerVisitor pv;
+	Primitive *value = queue_.front();
+	value->accept(pv);
+	delete value;
+	queue_.pop();
+	return pv.result();
 }
 
 template <typename F>
@@ -234,6 +295,7 @@ class FdTester : public CppUnit::TestFixture {
 		(void)buf;
 		Mocked &m = MockRegistry::find("read");
 		CPPUNIT_ASSERT_EQUAL(m.expectedInt(), fd);
+		CPPUNIT_ASSERT_EQUAL(m.expectedPointer(), (void *)buf);
 		CPPUNIT_ASSERT_EQUAL(m.expectedInt(), (int)count);
 		return m.expectedInt();
 	}
@@ -257,6 +319,7 @@ public:
 
 		close->expect(43);
 		read->expect(43);
+		read->expect((void *)buf);
 		read->expect(sizeof(buf));
 		read->expect(45);
 		CPPUNIT_ASSERT_EQUAL((size_t)45, fd.read(buf, sizeof(buf)));
