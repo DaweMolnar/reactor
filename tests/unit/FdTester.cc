@@ -1,5 +1,7 @@
 #include <src/Fd.hh>
 
+#include <src/ErrnoException.hh>
+
 #include <tests/unit/mock/MockedFunction.hh>
 #include <tests/unit/mock/unistd.h>
 
@@ -12,7 +14,10 @@ class FdTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST(testConstruction);
 	CPPUNIT_TEST(testRead);
 	CPPUNIT_TEST(testWrite);
-	CPPUNIT_TEST(testBlocking);
+	CPPUNIT_TEST(testGetBlocking);
+	CPPUNIT_TEST(testSetBlockingThrows);
+	CPPUNIT_TEST(testSetBlockingNoChange);
+	CPPUNIT_TEST(testSetBlockingChange);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -51,7 +56,7 @@ public:
 	}
 
 	void
-	testBlocking()
+	testGetBlocking()
 	{
 		MOCK_FUNCTION_DEFAULT(close);
 		MOCK_FUNCTION_DEFAULT(fcntl);
@@ -62,6 +67,51 @@ public:
 		CPPUNIT_ASSERT_EQUAL(false, fd.blocking());
 		fcntl->expectf("%d%d%d%d", 20, F_GETFL, 0, O_NONBLOCK);
 		CPPUNIT_ASSERT_EQUAL(true, fd.blocking());
+	}
+
+	void
+	testSetBlockingThrows()
+	{
+		MOCK_FUNCTION_DEFAULT(close);
+		MOCK_FUNCTION_DEFAULT(fcntl);
+		Fd fd(26);
+
+		close->expect(26);
+		fcntl->expectf("%d%d%d%d", 26, F_GETFL, 0, -1);
+		CPPUNIT_ASSERT_THROW(fd.blocking(true), ErrnoException);
+		fcntl->expectf("%d%d%d%d", 26, F_GETFL, 0, O_ASYNC);
+		fcntl->expectf("%d%d%d%d", 26, F_SETFL, O_ASYNC | O_NONBLOCK, -1);
+		CPPUNIT_ASSERT_THROW(fd.blocking(false), ErrnoException);
+	}
+
+	void
+	testSetBlockingNoChange()
+	{
+		MOCK_FUNCTION_DEFAULT(close);
+		MOCK_FUNCTION_DEFAULT(fcntl);
+		Fd fd(23);
+
+		close->expect(23);
+		fcntl->expectf("%d%d%d%d", 23, F_GETFL, 0, 0);
+		CPPUNIT_ASSERT_NO_THROW(fd.blocking(true));
+		fcntl->expectf("%d%d%d%d", 23, F_GETFL, 0, O_NONBLOCK);
+		CPPUNIT_ASSERT_NO_THROW(fd.blocking(false));
+	}
+
+	void
+	testSetBlockingChange()
+	{
+		MOCK_FUNCTION_DEFAULT(close);
+		MOCK_FUNCTION_DEFAULT(fcntl);
+		Fd fd(24);
+
+		close->expect(24);
+		fcntl->expectf("%d%d%d%d", 24, F_GETFL, 0, O_ASYNC);
+		fcntl->expectf("%d%d%d%d", 24, F_SETFL, O_ASYNC | O_NONBLOCK, 0);
+		CPPUNIT_ASSERT_NO_THROW(fd.blocking(false));
+		fcntl->expectf("%d%d%d%d", 24, F_GETFL, 0, O_ASYNC | O_NONBLOCK);
+		fcntl->expectf("%d%d%d%d", 24, F_SETFL, O_ASYNC, 0);
+		CPPUNIT_ASSERT_NO_THROW(fd.blocking(true));
 	}
 };
 
