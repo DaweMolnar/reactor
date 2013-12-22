@@ -1,7 +1,7 @@
 #ifndef REACTOR_MOCKED_FUNCTION_HEADER
 #define REACTOR_MOCKED_FUNCTION_HEADER
 
-#include <src/Mocked.hh>
+#include <tests/unit/mock/Mocked.hh>
 
 #include <memory> // std::auto_ptr
 

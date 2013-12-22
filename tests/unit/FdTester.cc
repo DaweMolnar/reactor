@@ -1,8 +1,8 @@
 #include <src/Fd.hh>
 
-#include <src/MockedFunction.hh>
-#include <src/MockRegistry.hh>
-#include <src/RedirectMockCFunction.h>
+#include <tests/unit/mock/MockedFunction.hh>
+#include <tests/unit/mock/MockRegistry.hh>
+#include <tests/unit/mock/RedirectMockCFunction.h>
 
 #include <cppunit/extensions/HelperMacros.h>
 

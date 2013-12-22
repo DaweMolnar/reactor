@@ -21,10 +21,7 @@ client_TESTABLE_SOURCES := \
 	src/Timers.cc \
 	src/PollDemuxer.cc \
 	src/Dispatcher.cc \
-	src/Client.cc \
-	src/PrimitiveByFormatFactory.cc \
-	src/MockRegistry.cc \
-	src/Mocked.cc
+	src/Client.cc
 
 client_SOURCES := \
 	$(client_TESTABLE_SOURCES) \
@@ -32,12 +29,14 @@ client_SOURCES := \
 
 testUnits_SOURCES := \
 	$(client_TESTABLE_SOURCES) \
+	tests/unit/mock/PrimitiveByFormatFactory.cc \
+	tests/unit/mock/MockRegistry.cc \
+	tests/unit/mock/Mocked.cc \
 	tests/unit/ErrnoTester.cc \
 	tests/unit/FdTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
-CPPFLAGS += -I.
 CPPFLAGS += -MD
 
 
@@ -56,6 +55,7 @@ testUnits_WRAPPED_SYMBOLS := \
 
 LINKER_FLAG := -Wl,
 
+out/testUnits: CPPFLAGS += -I.
 out/testUnits: LDFLAGS += $(addprefix $(LINKER_FLAG)--wrap=,$(testUnits_WRAPPED_SYMBOLS))
 out/testUnits: LDLIBS += $(shell cppunit-config --libs)
 
