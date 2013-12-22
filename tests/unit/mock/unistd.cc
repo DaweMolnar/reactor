@@ -25,3 +25,13 @@ mock_read(int fd, void *buf, size_t count)
 	CPPUNIT_ASSERT_EQUAL(m.expectedInt(), (int)count);
 	return m.expectedInt();
 }
+
+ssize_t
+mock_write(int fd, const void *buf, size_t count)
+{
+	Mocked &m = MockRegistry::find("write");
+	CPPUNIT_ASSERT_EQUAL(m.expectedInt(), fd);
+	CPPUNIT_ASSERT_EQUAL(m.expectedPointer(), (void *)buf);
+	CPPUNIT_ASSERT_EQUAL(m.expectedInt(), (int)count);
+	return m.expectedInt();
+}

@@ -12,6 +12,6 @@ DECLARE_MOCK_C_FUNCTION3(read, ssize_t, int, void *, size_t)
 ssize_t mock_read(int fd, void *buf, size_t count);
 
 DECLARE_MOCK_C_FUNCTION3(write, ssize_t, int, const void *, size_t)
-ssize_t mock_read(int fd, const void *buf, size_t count);
+ssize_t mock_write(int fd, const void *buf, size_t count);
 
 #endif // TESTS_UNIT_MOCK_UNISTD_HEADER
