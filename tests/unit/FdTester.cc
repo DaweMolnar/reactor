@@ -1,5 +1,7 @@
 #include <src/Fd.hh>
 
+#include <src/RedirectMockCFunction.h>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <stdexcept>
@@ -7,27 +9,6 @@
 #include <unistd.h>
 #include <cstdarg>
 #include <sstream>
-
-#define REDIRECT_MOCK_C_FUNCTION1(name, ret, t1, n1) \
-	extern "C" { \
-		ret __real_ ## name (t1); \
-		ret (*__wrap_ ## name ## _ptr)(t1) = __real_ ## name; \
-		ret __wrap_ ## name (t1 n1) { return __wrap_ ## name ## _ptr(n1); } \
-	} // extern "C"
-
-#define REDIRECT_MOCK_C_FUNCTION2(name, ret, t1, n1, t2, n2) \
-	extern "C" { \
-		ret __real_ ## name (t1, t2); \
-		ret (*__wrap_ ## name ## _ptr)(t1, t2) = __real_ ## name; \
-		ret __wrap_ ## name (t1 n1, t2 n2) { return __wrap_ ## name ## _ptr(n1, n2); } \
-	} // extern "C"
-
-#define REDIRECT_MOCK_C_FUNCTION3(name, ret, t1, n1, t2, n2, t3, n3) \
-	extern "C" { \
-		ret __real_ ## name (t1, t2, t3); \
-		ret (*__wrap_ ## name ## _ptr)(t1, t2, t3) = __real_ ## name; \
-		ret __wrap_ ## name (t1 n1, t2 n2, t3 n3) { return __wrap_ ## name ## _ptr(n1, n2, n3); } \
-	} // extern "C"
 
 REDIRECT_MOCK_C_FUNCTION1(close, void, int, fd)
 REDIRECT_MOCK_C_FUNCTION3(read, ssize_t, int, fd, void *, buf, size_t, count)
