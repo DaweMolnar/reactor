@@ -23,7 +23,8 @@ client_TESTABLE_SOURCES := \
 	src/Dispatcher.cc \
 	src/Client.cc \
 	src/PrimitiveByFormatFactory.cc \
-	src/MockRegistry.cc
+	src/MockRegistry.cc \
+	src/Mocked.cc
 
 client_SOURCES := \
 	$(client_TESTABLE_SOURCES) \
