@@ -6,6 +6,7 @@
 #include <src/Primitive.hh>
 #include <src/PrimitiveByFormatFactory.hh>
 #include <src/Mocked.hh>
+#include <src/MockRegistry.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -18,22 +19,6 @@
 REDIRECT_MOCK_C_FUNCTION1(close, void, int, fd)
 REDIRECT_MOCK_C_FUNCTION3(read, ssize_t, int, fd, void *, buf, size_t, count)
 REDIRECT_MOCK_C_FUNCTION3(write, ssize_t, int, fd, const void *, buf, size_t, count)
-
-
-class MockRegistry : public Noncopyable {
-	typedef std::map<std::string, Mocked *> Mockeds;
-
-	Mockeds mockeds_;
-
-	MockRegistry() {}
-
-	static MockRegistry &getInstance();
-
-public:
-	static void add(Mocked *mocked);
-	static void remove(const Mocked *mocked);
-	static Mocked &find(const std::string &name);
-};
 
 MockRegistry &
 MockRegistry::getInstance()
