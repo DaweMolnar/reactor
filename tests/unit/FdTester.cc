@@ -1,6 +1,7 @@
 #include <src/Fd.hh>
 
 #include <src/RedirectMockCFunction.h>
+#include <src/MockException.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -13,14 +14,6 @@
 REDIRECT_MOCK_C_FUNCTION1(close, void, int, fd)
 REDIRECT_MOCK_C_FUNCTION3(read, ssize_t, int, fd, void *, buf, size_t, count)
 REDIRECT_MOCK_C_FUNCTION3(write, ssize_t, int, fd, const void *, buf, size_t, count)
-
-class MockException : public std::runtime_error {
-public:
-	MockException(const std::string &name, const std::string &reason)
-	: std::runtime_error(name + ": " + reason)
-	{
-	}
-};
 
 template <typename F, typename T>
 class PrimitiveCastException : public std::bad_cast {
