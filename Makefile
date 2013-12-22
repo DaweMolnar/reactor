@@ -32,6 +32,7 @@ testUnits_SOURCES := \
 	tests/unit/mock/PrimitiveByFormatFactory.cc \
 	tests/unit/mock/MockRegistry.cc \
 	tests/unit/mock/Mocked.cc \
+	tests/unit/mock/unistd.cc \
 	tests/unit/ErrnoTester.cc \
 	tests/unit/FdTester.cc \
 	tests/unit/testUnits.cc

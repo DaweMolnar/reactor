@@ -9,6 +9,32 @@
 #define REDIRECT_MOCK_C_FUNCTION_EXTERN_C_END
 #endif
 
+#define DECLARE_MOCK_C_FUNCTION1(name, ret, t1) \
+	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_BEGIN \
+		extern ret (*__wrap_ ## name ## _ptr)(t1); \
+	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_END
+
+#define DECLARE_MOCK_C_FUNCTION2(name, ret, t1, t2) \
+	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_BEGIN \
+		extern ret (*__wrap_ ## name ## _ptr)(t1, t2); \
+	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_END
+
+#define DECLARE_MOCK_C_FUNCTION3(name, ret, t1, t2, t3) \
+	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_BEGIN \
+		extern ret (*__wrap_ ## name ## _ptr)(t1, t2, t3); \
+	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_END
+
+#define DECLARE_MOCK_C_FUNCTION4(name, ret, t1, t2, t3, t4) \
+	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_BEGIN \
+		extern ret (*__wrap_ ## name ## _ptr)(t1, t2, t3, t4); \
+	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_END
+
+#define DECLARE_MOCK_C_FUNCTION5(name, ret, t1, t2, t3, t4, t5) \
+	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_BEGIN \
+		extern ret (*__wrap_ ## name ## _ptr)(t1, t2, t3, t4, t5); \
+	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_END
+
+
 #define REDIRECT_MOCK_C_FUNCTION1(name, ret, t1, n1) \
 	REDIRECT_MOCK_C_FUNCTION_EXTERN_C_BEGIN \
 		ret __real_ ## name (t1); \
