@@ -6,6 +6,7 @@
 
 #include <string>
 #include <queue>
+#include <cstdarg>
 
 class Mocked : public Noncopyable {
 	const std::string name_;

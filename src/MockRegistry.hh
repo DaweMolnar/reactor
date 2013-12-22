@@ -4,6 +4,7 @@
 #include "Noncopyable.hh"
 
 #include <map>
+#include <string>
 
 class Mocked;
 

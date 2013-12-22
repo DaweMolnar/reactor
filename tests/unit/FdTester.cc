@@ -20,39 +20,6 @@ REDIRECT_MOCK_C_FUNCTION1(close, void, int, fd)
 REDIRECT_MOCK_C_FUNCTION3(read, ssize_t, int, fd, void *, buf, size_t, count)
 REDIRECT_MOCK_C_FUNCTION3(write, ssize_t, int, fd, const void *, buf, size_t, count)
 
-MockRegistry &
-MockRegistry::getInstance()
-{
-	static MockRegistry instance;
-	return instance;
-}
-
-void
-MockRegistry::add(Mocked *mocked)
-{
-	MockRegistry &mr = getInstance();
-	mr.mockeds_.insert(std::make_pair(mocked->name(), mocked));
-}
-
-void
-MockRegistry::remove(const Mocked *mocked)
-{
-	MockRegistry &mr = getInstance();
-	mr.mockeds_.erase(mocked->name());
-}
-
-Mocked &
-MockRegistry::find(const std::string &name)
-{
-	MockRegistry &mr = getInstance();
-	Mockeds::iterator i = mr.mockeds_.find(name);
-	if (i != mr.mockeds_.end()) {
-		return *(i->second);
-	} else {
-		throw MockException(name, "no such mock");
-	}
-}
-
 Mocked::Mocked(const std::string &name)
 : name_(name)
 {

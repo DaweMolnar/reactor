@@ -22,7 +22,8 @@ client_TESTABLE_SOURCES := \
 	src/PollDemuxer.cc \
 	src/Dispatcher.cc \
 	src/Client.cc \
-	src/PrimitiveByFormatFactory.cc
+	src/PrimitiveByFormatFactory.cc \
+	src/MockRegistry.cc
 
 client_SOURCES := \
 	$(client_TESTABLE_SOURCES) \
@@ -35,6 +36,7 @@ testUnits_SOURCES := \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
+CPPFLAGS += -I.
 CPPFLAGS += -MD
 
 
@@ -55,7 +57,6 @@ LINKER_FLAG := -Wl,
 
 out/testUnits: LDFLAGS += $(addprefix $(LINKER_FLAG)--wrap=,$(testUnits_WRAPPED_SYMBOLS))
 out/testUnits: LDLIBS += $(shell cppunit-config --libs)
-out/testUnits: CPPFLAGS += -I.
 
 ifeq "$(CXX)" "g++"
 out/testUnits: CPPFLAGS += -g -O0 -coverage
