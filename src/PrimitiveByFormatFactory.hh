@@ -3,7 +3,7 @@
 
 #include <src/Primitive.hh>
 
-#include <string.h>
+#include <string>
 #include <cstdarg>
 
 class PrimitiveByFormatFactory {

@@ -21,7 +21,8 @@ client_TESTABLE_SOURCES := \
 	src/Timers.cc \
 	src/PollDemuxer.cc \
 	src/Dispatcher.cc \
-	src/Client.cc
+	src/Client.cc \
+	src/PrimitiveByFormatFactory.cc
 
 client_SOURCES := \
 	$(client_TESTABLE_SOURCES) \
