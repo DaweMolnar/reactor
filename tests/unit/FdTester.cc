@@ -112,7 +112,12 @@ Mocked::~Mocked()
 {
 	MockRegistry::remove(this);
 	if (!queue_.empty()) {
-//		throw MockException(name_, "expected call is missing");
+		MockException e(name_, "expected call is missing");
+		if (std::uncaught_exception()) {
+			std::cerr << e.what() << std::endl;
+		} else {
+			throw e;
+		}
 	}
 }
 
