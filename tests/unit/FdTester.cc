@@ -1,12 +1,8 @@
 #include <src/Fd.hh>
 
-#include <src/RedirectMockCFunction.h>
-#include <src/MockException.hh>
-#include <src/PrimitiveCastException.hh>
-#include <src/Primitive.hh>
-#include <src/PrimitiveByFormatFactory.hh>
-#include <src/Mocked.hh>
+#include <src/MockedFunction.hh>
 #include <src/MockRegistry.hh>
+#include <src/RedirectMockCFunction.h>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -19,37 +15,6 @@
 REDIRECT_MOCK_C_FUNCTION1(close, void, int, fd)
 REDIRECT_MOCK_C_FUNCTION3(read, ssize_t, int, fd, void *, buf, size_t, count)
 REDIRECT_MOCK_C_FUNCTION3(write, ssize_t, int, fd, const void *, buf, size_t, count)
-
-template <typename F>
-class MockedFunction : public Mocked {
-	F *wrap_;
-	F orig_;
-
-public:
-	MockedFunction(const std::string &name, F *wrap, F mock)
-	: Mocked(name)
-	, wrap_(wrap)
-	, orig_(*wrap_)
-	{
-		*wrap_ = mock;
-	}
-
-	virtual
-	~MockedFunction()
-	{
-		*wrap_ = orig_;
-	}
-};
-
-template <typename F>
-MockedFunction<F> *
-createMockedFunction(const std::string &name, F *wrap, F mock)
-{
-	return new MockedFunction<F>(name, wrap, mock);
-}
-
-#define MOCK_FUNCTION(name, mock_name) \
-	std::auto_ptr<Mocked> name(createMockedFunction(#name, &__wrap_ ## name ## _ptr, mock_name))
 
 class FdTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(FdTester);
