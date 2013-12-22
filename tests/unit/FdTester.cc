@@ -2,6 +2,7 @@
 
 #include <src/RedirectMockCFunction.h>
 #include <src/MockException.hh>
+#include <src/PrimitiveCastException.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -14,14 +15,6 @@
 REDIRECT_MOCK_C_FUNCTION1(close, void, int, fd)
 REDIRECT_MOCK_C_FUNCTION3(read, ssize_t, int, fd, void *, buf, size_t, count)
 REDIRECT_MOCK_C_FUNCTION3(write, ssize_t, int, fd, const void *, buf, size_t, count)
-
-template <typename F, typename T>
-class PrimitiveCastException : public std::bad_cast {
-public:
-	virtual ~PrimitiveCastException() throw() {}
-
-	virtual const char *what() const throw() { return "incompatible types"; }
-};
 
 template <typename T> class Primitive;
 
