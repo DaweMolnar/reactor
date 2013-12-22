@@ -35,6 +35,7 @@ testUnits_SOURCES := \
 	tests/unit/mock/unistd.cc \
 	tests/unit/ErrnoTester.cc \
 	tests/unit/FdTester.cc \
+	tests/unit/DiffTimeTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros

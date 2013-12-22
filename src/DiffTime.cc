@@ -1,11 +1,16 @@
 #include "DiffTime.hh"
 
+#include <cstdlib> // abs()
+
 DiffTime
 DiffTime::ms(int32_t ms)
 {
-	int64_t i = (int64_t)(ms / 1000) << 32;
-	int64_t frac = ((int64_t)(ms % 1000) << 32) / 1000;
-	return DiffTime(i | frac);
+	bool negative = ms < 0;
+	int64_t ums = negative ? -ms : ms;
+	int64_t i = (ums / 1000) << 32;
+	int64_t frac = (((ums % 1000) << 32) + (negative ? 0 : 999)) / 1000;
+	int64_t uresult = i | frac;
+	return DiffTime(negative ? -uresult : uresult);
 }
 
 int32_t
