@@ -3,6 +3,7 @@
 #include <src/RedirectMockCFunction.h>
 #include <src/MockException.hh>
 #include <src/PrimitiveCastException.hh>
+#include <src/Primitive.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -15,37 +16,6 @@
 REDIRECT_MOCK_C_FUNCTION1(close, void, int, fd)
 REDIRECT_MOCK_C_FUNCTION3(read, ssize_t, int, fd, void *, buf, size_t, count)
 REDIRECT_MOCK_C_FUNCTION3(write, ssize_t, int, fd, const void *, buf, size_t, count)
-
-template <typename T> class Primitive;
-
-typedef Primitive<int> Integer;
-typedef Primitive<void *> Pointer;
-
-class PrimitiveVisitor {
-public:
-	virtual ~PrimitiveVisitor() {}
-
-	virtual void visit(Integer &) = 0;
-	virtual void visit(Pointer &) = 0;
-};
-
-class PrimitiveBase {
-public:
-	virtual ~PrimitiveBase() {}
-
-	virtual void accept(PrimitiveVisitor &visitor) = 0;
-};
-
-template <typename T>
-class Primitive : public PrimitiveBase {
-	T value_;
-
-public:
-	explicit Primitive(const T &value) : value_(value) {}
-
-	const T &value() const { return value_; }
-	virtual void accept(PrimitiveVisitor &visitor) { visitor.visit(*this); }
-};
 
 class PrimitiveByFormatFactory {
 public:
