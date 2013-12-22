@@ -2,6 +2,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <limits>
+
 class DiffTimeTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(DiffTimeTester);
 	CPPUNIT_TEST(testConstruction);
@@ -68,17 +70,17 @@ public:
 	void
 	testBoundaries()
 	{
-		DiffTime min = DiffTime::raw(INT64_MIN);
+		DiffTime min = DiffTime::raw(std::numeric_limits<int64_t>::min());
 		DiffTime minusOne = DiffTime::raw(-1);
 		DiffTime zero = DiffTime::raw(0);
 		DiffTime one = DiffTime::raw(1);
-		DiffTime max = DiffTime::raw(INT64_MAX);
+		DiffTime max = DiffTime::raw(std::numeric_limits<int64_t>::max());
 
-		CPPUNIT_ASSERT_EQUAL(INT64_MIN, min.raw());
+		CPPUNIT_ASSERT_EQUAL(std::numeric_limits<int64_t>::min(), min.raw());
 		CPPUNIT_ASSERT_EQUAL((int64_t)-1, minusOne.raw());
 		CPPUNIT_ASSERT_EQUAL((int64_t)0, zero.raw());
 		CPPUNIT_ASSERT_EQUAL((int64_t)1, one.raw());
-		CPPUNIT_ASSERT_EQUAL(INT64_MAX, max.raw());
+		CPPUNIT_ASSERT_EQUAL(std::numeric_limits<int64_t>::max(), max.raw());
 
 		CPPUNIT_ASSERT_EQUAL(0, min.ms()); // overflow
 		CPPUNIT_ASSERT_EQUAL(-1, minusOne.ms());
@@ -86,8 +88,8 @@ public:
 		CPPUNIT_ASSERT_EQUAL(0, one.ms());
 		CPPUNIT_ASSERT_EQUAL(-1, max.ms()); // overflow
 
-//TODO	CPPUNIT_ASSERT_EQUAL(INT32_MIN, DiffTime::ms(INT32_MIN).ms());
-		CPPUNIT_ASSERT_EQUAL(INT32_MAX, DiffTime::ms(INT32_MAX).ms());
+//TODO	CPPUNIT_ASSERT_EQUAL(std::numeric_limits<int32_t>::min(), DiffTime::ms(std::numeric_limits<int32_t>::min()).ms());
+		CPPUNIT_ASSERT_EQUAL(std::numeric_limits<int32_t>::max(), DiffTime::ms(std::numeric_limits<int32_t>::max()).ms());
 	}
 };
 
