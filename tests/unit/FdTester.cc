@@ -5,6 +5,7 @@
 #include <src/PrimitiveCastException.hh>
 #include <src/Primitive.hh>
 #include <src/PrimitiveByFormatFactory.hh>
+#include <src/Mocked.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -17,35 +18,6 @@
 REDIRECT_MOCK_C_FUNCTION1(close, void, int, fd)
 REDIRECT_MOCK_C_FUNCTION3(read, ssize_t, int, fd, void *, buf, size_t, count)
 REDIRECT_MOCK_C_FUNCTION3(write, ssize_t, int, fd, const void *, buf, size_t, count)
-
-class Mocked : public Noncopyable {
-	const std::string name_;
-	std::queue<PrimitiveBase *> queue_;
-
-public:
-	Mocked(const std::string &name);
-	virtual ~Mocked();
-
-	const std::string &name() const { return name_; }
-
-	template <typename T>
-	void
-	expect(const T &value)
-	{
-		queue_.push(new Primitive<T>(value));
-	}
-
-	void expectByConversionSpecification(const std::string &conversionSpecification, va_list ap);
-	void vexpectf(const char *format, va_list ap);
-	void expectf(
-	/* 1   hidden this */
-	/*<2>*/const char *format,
-	/*<3>*/...
-	) __attribute__((format(printf, 2, 3)));
-
-	int expectedInt();
-	void *expectedPointer();
-};
 
 
 class MockRegistry : public Noncopyable {
