@@ -38,6 +38,7 @@ testUnits_SOURCES := \
 	tests/unit/FdTester.cc \
 	tests/unit/DiffTimeTester.cc \
 	tests/unit/TimeTester.cc \
+	tests/unit/SpecifierTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
