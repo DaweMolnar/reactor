@@ -10,6 +10,7 @@ class Time {
 
 public:
 	static Time now();
+	static Time raw(uint64_t time) { return Time(time); }
 
 	Time() : time_(0) {}
 
@@ -22,6 +23,7 @@ public:
 
 	bool operator<(const Time &rhs) const { return time_ < rhs.time_; }
 
+	uint64_t raw() const { return time_; }
 //	time_t unixtime() const { return time_ >> 32; }
 	uint32_t fraction(uint32_t multiplier) const { return ((time_ & 0xffffffff) * multiplier) >> 32; }
 	uint32_t msFraction() const { return fraction(1000); }

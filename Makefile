@@ -33,9 +33,11 @@ testUnits_SOURCES := \
 	tests/unit/mock/MockRegistry.cc \
 	tests/unit/mock/Mocked.cc \
 	tests/unit/mock/unistd.cc \
+	tests/unit/mock/time.cc \
 	tests/unit/ErrnoTester.cc \
 	tests/unit/FdTester.cc \
 	tests/unit/DiffTimeTester.cc \
+	tests/unit/TimeTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
@@ -54,7 +56,8 @@ testUnits_WRAPPED_SYMBOLS := \
 	close \
 	read \
 	write \
-	fcntl
+	fcntl \
+	gettimeofday
 
 LINKER_FLAG := -Wl,
 
