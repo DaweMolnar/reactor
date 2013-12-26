@@ -39,6 +39,7 @@ testUnits_SOURCES := \
 	tests/unit/DiffTimeTester.cc \
 	tests/unit/TimeTester.cc \
 	tests/unit/SpecifierTester.cc \
+	tests/unit/ActionsGuardTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
@@ -94,7 +95,8 @@ check: run_testUnits
 
 .PHONY: run_testUnits
 run_testUnits: out/testUnits
-	$(if $Q,@echo "  RUN   $^")
+	$Qfind $<.d/ -name '*.gcda' -delete
+	$(if $Q,@echo "  RUN   $<")
 	$Q$<
 
 .PHONY: coverage
