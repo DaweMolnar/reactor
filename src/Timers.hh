@@ -3,7 +3,7 @@
 
 #include "Noncopyable.hh"
 #include "ActionsGuard.hh"
-#include "Timer.hh"
+#include "LazyTimer.hh"
 
 #include <queue>
 

@@ -26,7 +26,7 @@ Control::Control(int argc, char *argv[])
 
 	dispatcher_.add(Fd::STDIN, genActionMethod(*this, &Control::onFdStdin));
 	dispatcher_.add(client_.fd(), genActionMethod(*this, &Control::onFdSock));
-	dispatcher_.add(Timer(DiffTime::ms(1000), 3), genActionMethod(*this, &Control::onTimer));
+	dispatcher_.add(LazyTimer(DiffTime::ms(1000), 3), genActionMethod(*this, &Control::onTimer));
 }
 
 void

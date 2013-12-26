@@ -32,6 +32,7 @@ public:
 
 	void add(const Fd &fd, const Action &action);
 	void add(const Timer &timer, const Action &action);
+	void add(const LazyTimer &lazyTimer, const Action &action);
 };
 
 #endif // REACTOR_DISPATCHER_HEADER
