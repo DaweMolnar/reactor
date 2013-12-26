@@ -40,6 +40,7 @@ testUnits_SOURCES := \
 	tests/unit/TimeTester.cc \
 	tests/unit/SpecifierTester.cc \
 	tests/unit/ActionsGuardTester.cc \
+	tests/unit/TimerTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros

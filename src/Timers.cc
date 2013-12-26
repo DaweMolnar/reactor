@@ -16,7 +16,8 @@ Timers::fireAllButUnexpired(DiffTime *remaining)
 		if (!dt.positive() && (i >= 0)) {
 			queue_.pop();
 			ta.second->perform();
-			if (ta.first.next()) {
+			ta.first.fire();
+			if (ta.first.hasRemainingIterations()) {
 				queue_.push(ta);
 			} else {
 				guard_.release(ta.second);

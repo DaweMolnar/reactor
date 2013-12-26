@@ -1,13 +1,20 @@
 #include "Timer.hh"
 
+#include <stdexcept>
+
 bool
-Timer::next()
+Timer::hasRemainingIterations()
+const
 {
-	++counter_;
-	if (counter_ == iterationLimit_) {
-		return false;
-	} else {
-		expiration_ += interval_;
-		return true;
+	return !iterationLimit_ || (iterationCount_ < iterationLimit_);
+}
+
+void
+Timer::fire()
+{
+	if (!hasRemainingIterations()) {
+		throw std::runtime_error("no more iterations");
 	}
+	expiration_ += interval_;
+	++iterationCount_;
 }
