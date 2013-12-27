@@ -16,14 +16,16 @@ class Dispatcher : public Noncopyable {
 	FdHandlers fdHandlers_;
 	Timers timers_, lazyTimers_;
 	bool quit_;
-	std::auto_ptr<Demuxer> demuxer_;
+	std::auto_ptr<DefaultDemuxer> defaultDemuxer_;
+	Demuxer *demuxer_;
 
 public:
 	Dispatcher(Demuxer *demuxer = 0)
 	: timers_(guard_)
 	, lazyTimers_(guard_)
 	, quit_(false)
-	, demuxer_(demuxer ? demuxer : new DefaultDemuxer())
+	, defaultDemuxer_(demuxer ? 0 : new DefaultDemuxer())
+	, demuxer_(demuxer ? demuxer : defaultDemuxer_.get())
 	{}
 
 	void step();
