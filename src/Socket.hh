@@ -2,12 +2,12 @@
 #define REACTOR_SOCKET_HEADER
 
 #include "Noncopyable.hh"
-#include "Fd.hh"
+#include "AutoFd.hh"
 #include "Host.hh"
 #include "Service.hh"
 
 class Socket : public Noncopyable {
-	Fd fd_;
+	AutoFd fd_;
 	int type_;
 
 public:

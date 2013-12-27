@@ -9,19 +9,6 @@ const Fd Fd::STDIN(STDIN_FILENO);
 const Fd Fd::STDOUT(STDOUT_FILENO);
 const Fd Fd::STDERR(STDERR_FILENO);
 
-int
-Fd::release(void)
-{
-	int fd = fd_;
-
-	if (valid()) {
-		close(fd_);
-		fd_ = INVALID;
-	}
-
-	return fd;
-}
-
 size_t
 Fd::read(void *buffer, size_t size)
 const

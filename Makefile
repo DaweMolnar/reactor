@@ -10,6 +10,7 @@ all: $(TARGETS)
 client_TESTABLE_SOURCES := \
 	src/ErrnoException.cc \
 	src/Fd.cc \
+	src/AutoFd.cc \
 	src/Host.cc \
 	src/Ip.cc \
 	src/Service.cc \
@@ -42,6 +43,7 @@ testUnits_SOURCES := \
 	tests/unit/ActionsGuardTester.cc \
 	tests/unit/TimerTester.cc \
 	tests/unit/TimersTester.cc \
+	tests/unit/AutoFdTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros

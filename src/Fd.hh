@@ -6,6 +6,7 @@
 #include <cstddef>
 
 class Fd : public Noncopyable {
+protected:
 	int fd_;
 
 public:
@@ -16,13 +17,10 @@ public:
 	static const Fd STDERR;
 
 	explicit Fd(int fd = INVALID) : fd_(fd) {}
-	~Fd() { release(); }
 
 	bool valid() const { return fd_ != INVALID; }
 
 	int get() const { return fd_; }
-	int release();
-	void reset(int fd = INVALID) { release(); fd_ = fd; }
 
 	size_t read(void *buffer, size_t size) const;
 	size_t write(const void *buffer, size_t length) const;
