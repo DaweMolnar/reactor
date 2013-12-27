@@ -14,15 +14,13 @@ Dispatcher::add(const Fd &fd, const Action &action)
 void
 Dispatcher::add(const Timer &timer, const Action &action)
 {
-	Action *a = guard_.copy(action);
-	timers_.add(std::make_pair(timer, a));
+	timers_.add(timer, action);
 }
 
 void
 Dispatcher::add(const LazyTimer &lazyTimer, const Action &action)
 {
-	Action *a = guard_.copy(action);
-	lazyTimers_.add(std::make_pair(lazyTimer, a));
+	lazyTimers_.add(lazyTimer, action);
 }
 
 void

@@ -100,7 +100,7 @@ public:
 		CPPUNIT_ASSERT_THROW(Time::now(), ErrnoException);
 		gettimeofday->expectf("%d%d%d", 1, 2, 0);
 		t = Time::now();
-		CPPUNIT_ASSERT_EQUAL(((uint64_t)1 << 32) | (((uint64_t)2 << 32) / 1000000), t.raw());
+		CPPUNIT_ASSERT_EQUAL((uint64_t)4294975886, t.raw());
 	}
 };
 

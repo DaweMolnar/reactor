@@ -1,9 +1,10 @@
 #include "Timers.hh"
 
 void
-Timers::add(const TimerAction &timerAction)
+Timers::add(const Timer &timer, const Action &action)
 {
-	queue_.push(timerAction);
+	Action *actionCopy = guard_.copy(action);
+	queue_.push(std::make_pair(timer, actionCopy));
 }
 
 bool

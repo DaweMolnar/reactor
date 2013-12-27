@@ -14,5 +14,7 @@ Time::now()
 		throw ErrnoException("gettimeofday");
 	}
 
-	return Time(((uint64_t)tv.tv_sec << 32) | (((uint64_t)tv.tv_usec << 32) / 1000000));
+	uint64_t i = (uint64_t)tv.tv_sec << 32;
+	uint64_t frac = (((uint64_t)tv.tv_usec << 32) + 999999) / 1000000;
+	return Time(i | frac);
 }
