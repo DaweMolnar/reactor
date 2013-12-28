@@ -8,6 +8,10 @@
 #include <queue>
 
 class Timers : public Noncopyable {
+public:
+	typedef Time (*NowFunc)();
+
+private:
 	typedef std::pair<Timer, Action *> TimerAction;
 
 	class TimerActionComparator : public std::less<TimerAction> {
@@ -18,10 +22,12 @@ class Timers : public Noncopyable {
 
 	Queue queue_;
 	ActionsGuard &guard_;
+	NowFunc nowFunc_;
 
 public:
-	Timers(ActionsGuard &guard)
+	Timers(ActionsGuard &guard, const NowFunc &nowFunc = Time::now)
 	: guard_(guard)
+	, nowFunc_(nowFunc)
 	{}
 
 	void add(const Timer &timer, const Action &action);

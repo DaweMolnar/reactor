@@ -1,8 +1,8 @@
 #include <src/Timers.hh>
 #include <src/ActionMethod.hh>
 
-#include <tests/unit/mock/MockedFunction.hh>
-#include <tests/unit/mock/time.h>
+#include <tests/unit/mock/Mocked.hh>
+#include <tests/unit/mock/MockRegistry.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -53,42 +53,49 @@ public:
 		t.add(Timer(DiffTime::raw(3), 0, Time::raw(0)), genActionMethod(*this, &TimersTester::action2));
 	}
 
+	static Time
+	now()
+	{
+		Mocked &m = MockRegistry::find("now");
+		return Time::raw(m.expectedInt());
+	}
+
 	void
 	testFireAllButUnexpired()
 	{
-		MOCK_FUNCTION_DEFAULT(gettimeofday);
+		Mocked now("now");
 		ActionsGuard ag;
-		Timers t(ag);
+		Timers t(ag, &TimersTester::now);
 		DiffTime dt;
 
-		t.add(Timer(DiffTime::ms(2), 2, Time::raw(0)), genActionMethod(*this, &TimersTester::action1));
-		t.add(Timer(DiffTime::ms(3), 1, Time::raw(0)), genActionMethod(*this, &TimersTester::action2));
+		t.add(Timer(DiffTime::raw(2), 2, Time::raw(0)), genActionMethod(*this, &TimersTester::action1));
+		t.add(Timer(DiffTime::raw(3), 1, Time::raw(0)), genActionMethod(*this, &TimersTester::action2));
 
 		actionCount1_ = actionCount2_ = 0;
-		gettimeofday->expectf("%d%d%d", 0, 0, 0);
+		now.expect(0);
 		CPPUNIT_ASSERT_EQUAL(true, t.fireAllButUnexpired(&dt));
 		CPPUNIT_ASSERT_EQUAL((size_t)0, actionCount1_);
 		CPPUNIT_ASSERT_EQUAL((size_t)0, actionCount2_);
-		CPPUNIT_ASSERT_EQUAL(2, dt.ms());
+		CPPUNIT_ASSERT_EQUAL((int64_t)2, dt.raw());
 
 		actionCount1_ = actionCount2_ = 0;
-		gettimeofday->expectf("%d%d%d", 0, 2000, 0);
-		gettimeofday->expectf("%d%d%d", 0, 1999, 0);
+		now.expect(2);
+		now.expect(2);
 		CPPUNIT_ASSERT_EQUAL(true, t.fireAllButUnexpired(&dt));
 		CPPUNIT_ASSERT_EQUAL((size_t)1, actionCount1_);
 		CPPUNIT_ASSERT_EQUAL((size_t)0, actionCount2_);
-		CPPUNIT_ASSERT_EQUAL(1, dt.ms());
+		CPPUNIT_ASSERT_EQUAL((int64_t)1, dt.raw());
 
 		actionCount1_ = actionCount2_ = 0;
-		gettimeofday->expectf("%d%d%d", 0, 3000, 0);
-		gettimeofday->expectf("%d%d%d", 0, 3000, 0);
+		now.expect(3);
+		now.expect(3);
 		CPPUNIT_ASSERT_EQUAL(true, t.fireAllButUnexpired(&dt));
 		CPPUNIT_ASSERT_EQUAL((size_t)0, actionCount1_);
 		CPPUNIT_ASSERT_EQUAL((size_t)1, actionCount2_);
-		CPPUNIT_ASSERT_EQUAL(1, dt.ms());
+		CPPUNIT_ASSERT_EQUAL((int64_t)1, dt.raw());
 
 		actionCount1_ = actionCount2_ = 0;
-		gettimeofday->expectf("%d%d%d", 0, 4000, 0);
+		now.expect(4);
 		CPPUNIT_ASSERT_EQUAL(false, t.fireAllButUnexpired(&dt));
 		CPPUNIT_ASSERT_EQUAL((size_t)1, actionCount1_);
 		CPPUNIT_ASSERT_EQUAL((size_t)0, actionCount2_);

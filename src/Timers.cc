@@ -12,7 +12,7 @@ Timers::fireAllButUnexpired(DiffTime *remaining)
 {
 	for (int i = queue_.size(); !queue_.empty(); --i) {
 		TimerAction ta(queue_.top());
-		const DiffTime dt(ta.first.expiration() - Time::now());
+		const DiffTime dt(ta.first.expiration() - nowFunc_());
 
 		if (!dt.positive() && (i >= 0)) {
 			queue_.pop();

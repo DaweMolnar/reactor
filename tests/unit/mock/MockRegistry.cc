@@ -14,14 +14,20 @@ void
 MockRegistry::add(Mocked *mocked)
 {
 	MockRegistry &mr = getInstance();
-	mr.mockeds_.insert(std::make_pair(mocked->name(), mocked));
+	bool success = mr.mockeds_.insert(std::make_pair(mocked->name(), mocked)).second;
+	if (!success) {
+		throw MockException(mocked->name(), "duplicate mock");
+	}
 }
 
 void
 MockRegistry::remove(const Mocked *mocked)
 {
 	MockRegistry &mr = getInstance();
-	mr.mockeds_.erase(mocked->name());
+	size_t count = mr.mockeds_.erase(mocked->name());
+	if (count != 1) {
+		throw MockException(mocked->name(), "failed to unregister");
+	}
 }
 
 Mocked &

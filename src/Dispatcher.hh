@@ -20,9 +20,9 @@ class Dispatcher : public Noncopyable {
 	Demuxer *demuxer_;
 
 public:
-	Dispatcher(Demuxer *demuxer = 0)
-	: timers_(guard_)
-	, lazyTimers_(guard_)
+	Dispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = Time::now)
+	: timers_(guard_, nowFunc)
+	, lazyTimers_(guard_, nowFunc)
 	, quit_(false)
 	, defaultDemuxer_(demuxer ? 0 : new DefaultDemuxer())
 	, demuxer_(demuxer ? demuxer : defaultDemuxer_.get())
