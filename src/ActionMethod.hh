@@ -3,31 +3,27 @@
 
 #include "Action.hh"
 
-template <class T>
+template <class T, class M = void (T::*)()>
 class ActionMethod : public Action {
-public:
-	typedef void (T::*Method)();
-
-private:
 	T &object_;
-	Method method_;
+	M method_;
 
 public:
-	ActionMethod(T &object, Method method)
+	ActionMethod(T &object, M method)
 	: object_(object)
 	, method_(method)
 	{}
 
-	virtual Action *clone() const { return new ActionMethod<T>(*this); }
+	virtual Action *clone() const { return new ActionMethod<T, M>(*this); }
 
 	virtual void perform() { (object_.*method_)(); }
 };
 
-template <class T>
-ActionMethod<T>
-genActionMethod(T &object, void (T::*method)())
+template <class T, class M>
+ActionMethod<T, M>
+genActionMethod(T &object, M method)
 {
-	return ActionMethod<T>(object, method);
+	return ActionMethod<T, M>(object, method);
 }
 
 #endif // REACTOR_ACTIONMETHOD_HEADER

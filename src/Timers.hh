@@ -12,11 +12,19 @@ public:
 	typedef Time (*NowFunc)();
 
 private:
-	typedef std::pair<Timer, Action *> TimerAction;
+	struct TimerAction {
+		Timer timer;
+		Action *action;
+
+		TimerAction(const Timer &timer0, Action *action0)
+		: timer(timer0)
+		, action(action0)
+		{}
+	};
 
 	class TimerActionComparator : public std::less<TimerAction> {
 	public:
-		bool operator() (const TimerAction &a, const TimerAction &b) const { return !(a.first < b.first); }
+		bool operator() (const TimerAction &a, const TimerAction &b) const { return !(a.timer < b.timer); }
 	};
 	typedef std::priority_queue<TimerAction, std::vector<TimerAction>, TimerActionComparator> Queue;
 
