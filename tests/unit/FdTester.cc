@@ -14,6 +14,7 @@ class FdTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST(testConstruction);
 	CPPUNIT_TEST(testRead);
 	CPPUNIT_TEST(testWrite);
+	CPPUNIT_TEST(testClose);
 	CPPUNIT_TEST(testGetBlocking);
 	CPPUNIT_TEST(testSetBlockingThrows);
 	CPPUNIT_TEST(testSetBlockingNoChange);
@@ -51,6 +52,16 @@ public:
 		CPPUNIT_ASSERT_THROW(fd.write(buf, sizeof(buf)), ErrnoException);
 		write->expectf("%d%p%d%d", 78, (void *)buf, (int)sizeof(buf), (int)sizeof(buf));
 		CPPUNIT_ASSERT_EQUAL(sizeof(buf), fd.write(buf, sizeof(buf)));
+	}
+
+	void
+	testClose()
+	{
+		MOCK_FUNCTION_DEFAULT(close);
+		Fd fd(420);
+
+		close->expect(420);
+		fd.close();
 	}
 
 	void

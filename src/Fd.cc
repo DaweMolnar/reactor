@@ -33,6 +33,12 @@ const
 	return (size_t)ret;
 }
 
+void
+Fd::close()
+{
+	::close(fd_);
+}
+
 bool
 Fd::blocking()
 const

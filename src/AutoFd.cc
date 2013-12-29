@@ -1,7 +1,5 @@
 #include "AutoFd.hh"
 
-#include <unistd.h>
-
 AutoFd::~AutoFd()
 {
 	closeIfValid();
@@ -11,7 +9,7 @@ void
 AutoFd::closeIfValid()
 {
 	if (valid()) {
-		close(fd_);
+		close();
 	}
 }
 

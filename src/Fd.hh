@@ -25,6 +25,8 @@ public:
 	size_t read(void *buffer, size_t size) const;
 	size_t write(const void *buffer, size_t length) const;
 
+	void close();
+
 	bool blocking() const;
 	void blocking(bool block);
 };
