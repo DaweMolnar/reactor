@@ -1,11 +1,9 @@
 #ifndef REACTOR_FD_HEADER
 #define REACTOR_FD_HEADER
 
-#include "Noncopyable.hh"
-
 #include <cstddef>
 
-class Fd : public Noncopyable {
+class Fd {
 protected:
 	int fd_;
 

@@ -2,8 +2,9 @@
 #define REACTOR_AUTO_FD_HEADER
 
 #include "Fd.hh"
+#include "Noncopyable.hh"
 
-class AutoFd : public Fd {
+class AutoFd : public Fd, public Noncopyable {
 	void closeIfValid();
 
 public:
