@@ -16,8 +16,8 @@ PollDemuxer::add(const Fd &fd)
 	}
 }
 
-void
-PollDemuxer::demux(const DiffTime *interval, Fds &fds)
+PollDemuxer::Fds
+PollDemuxer::demux(const DiffTime *interval)
 {
 	int ms = interval ? interval->ms() : -1;
 	int ret = poll(&fds_[0], fds_.size(), ms);
@@ -25,12 +25,15 @@ PollDemuxer::demux(const DiffTime *interval, Fds &fds)
 	if (ret < 0) {
 		throw ErrnoException("poll");
 	} else {
-		fds.clear();
+		Fds result;
+
 		for (size_t i = 0; i < fds_.size(); ++i) {
 			if (fds_[i].revents) {
-				fds.push_back(fds_[i].fd);
+				result.push_back(fds_[i].fd);
 			}
 		}
+
+		return result;
 	}
 }
 

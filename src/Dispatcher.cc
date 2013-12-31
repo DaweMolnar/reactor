@@ -28,9 +28,7 @@ Dispatcher::step()
 {
 	DiffTime remaining;
 	bool isTickingTimer = timers_.fireAllButUnexpired(&remaining);
-	Demuxer::Fds fds;
-
-	demuxer_->demux(isTickingTimer ? &remaining : 0, fds);
+	Demuxer::Fds fds = demuxer_->demux(isTickingTimer ? &remaining : 0);
 	for (Demuxer::Fds::const_iterator i(fds.begin()); i != fds.end(); ++i) {
 		FdHandlers::iterator j(fdHandlers_.find(*i));
 		if (j == fdHandlers_.end()) {

@@ -11,7 +11,7 @@
 class MyDemuxer : public Demuxer {
 public:
 	virtual void add(const Fd &fd);
-	virtual void demux(const DiffTime *interval, Fds &fds);
+	virtual Fds demux(const DiffTime *interval);
 };
 
 void
@@ -20,17 +20,19 @@ MyDemuxer::add(const Fd &fd)
 	(void)fd;
 }
 
-void
-MyDemuxer::demux(const DiffTime *interval, Fds &fds)
+MyDemuxer::Fds
+MyDemuxer::demux(const DiffTime *interval)
 {
+	Fds result;
 	Mocked &m = MockRegistry::find("demux");
 
 	(void)interval;
 
-	fds.clear();
 	for (int i = m.expectedInt(); i; --i) {
-		fds.push_back(m.expectedInt());
+		result.push_back(m.expectedInt());
 	}
+
+	return result;
 }
 
 class DispatcherTester : public CppUnit::TestFixture {
