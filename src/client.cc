@@ -11,7 +11,7 @@ public:
 
 	void onFdStdin(const FdEvent &);
 	void onFdSock(const FdEvent &);
-	void onTimer();
+	void onTimer(const TimerEvent &);
 	int run() { return dispatcher_.run(); }
 };
 
@@ -29,10 +29,10 @@ Control::Control(int argc, char *argv[])
 }
 
 void
-Control::onFdStdin(const FdEvent &fdEvent)
+Control::onFdStdin(const FdEvent &event)
 {
 	char buf[128];
-	size_t rd = fdEvent.fd.read(buf, sizeof(buf));
+	size_t rd = event.fd.read(buf, sizeof(buf));
 
 	if (!rd) {
 		dispatcher_.quit();
@@ -46,10 +46,10 @@ Control::onFdStdin(const FdEvent &fdEvent)
 }
 
 void
-Control::onFdSock(const FdEvent &fdEvent)
+Control::onFdSock(const FdEvent &event)
 {
 	char buf[128];
-	size_t rd = fdEvent.fd.read(buf, sizeof(buf));
+	size_t rd = event.fd.read(buf, sizeof(buf));
 
 	if (!rd) {
 		dispatcher_.quit();
@@ -63,7 +63,7 @@ Control::onFdSock(const FdEvent &fdEvent)
 }
 
 void
-Control::onTimer()
+Control::onTimer(const TimerEvent &)
 {
 	Fd::STDERR.write("timer\n", 6);
 }

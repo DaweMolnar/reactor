@@ -44,7 +44,7 @@ class DispatcherTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE_END();
 
 	const MethodCommand1<void, DispatcherTester, const FdEvent &> fdMethodCommand_;
-	const MethodCommand0<void, DispatcherTester> timerMethodCommand_;
+	const MethodCommand1<void, DispatcherTester, const TimerEvent &> timerMethodCommand_;
 	MyDemuxer *dmx_;
 	Dispatcher *disp_;
 	size_t fdCommandCount_;
@@ -53,7 +53,7 @@ class DispatcherTester : public CppUnit::TestFixture {
 public:
 	DispatcherTester()
 	: fdMethodCommand_(MethodCommand1<void, DispatcherTester, const FdEvent &>(*this, &DispatcherTester::fdCommand))
-	, timerMethodCommand_(MethodCommand0<void, DispatcherTester>(*this, &DispatcherTester::timerCommand))
+	, timerMethodCommand_(MethodCommand1<void, DispatcherTester, const TimerEvent &>(*this, &DispatcherTester::timerCommand))
 	{}
 
 	void
@@ -80,7 +80,7 @@ public:
 	}
 
 	void
-	timerCommand()
+	timerCommand(const TimerEvent &)
 	{
 		++timerCommandCount_;
 		disp_->quit();

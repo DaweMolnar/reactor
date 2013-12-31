@@ -30,13 +30,13 @@ public:
 	}
 
 	void
-	action1()
+	action1(const TimerEvent &)
 	{
 		++actionCount1_;
 	}
 
 	void
-	action2()
+	action2(const TimerEvent &)
 	{
 		++actionCount2_;
 	}

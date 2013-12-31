@@ -23,7 +23,7 @@ Timers::fireAllButUnexpired(DiffTime *remaining)
 
 		if (!dt.positive() && (i >= 0)) {
 			queue_.pop();
-			tac.command->execute();
+			tac.command->execute(tac.timer);
 			tac.timer.fire();
 			if (tac.timer.hasRemainingIterations()) {
 				queue_.push(tac);
