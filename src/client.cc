@@ -24,8 +24,8 @@ Control::Control(int argc, char *argv[])
 	client_.setTarget(Host(argv[1]), Service(argv[2]));
 	client_.connect();
 
-	dispatcher_.add(Fd::STDIN, genActionMethod(*this, &Control::onFdStdin));
-	dispatcher_.add(client_.fd(), genActionMethod(*this, &Control::onFdSock));
+	dispatcher_.add(Fd::STDIN, commandForMethod(*this, &Control::onFdStdin));
+	dispatcher_.add(client_.fd(), commandForMethod(*this, &Control::onFdSock));
 	dispatcher_.add(LazyTimer(DiffTime::ms(1000), 3), genActionMethod(*this, &Control::onTimer));
 }
 

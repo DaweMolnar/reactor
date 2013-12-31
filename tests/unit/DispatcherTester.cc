@@ -45,6 +45,7 @@ class DispatcherTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE_END();
 
 	const ActionMethod<DispatcherTester> actionMethod_;
+	const MethodCommand0<void, DispatcherTester> methodCommand_;
 	MyDemuxer *dmx_;
 	Dispatcher *disp_;
 	size_t actionCount_;
@@ -52,6 +53,7 @@ class DispatcherTester : public CppUnit::TestFixture {
 public:
 	DispatcherTester()
 	: actionMethod_(ActionMethod<DispatcherTester>(*this, &DispatcherTester::action))
+	, methodCommand_(MethodCommand0<void, DispatcherTester>(*this, &DispatcherTester::action))
 	{}
 
 	void
@@ -82,7 +84,7 @@ public:
 		Mocked demux("demux");
 		Fd fd(42);
 
-		disp_->add(fd, actionMethod_);
+		disp_->add(fd, methodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		disp_->step();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, actionCount_);
@@ -94,7 +96,7 @@ public:
 		Mocked demux("demux");
 		Fd fd(43);
 
-		disp_->add(fd, actionMethod_);
+		disp_->add(fd, methodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		CPPUNIT_ASSERT_THROW(disp_->step(), std::runtime_error);
 	}
@@ -105,7 +107,7 @@ public:
 		Mocked demux("demux");
 		Fd fd(42);
 
-		disp_->add(fd, actionMethod_);
+		disp_->add(fd, methodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		CPPUNIT_ASSERT_NO_THROW(disp_->run());
 	}
@@ -140,7 +142,7 @@ public:
 		Fd fd(42);
 		LazyTimer lt(DiffTime::raw(2), 0, Time::raw(0));
 
-		disp_->add(fd, actionMethod_);
+		disp_->add(fd, methodCommand_);
 		disp_->add(lt, actionMethod_);
 		demux.expectf("%d%d", 1, 42);
 		now.expect(2);
