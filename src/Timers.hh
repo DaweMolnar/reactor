@@ -2,8 +2,8 @@
 #define REACTOR_TIMERS_HEADER
 
 #include "Noncopyable.hh"
-#include "ActionsGuard.hh"
 #include "LazyTimer.hh"
+#include "TimerCommand.hh"
 
 #include <queue>
 
@@ -12,33 +12,33 @@ public:
 	typedef Time (*NowFunc)();
 
 private:
-	struct TimerAction {
+	struct TimerAndCommand {
 		Timer timer;
-		Action *action;
+		TimerCommand *command;
 
-		TimerAction(const Timer &timer0, Action *action0)
+		TimerAndCommand(const Timer &timer0, TimerCommand *command0)
 		: timer(timer0)
-		, action(action0)
+		, command(command0)
 		{}
 	};
 
-	class TimerActionComparator : public std::less<TimerAction> {
+	class TimerAndCommandComparator : public std::less<TimerAndCommand> {
 	public:
-		bool operator() (const TimerAction &a, const TimerAction &b) const { return !(a.timer < b.timer); }
+		bool operator() (const TimerAndCommand &a, const TimerAndCommand &b) const { return !(a.timer < b.timer); }
 	};
-	typedef std::priority_queue<TimerAction, std::vector<TimerAction>, TimerActionComparator> Queue;
+	typedef std::priority_queue<TimerAndCommand, std::vector<TimerAndCommand>, TimerAndCommandComparator> Queue;
 
 	Queue queue_;
-	ActionsGuard &guard_;
 	NowFunc nowFunc_;
 
 public:
-	Timers(ActionsGuard &guard, const NowFunc &nowFunc = Time::now)
-	: guard_(guard)
-	, nowFunc_(nowFunc)
+	Timers(const NowFunc &nowFunc = Time::now)
+	: nowFunc_(nowFunc)
 	{}
 
-	void add(const Timer &timer, const Action &action);
+	~Timers();
+
+	void add(const Timer &timer, const TimerCommand &timerCommand);
 	bool fireAllButUnexpired(DiffTime *remaining = 0);
 };
 

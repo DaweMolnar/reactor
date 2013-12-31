@@ -11,22 +11,22 @@ Dispatcher::~Dispatcher()
 }
 
 void
-Dispatcher::add(const Fd &fd, const FdCommand &fdCommand)
+Dispatcher::add(const Fd &fd, const FdCommand &command)
 {
 	demuxer_->add(fd);
-	fdCommands_.insert(std::make_pair(fd.get(), fdCommand.clone()));
+	fdCommands_.insert(std::make_pair(fd.get(), command.clone()));
 }
 
 void
-Dispatcher::add(const Timer &timer, const Action &action)
+Dispatcher::add(const Timer &timer, const TimerCommand &command)
 {
-	timers_.add(timer, action);
+	timers_.add(timer, command);
 }
 
 void
-Dispatcher::add(const LazyTimer &lazyTimer, const Action &action)
+Dispatcher::add(const LazyTimer &lazyTimer, const TimerCommand &command)
 {
-	lazyTimers_.add(lazyTimer, action);
+	lazyTimers_.add(lazyTimer, command);
 }
 
 void

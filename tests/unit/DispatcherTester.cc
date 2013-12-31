@@ -1,5 +1,4 @@
 #include <src/Dispatcher.hh>
-#include <src/ActionMethod.hh>
 
 #include <tests/unit/mock/Mocked.hh>
 #include <tests/unit/mock/MockRegistry.hh>
@@ -44,7 +43,6 @@ class DispatcherTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST(testLazyTimerAction);
 	CPPUNIT_TEST_SUITE_END();
 
-	const ActionMethod<DispatcherTester> actionMethod_;
 	const MethodCommand0<void, DispatcherTester> methodCommand_;
 	MyDemuxer *dmx_;
 	Dispatcher *disp_;
@@ -52,8 +50,7 @@ class DispatcherTester : public CppUnit::TestFixture {
 
 public:
 	DispatcherTester()
-	: actionMethod_(ActionMethod<DispatcherTester>(*this, &DispatcherTester::action))
-	, methodCommand_(MethodCommand0<void, DispatcherTester>(*this, &DispatcherTester::action))
+	: methodCommand_(MethodCommand0<void, DispatcherTester>(*this, &DispatcherTester::action))
 	{}
 
 	void
@@ -126,7 +123,7 @@ public:
 		Mocked now("now");
 		Timer t(DiffTime::raw(2), 0, Time::raw(0));
 
-		disp_->add(t, actionMethod_);
+		disp_->add(t, methodCommand_);
 		demux.expect(0);
 		now.expect(2);
 		now.expect(2);
@@ -143,7 +140,7 @@ public:
 		LazyTimer lt(DiffTime::raw(2), 0, Time::raw(0));
 
 		disp_->add(fd, methodCommand_);
-		disp_->add(lt, actionMethod_);
+		disp_->add(lt, methodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		now.expect(2);
 		now.expect(2);

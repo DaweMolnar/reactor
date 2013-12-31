@@ -18,7 +18,6 @@ client_TESTABLE_SOURCES := \
 	src/DiffTime.cc \
 	src/Time.cc \
 	src/Timer.cc \
-	src/ActionsGuard.cc \
 	src/Timers.cc \
 	src/PollDemuxer.cc \
 	src/Dispatcher.cc \
@@ -40,7 +39,6 @@ testUnits_SOURCES := \
 	tests/unit/DiffTimeTester.cc \
 	tests/unit/TimeTester.cc \
 	tests/unit/SpecifierTester.cc \
-	tests/unit/ActionsGuardTester.cc \
 	tests/unit/TimerTester.cc \
 	tests/unit/TimersTester.cc \
 	tests/unit/AutoFdTester.cc \

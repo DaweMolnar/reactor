@@ -1,5 +1,4 @@
 #include <src/Timers.hh>
-#include <src/ActionMethod.hh>
 
 #include <tests/unit/mock/Mocked.hh>
 #include <tests/unit/mock/MockRegistry.hh>
@@ -27,8 +26,7 @@ public:
 	void
 	testConstruction()
 	{
-		ActionsGuard ag;
-		Timers t(ag);
+		Timers t;
 	}
 
 	void
@@ -46,11 +44,10 @@ public:
 	void
 	testAddTimerActions()
 	{
-		ActionsGuard ag;
-		Timers t(ag);
+		Timers t;
 
-		t.add(Timer(DiffTime::raw(2), 0, Time::raw(0)), genActionMethod(*this, &TimersTester::action1));
-		t.add(Timer(DiffTime::raw(3), 0, Time::raw(0)), genActionMethod(*this, &TimersTester::action2));
+		t.add(Timer(DiffTime::raw(2), 0, Time::raw(0)), commandForMethod(*this, &TimersTester::action1));
+		t.add(Timer(DiffTime::raw(3), 0, Time::raw(0)), commandForMethod(*this, &TimersTester::action2));
 	}
 
 	static Time
@@ -64,12 +61,11 @@ public:
 	testFireAllButUnexpired()
 	{
 		Mocked now("now");
-		ActionsGuard ag;
-		Timers t(ag, &TimersTester::now);
+		Timers t(&TimersTester::now);
 		DiffTime dt;
 
-		t.add(Timer(DiffTime::raw(2), 2, Time::raw(0)), genActionMethod(*this, &TimersTester::action1));
-		t.add(Timer(DiffTime::raw(3), 1, Time::raw(0)), genActionMethod(*this, &TimersTester::action2));
+		t.add(Timer(DiffTime::raw(2), 2, Time::raw(0)), commandForMethod(*this, &TimersTester::action1));
+		t.add(Timer(DiffTime::raw(3), 1, Time::raw(0)), commandForMethod(*this, &TimersTester::action2));
 
 		actionCount1_ = actionCount2_ = 0;
 		now.expect(0);
