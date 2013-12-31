@@ -9,8 +9,8 @@ class Control {
 public:
 	Control(int argc, char *argv[]);
 
-	void onFdStdin();
-	void onFdSock();
+	void onFdStdin(const FdEvent &);
+	void onFdSock(const FdEvent &);
 	void onTimer();
 	int run() { return dispatcher_.run(); }
 };
@@ -29,10 +29,10 @@ Control::Control(int argc, char *argv[])
 }
 
 void
-Control::onFdStdin()
+Control::onFdStdin(const FdEvent &fdEvent)
 {
 	char buf[128];
-	size_t rd = Fd::STDIN.read(buf, sizeof(buf));
+	size_t rd = fdEvent.fd.read(buf, sizeof(buf));
 
 	if (!rd) {
 		dispatcher_.quit();
@@ -46,10 +46,10 @@ Control::onFdStdin()
 }
 
 void
-Control::onFdSock()
+Control::onFdSock(const FdEvent &fdEvent)
 {
 	char buf[128];
-	size_t rd = client_.fd().read(buf, sizeof(buf));
+	size_t rd = fdEvent.fd.read(buf, sizeof(buf));
 
 	if (!rd) {
 		dispatcher_.quit();

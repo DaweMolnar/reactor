@@ -40,7 +40,7 @@ Dispatcher::step()
 		if (j == fdCommands_.end()) {
 			throw std::runtime_error("invalid fd");
 		} else {
-			j->second->execute();
+			j->second->execute(*i);
 		}
 	}
 	lazyTimers_.fireAllButUnexpired();

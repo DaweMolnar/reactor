@@ -43,14 +43,17 @@ class DispatcherTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST(testLazyTimerAction);
 	CPPUNIT_TEST_SUITE_END();
 
-	const MethodCommand0<void, DispatcherTester> methodCommand_;
+	const MethodCommand1<void, DispatcherTester, const FdEvent &> fdMethodCommand_;
+	const MethodCommand0<void, DispatcherTester> timerMethodCommand_;
 	MyDemuxer *dmx_;
 	Dispatcher *disp_;
-	size_t actionCount_;
+	size_t fdCommandCount_;
+	size_t timerCommandCount_;
 
 public:
 	DispatcherTester()
-	: methodCommand_(MethodCommand0<void, DispatcherTester>(*this, &DispatcherTester::action))
+	: fdMethodCommand_(MethodCommand1<void, DispatcherTester, const FdEvent &>(*this, &DispatcherTester::fdCommand))
+	, timerMethodCommand_(MethodCommand0<void, DispatcherTester>(*this, &DispatcherTester::timerCommand))
 	{}
 
 	void
@@ -58,7 +61,8 @@ public:
 	{
 		dmx_ = new MyDemuxer();
 		disp_ = new Dispatcher(dmx_, &DispatcherTester::now);
-		actionCount_ = 0;
+		fdCommandCount_ = 0;
+		timerCommandCount_ = 0;
 	}
 
 	void
@@ -69,9 +73,16 @@ public:
 	}
 
 	void
-	action()
+	fdCommand(const FdEvent &)
 	{
-		++actionCount_;
+		++fdCommandCount_;
+		disp_->quit();
+	}
+
+	void
+	timerCommand()
+	{
+		++timerCommandCount_;
 		disp_->quit();
 	}
 
@@ -81,10 +92,10 @@ public:
 		Mocked demux("demux");
 		Fd fd(42);
 
-		disp_->add(fd, methodCommand_);
+		disp_->add(fd, fdMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		disp_->step();
-		CPPUNIT_ASSERT_EQUAL((size_t)1, actionCount_);
+		CPPUNIT_ASSERT_EQUAL((size_t)1, fdCommandCount_);
 	}
 
 	void
@@ -93,7 +104,7 @@ public:
 		Mocked demux("demux");
 		Fd fd(43);
 
-		disp_->add(fd, methodCommand_);
+		disp_->add(fd, fdMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		CPPUNIT_ASSERT_THROW(disp_->step(), std::runtime_error);
 	}
@@ -104,7 +115,7 @@ public:
 		Mocked demux("demux");
 		Fd fd(42);
 
-		disp_->add(fd, methodCommand_);
+		disp_->add(fd, fdMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		CPPUNIT_ASSERT_NO_THROW(disp_->run());
 	}
@@ -123,12 +134,12 @@ public:
 		Mocked now("now");
 		Timer t(DiffTime::raw(2), 0, Time::raw(0));
 
-		disp_->add(t, methodCommand_);
+		disp_->add(t, timerMethodCommand_);
 		demux.expect(0);
 		now.expect(2);
 		now.expect(2);
 		CPPUNIT_ASSERT_NO_THROW(disp_->run());
-		CPPUNIT_ASSERT_EQUAL((size_t)1, actionCount_);
+		CPPUNIT_ASSERT_EQUAL((size_t)1, timerCommandCount_);
 	}
 
 	void
@@ -139,13 +150,14 @@ public:
 		Fd fd(42);
 		LazyTimer lt(DiffTime::raw(2), 0, Time::raw(0));
 
-		disp_->add(fd, methodCommand_);
-		disp_->add(lt, methodCommand_);
+		disp_->add(fd, fdMethodCommand_);
+		disp_->add(lt, timerMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		now.expect(2);
 		now.expect(2);
 		disp_->step();
-		CPPUNIT_ASSERT_EQUAL((size_t)2, actionCount_);
+		CPPUNIT_ASSERT_EQUAL((size_t)1, fdCommandCount_);
+		CPPUNIT_ASSERT_EQUAL((size_t)1, timerCommandCount_);
 	}
 };
 
