@@ -34,9 +34,9 @@ Dispatcher::step()
 {
 	DiffTime remaining;
 	bool isTickingTimer = timers_.fireAllButUnexpired(&remaining);
-	Demuxer::Fds fds = demuxer_->demux(isTickingTimer ? &remaining : 0);
-	for (Demuxer::Fds::const_iterator i(fds.begin()); i != fds.end(); ++i) {
-		FdCommands::iterator j(fdCommands_.find(*i));
+	Demuxer::FdEvents fdEvs = demuxer_->demux(isTickingTimer ? &remaining : 0);
+	for (Demuxer::FdEvents::const_iterator i(fdEvs.begin()); i != fdEvs.end(); ++i) {
+		FdCommands::iterator j(fdCommands_.find(i->fd.get()));
 		if (j == fdCommands_.end()) {
 			throw std::runtime_error("invalid fd");
 		} else {

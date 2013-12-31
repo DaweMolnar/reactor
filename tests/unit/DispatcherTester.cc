@@ -10,7 +10,7 @@
 class MyDemuxer : public Demuxer {
 public:
 	virtual void add(const Fd &fd);
-	virtual Fds demux(const DiffTime *interval);
+	virtual FdEvents demux(const DiffTime *interval);
 };
 
 void
@@ -19,16 +19,16 @@ MyDemuxer::add(const Fd &fd)
 	(void)fd;
 }
 
-MyDemuxer::Fds
+MyDemuxer::FdEvents
 MyDemuxer::demux(const DiffTime *interval)
 {
-	Fds result;
+	FdEvents result;
 	Mocked &m = MockRegistry::find("demux");
 
 	(void)interval;
 
 	for (int i = m.expectedInt(); i; --i) {
-		result.push_back(m.expectedInt());
+		result.push_back(FdEvent(Fd(m.expectedInt()), FdEvent::READ));
 	}
 
 	return result;
