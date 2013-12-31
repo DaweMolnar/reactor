@@ -17,7 +17,7 @@ PollDemuxer::add(const Fd &fd)
 }
 
 void
-PollDemuxer::demux(const DiffTime *interval, std::vector<int> &fds)
+PollDemuxer::demux(const DiffTime *interval, Fds &fds)
 {
 	int ms = interval ? interval->ms() : -1;
 	int ret = poll(&fds_[0], fds_.size(), ms);

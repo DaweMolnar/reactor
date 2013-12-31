@@ -10,7 +10,7 @@ class PollDemuxer : public Demuxer {
 
 public:
 	virtual void add(const Fd &fd);
-	virtual void demux(const DiffTime *interval, std::vector<int> &fds);
+	virtual void demux(const DiffTime *interval, Fds &fds);
 };
 
 #endif // REACTOR_POLLDEMUXER_HEADER

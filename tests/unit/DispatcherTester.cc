@@ -11,7 +11,7 @@
 class MyDemuxer : public Demuxer {
 public:
 	virtual void add(const Fd &fd);
-	virtual void demux(const DiffTime *interval, std::vector<int> &fds);
+	virtual void demux(const DiffTime *interval, Fds &fds);
 };
 
 void
@@ -21,7 +21,7 @@ MyDemuxer::add(const Fd &fd)
 }
 
 void
-MyDemuxer::demux(const DiffTime *interval, std::vector<int> &fds)
+MyDemuxer::demux(const DiffTime *interval, Fds &fds)
 {
 	Mocked &m = MockRegistry::find("demux");
 
