@@ -5,11 +5,11 @@
 #include "Fd.hh"
 #include "DiffTime.hh"
 
-#include <vector>
+#include <list>
 
 class Demuxer : public Noncopyable {
 public:
-	typedef std::vector<int> Fds;
+	typedef std::list<int> Fds;
 
 	virtual ~Demuxer() {}
 

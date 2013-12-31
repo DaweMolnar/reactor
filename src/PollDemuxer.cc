@@ -25,14 +25,10 @@ PollDemuxer::demux(const DiffTime *interval, Fds &fds)
 	if (ret < 0) {
 		throw ErrnoException("poll");
 	} else {
-		fds.resize(ret);
-		if (ret > 0) {
-			size_t k = 0;
-
-			for (size_t i = 0; i < fds_.size(); ++i) {
-				if (fds_[i].revents) {
-					fds[k++] = fds_[i].fd;
-				}
+		fds.clear();
+		for (size_t i = 0; i < fds_.size(); ++i) {
+			if (fds_[i].revents) {
+				fds.push_back(fds_[i].fd);
 			}
 		}
 	}

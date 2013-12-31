@@ -28,11 +28,11 @@ Dispatcher::step()
 {
 	DiffTime remaining;
 	bool isTickingTimer = timers_.fireAllButUnexpired(&remaining);
-	std::vector<int> fds;
+	Demuxer::Fds fds;
 
 	demuxer_->demux(isTickingTimer ? &remaining : 0, fds);
-	for (size_t i = 0; i < fds.size(); ++i) {
-		FdHandlers::iterator j(fdHandlers_.find(fds[i]));
+	for (Demuxer::Fds::const_iterator i(fds.begin()); i != fds.end(); ++i) {
+		FdHandlers::iterator j(fdHandlers_.find(*i));
 		if (j == fdHandlers_.end()) {
 			throw std::runtime_error("invalid fd");
 		} else {

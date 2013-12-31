@@ -4,6 +4,7 @@
 #include "Demuxer.hh"
 
 #include <poll.h>
+#include <vector>
 
 class PollDemuxer : public Demuxer {
 	std::vector<struct pollfd> fds_;
