@@ -21,6 +21,7 @@ client_TESTABLE_SOURCES := \
 	src/Timers.cc \
 	src/PollDemuxer.cc \
 	src/Dispatcher.cc \
+	src/Backlog.cc \
 	src/Client.cc
 
 client_SOURCES := \

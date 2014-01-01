@@ -1,0 +1,29 @@
+#ifndef REACTOR_BACKLOG_HEADER
+#define REACTOR_BACKLOG_HEADER
+
+#include "BoundCommand.hh"
+
+#include <queue>
+#include <cstddef>
+
+class Backlog {
+public:
+	typedef Command0<void> Job;
+
+private:
+	typedef std::queue<Job *> Queue;
+
+	Queue queue_;
+
+public:
+	~Backlog();
+
+	void push(const Job &job);
+	void executeFront();
+	void executeAll();
+
+	bool empty() const;
+	size_t size() const;
+};
+
+#endif // REACTOR_BACKLOG_HEADER

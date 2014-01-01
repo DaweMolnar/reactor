@@ -32,18 +32,27 @@ Dispatcher::add(const LazyTimer &lazyTimer, const TimerCommand &command)
 void
 Dispatcher::step()
 {
-	DiffTime remaining;
-	bool isTickingTimer = timers_.fireAllButUnexpired(&remaining);
-	Demuxer::FdEvents fdEvs = demuxer_->demux(isTickingTimer ? &remaining : 0);
+	std::auto_ptr<DiffTime> remaining;
+
+	if (timers_.isTicking()) {
+		remaining.reset(new DiffTime(timers_.remainingTime()));
+	}
+
+	Demuxer::FdEvents fdEvs = demuxer_->demux(remaining.get());
 	for (Demuxer::FdEvents::const_iterator i(fdEvs.begin()); i != fdEvs.end(); ++i) {
 		FdCommands::iterator j(fdCommands_.find(i->fd.get()));
 		if (j == fdCommands_.end()) {
 			throw std::runtime_error("invalid fd");
 		} else {
-			j->second->execute(*i);
+			backlog_.push(bindCommand(*j->second, *i));
 		}
 	}
-	lazyTimers_.fireAllButUnexpired();
+	timers_.fireAllExpired();
+	lazyTimers_.fireAllExpired();
+
+	while (!backlog_.empty()) {
+		backlog_.executeFront();
+	}
 }
 
 int

@@ -25,7 +25,7 @@ Control::Control(int argc, char *argv[])
 
 	dispatcher_.add(Fd::STDIN, commandForMethod(*this, &Control::onFdStdin));
 	dispatcher_.add(client_.fd(), commandForMethod(*this, &Control::onFdSock));
-	dispatcher_.add(LazyTimer(DiffTime::ms(1000), 3), commandForMethod(*this, &Control::onTimer));
+	dispatcher_.add(Timer(DiffTime::ms(1000), 3), commandForMethod(*this, &Control::onTimer));
 }
 
 void

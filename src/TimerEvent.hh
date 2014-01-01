@@ -6,7 +6,7 @@
 struct TimerEvent {
 	Timer timer;
 
-	TimerEvent(const Timer &timer0)
+	explicit TimerEvent(const Timer &timer0)
 	: timer(timer0)
 	{}
 };

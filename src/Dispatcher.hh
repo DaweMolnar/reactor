@@ -5,6 +5,7 @@
 #include "Timers.hh"
 #include "DefaultDemuxer.hh"
 #include "FdCommand.hh"
+#include "Backlog.hh"
 
 #include <map>
 #include <memory> // auto_ptr
@@ -13,6 +14,7 @@ class Dispatcher : public Noncopyable {
 	typedef std::map<int, FdCommand *> FdCommands; // XXX: map<Fd, FdCommand *>
 
 	FdCommands fdCommands_;
+	Backlog backlog_;
 	Timers timers_, lazyTimers_;
 	bool quit_;
 	std::auto_ptr<DefaultDemuxer> defaultDemuxer_;
@@ -20,8 +22,8 @@ class Dispatcher : public Noncopyable {
 
 public:
 	Dispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = Time::now)
-	: timers_(nowFunc)
-	, lazyTimers_(nowFunc)
+	: timers_(backlog_, nowFunc)
+	, lazyTimers_(backlog_, nowFunc)
 	, quit_(false)
 	, defaultDemuxer_(demuxer ? 0 : new DefaultDemuxer())
 	, demuxer_(demuxer ? demuxer : defaultDemuxer_.get())

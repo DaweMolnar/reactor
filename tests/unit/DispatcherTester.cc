@@ -154,7 +154,6 @@ public:
 		disp_->add(lt, timerMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		now.expect(2);
-		now.expect(2);
 		disp_->step();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, fdCommandCount_);
 		CPPUNIT_ASSERT_EQUAL((size_t)1, timerCommandCount_);

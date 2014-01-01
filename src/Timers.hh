@@ -4,6 +4,7 @@
 #include "Noncopyable.hh"
 #include "LazyTimer.hh"
 #include "TimerCommand.hh"
+#include "Backlog.hh"
 
 #include <queue>
 
@@ -29,17 +30,21 @@ private:
 	typedef std::priority_queue<TimerAndCommand, std::vector<TimerAndCommand>, TimerAndCommandComparator> Queue;
 
 	Queue queue_;
+	Backlog &backlog_;
 	NowFunc nowFunc_;
 
 public:
-	Timers(const NowFunc &nowFunc = Time::now)
-	: nowFunc_(nowFunc)
+	Timers(Backlog &backlog, const NowFunc &nowFunc = Time::now)
+	: backlog_(backlog)
+	, nowFunc_(nowFunc)
 	{}
 
 	~Timers();
 
 	void add(const Timer &timer, const TimerCommand &timerCommand);
-	bool fireAllButUnexpired(DiffTime *remaining = 0);
+	void fireAllExpired();
+	bool isTicking() const;
+	DiffTime remainingTime() const;
 };
 
 #endif // REACTOR_TIMERS_HEADER
