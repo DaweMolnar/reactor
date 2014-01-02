@@ -46,7 +46,7 @@ class BoundCommand1 : public BoundCommand<R> {
 	BoundCommand1 &operator=(const BoundCommand1 &);
 
 public:
-	BoundCommand1(const C &c, P1 p1)
+	BoundCommand1(const C &c, const P1 &p1)
 	: c_(c.clone())
 	, own_(true)
 	, p1_(p1)
@@ -73,21 +73,21 @@ public:
 
 template <typename R>
 BoundCommand0<R>
-bindCommand(Command0<R> &c)
+bindCommand(const Command0<R> &c)
 {
 	return BoundCommand0<R>(c);
 }
 
 template <typename R, typename P1>
 BoundCommand1<R, P1>
-bindCommand(Command1<R, P1> &c, P1 p1)
+bindCommand(const Command1<R, P1> &c, const P1 &p1)
 {
 	return BoundCommand1<R, P1>(c, p1);
 }
 
 template <typename R, typename P1>
 BoundCommand1<R, P1, Command1<R, const P1 &> >
-bindCommand(Command1<R, const P1 &> &c, P1 p1)
+bindCommand(const Command1<R, const P1 &> &c, const P1 &p1)
 {
 	return BoundCommand1<R, P1, Command1<R, const P1 &> >(c, p1);
 }
