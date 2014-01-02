@@ -30,7 +30,7 @@ Dispatcher::add(const LazyTimer &lazyTimer, const TimerCommand &command)
 }
 
 void
-Dispatcher::step()
+Dispatcher::collectEvents()
 {
 	std::auto_ptr<DiffTime> remaining;
 
@@ -55,9 +55,31 @@ Dispatcher::step()
 	}
 }
 
+bool
+Dispatcher::hasPendingEvent()
+const
+{
+	return !backlog_.empty();
+}
+
+void
+Dispatcher::processEvent()
+{
+	backlog_.executeFront();
+}
+
+void
+Dispatcher::processAllEvents()
+{
+	backlog_.executeAll();
+}
+
 int
 Dispatcher::run()
 {
-	while (!quit_) step();
+	while (!quit_) {
+		collectEvents();
+		processAllEvents();
+	}
 	return EXIT_SUCCESS;
 }

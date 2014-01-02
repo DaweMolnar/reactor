@@ -31,7 +31,10 @@ public:
 
 	~Dispatcher();
 
-	void step();
+	void collectEvents();
+	bool hasPendingEvent() const;
+	void processEvent();
+	void processAllEvents();
 	int run();
 	void quit() { quit_ = true; }
 

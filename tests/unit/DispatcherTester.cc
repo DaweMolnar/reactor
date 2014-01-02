@@ -94,7 +94,8 @@ public:
 
 		disp_->add(fd, fdMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
-		disp_->step();
+		disp_->collectEvents();
+		disp_->processAllEvents();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, fdCommandCount_);
 	}
 
@@ -106,7 +107,7 @@ public:
 
 		disp_->add(fd, fdMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
-		CPPUNIT_ASSERT_THROW(disp_->step(), std::runtime_error);
+		CPPUNIT_ASSERT_THROW(disp_->collectEvents(), std::runtime_error);
 	}
 
 	void
@@ -154,7 +155,8 @@ public:
 		disp_->add(lt, timerMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		now.expect(2);
-		disp_->step();
+		disp_->collectEvents();
+		disp_->processAllEvents();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, fdCommandCount_);
 		CPPUNIT_ASSERT_EQUAL((size_t)1, timerCommandCount_);
 	}
