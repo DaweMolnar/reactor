@@ -43,7 +43,7 @@ void
 Dispatcher::add(const Fd &fd, const FdCommand &command)
 {
 	demuxer_->add(fd);
-	fdCommands_.insert(std::make_pair(fd.get(), command.clone()));
+	fdCommands_.insert(std::make_pair(fd, command.clone()));
 }
 
 void
@@ -73,7 +73,7 @@ Dispatcher::resume(const Fd &fd)
 void
 Dispatcher::lookupAndSchedule(FdEvent event)
 {
-	FdCommands::iterator j(fdCommands_.find(event.fd.get()));
+	FdCommands::iterator j(fdCommands_.find(event.fd));
 
 	if (j == fdCommands_.end()) {
 		throw std::runtime_error("invalid fd");

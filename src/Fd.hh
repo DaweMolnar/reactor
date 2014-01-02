@@ -27,6 +27,8 @@ public:
 
 	bool blocking() const;
 	void blocking(bool block);
+
+	bool operator<(const Fd &rhs) const { return fd_ < rhs.fd_; }
 };
 
 #endif // REACTOR_FD_HEADER

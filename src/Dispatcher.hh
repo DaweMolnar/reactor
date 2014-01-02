@@ -11,7 +11,7 @@
 #include <memory> // auto_ptr
 
 class Dispatcher : public Noncopyable {
-	typedef std::map<int, FdCommand *> FdCommands; // XXX: map<Fd, FdCommand *>
+	typedef std::map<Fd, FdCommand *> FdCommands;
 
 	FdCommands fdCommands_;
 	Backlog backlog_;
