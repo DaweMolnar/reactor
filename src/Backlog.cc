@@ -17,7 +17,7 @@ Backlog::push(const Job &job)
 }
 
 void
-Backlog::executeFront()
+Backlog::executeOne()
 {
 	if (!queue_.empty()) {
 		Job *job = queue_.front();
@@ -34,7 +34,7 @@ void
 Backlog::executeAll()
 {
 	while (!queue_.empty()) {
-		executeFront();
+		executeOne();
 	}
 }
 
@@ -43,11 +43,4 @@ Backlog::empty()
 const
 {
 	return queue_.empty();
-}
-
-size_t
-Backlog::size()
-const
-{
-	return queue_.size();
 }

@@ -2,7 +2,6 @@
 
 #include <algorithm> // std::for_each
 #include <stdexcept>
-#include <cstdlib>
 
 class BoundResumingCommand : public BoundCommand1<void, FdEvent, Command1<void, const FdEvent &> > {
 	typedef Command1<void, const FdEvent &> C;
@@ -112,23 +111,16 @@ const
 }
 
 void
-Dispatcher::processEvent()
+Dispatcher::processOneEvent()
 {
-	backlog_.executeFront();
+	backlog_.executeOne();
 }
 
 void
-Dispatcher::processAllEvents()
+Dispatcher::stepSingleThread()
 {
-	backlog_.executeAll();
-}
-
-int
-Dispatcher::run()
-{
-	while (!quit_) {
-		collectEvents();
-		processAllEvents();
+	collectEvents();
+	while (hasPendingEvent()) {
+		processOneEvent();
 	}
-	return EXIT_SUCCESS;
 }

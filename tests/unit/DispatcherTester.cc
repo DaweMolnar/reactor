@@ -45,7 +45,6 @@ class DispatcherTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(DispatcherTester);
 	CPPUNIT_TEST(testFdAction);
 	CPPUNIT_TEST(testInvalidFdAction);
-	CPPUNIT_TEST(testRun);
 	CPPUNIT_TEST(testTimerAction);
 	CPPUNIT_TEST(testLazyTimerAction);
 	CPPUNIT_TEST_SUITE_END();
@@ -83,14 +82,12 @@ public:
 	fdCommand(const FdEvent &)
 	{
 		++fdCommandCount_;
-		disp_->quit();
 	}
 
 	void
 	timerCommand(const TimerEvent &)
 	{
 		++timerCommandCount_;
-		disp_->quit();
 	}
 
 	void
@@ -101,8 +98,7 @@ public:
 
 		disp_->add(fd, fdMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
-		disp_->collectEvents();
-		disp_->processAllEvents();
+		disp_->stepSingleThread();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, fdCommandCount_);
 	}
 
@@ -115,17 +111,6 @@ public:
 		disp_->add(fd, fdMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		CPPUNIT_ASSERT_THROW(disp_->collectEvents(), std::runtime_error);
-	}
-
-	void
-	testRun()
-	{
-		Mocked demux("demux");
-		Fd fd(42);
-
-		disp_->add(fd, fdMethodCommand_);
-		demux.expectf("%d%d", 1, 42);
-		CPPUNIT_ASSERT_NO_THROW(disp_->run());
 	}
 
 	static Time
@@ -146,7 +131,7 @@ public:
 		demux.expect(0);
 		now.expect(2);
 		now.expect(2);
-		CPPUNIT_ASSERT_NO_THROW(disp_->run());
+		disp_->stepSingleThread();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, timerCommandCount_);
 	}
 
@@ -162,8 +147,7 @@ public:
 		disp_->add(lt, timerMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		now.expect(2);
-		disp_->collectEvents();
-		disp_->processAllEvents();
+		disp_->stepSingleThread();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, fdCommandCount_);
 		CPPUNIT_ASSERT_EQUAL((size_t)1, timerCommandCount_);
 	}

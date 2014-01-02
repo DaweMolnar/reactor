@@ -19,11 +19,9 @@ public:
 	~Backlog();
 
 	void push(const Job &job);
-	void executeFront();
+	void executeOne();
 	void executeAll();
-
 	bool empty() const;
-	size_t size() const;
 };
 
 #endif // REACTOR_BACKLOG_HEADER

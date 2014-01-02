@@ -16,7 +16,6 @@ class Dispatcher : public Noncopyable {
 	FdCommands fdCommands_;
 	Backlog backlog_;
 	Timers timers_, lazyTimers_;
-	bool quit_;
 	std::auto_ptr<DefaultDemuxer> defaultDemuxer_;
 	Demuxer *demuxer_;
 
@@ -31,7 +30,6 @@ public:
 	Dispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = Time::now)
 	: timers_(backlog_, nowFunc)
 	, lazyTimers_(backlog_, nowFunc)
-	, quit_(false)
 	, defaultDemuxer_(demuxer ? 0 : new DefaultDemuxer())
 	, demuxer_(demuxer ? demuxer : defaultDemuxer_.get())
 	{}
@@ -40,10 +38,8 @@ public:
 
 	void collectEvents();
 	bool hasPendingEvent() const;
-	void processEvent();
-	void processAllEvents();
-	int run();
-	void quit() { quit_ = true; }
+	void processOneEvent();
+	void stepSingleThread();
 
 	void add(const Fd &fd, const FdCommand &command);
 	void add(const Timer &timer, const TimerCommand &command);

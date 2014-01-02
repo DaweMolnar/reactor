@@ -22,6 +22,7 @@ client_TESTABLE_SOURCES := \
 	src/PollDemuxer.cc \
 	src/Dispatcher.cc \
 	src/Backlog.cc \
+	src/EventLoop.cc \
 	src/Client.cc
 
 client_SOURCES := \
