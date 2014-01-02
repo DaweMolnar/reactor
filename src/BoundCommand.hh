@@ -41,8 +41,11 @@ template <typename R, typename P1, typename C = Command1<R, P1> >
 class BoundCommand1 : public BoundCommand<R> {
 	C *c_;
 	mutable bool own_;
+
+protected:
 	P1 p1_;
 
+private:
 	BoundCommand1 &operator=(const BoundCommand1 &);
 
 public:

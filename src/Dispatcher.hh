@@ -20,6 +20,13 @@ class Dispatcher : public Noncopyable {
 	std::auto_ptr<DefaultDemuxer> defaultDemuxer_;
 	Demuxer *demuxer_;
 
+	void suspend(const Fd &fd);
+	void resume(const Fd &fd);
+	void lookupAndSchedule(FdEvent event);
+	void collectFdEvents();
+
+	friend class BoundResumingCommand;
+
 public:
 	Dispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = Time::now)
 	: timers_(backlog_, nowFunc)

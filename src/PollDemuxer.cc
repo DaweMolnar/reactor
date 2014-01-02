@@ -16,6 +16,18 @@ PollDemuxer::add(const Fd &fd)
 	}
 }
 
+void
+PollDemuxer::remove(const Fd &fd)
+{
+	// XXX: we can possibly do better than linear search
+	for (Fds::iterator i(fds_.begin()); i != fds_.end(); ++i) {
+		if (i->fd == fd.get()) {
+			fds_.erase(i);
+			break;
+		}
+	}
+}
+
 PollDemuxer::FdEvents
 PollDemuxer::demux(const DiffTime *interval)
 {
@@ -39,4 +51,3 @@ PollDemuxer::demux(const DiffTime *interval)
 		return result;
 	}
 }
-

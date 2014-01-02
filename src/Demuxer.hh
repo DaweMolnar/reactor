@@ -15,6 +15,7 @@ public:
 	virtual ~Demuxer() {}
 
 	virtual void add(const Fd &fd) = 0;
+	virtual void remove(const Fd &fd) = 0;
 	virtual FdEvents demux(const DiffTime *interval) = 0;
 };
 

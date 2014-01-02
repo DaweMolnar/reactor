@@ -1,7 +1,36 @@
 #include "Dispatcher.hh"
 
+#include <algorithm> // std::for_each
 #include <stdexcept>
 #include <cstdlib>
+
+class BoundResumingCommand : public BoundCommand1<void, FdEvent, Command1<void, const FdEvent &> > {
+	typedef Command1<void, const FdEvent &> C;
+	typedef BoundCommand1<void, FdEvent, C> Base;
+
+	Dispatcher &dispatcher_;
+
+public:
+	BoundResumingCommand(const C &command, const FdEvent &event, Dispatcher &dispatcher)
+	: Base(command, event)
+	, dispatcher_(dispatcher)
+	{}
+
+	virtual BoundResumingCommand *
+	clone()
+	const
+	{
+		return new BoundResumingCommand(*this);
+	}
+
+	virtual void
+	execute()
+	const
+	{
+		Base::execute();
+		dispatcher_.resume(Base::p1_.fd);
+	}
+};
 
 Dispatcher::~Dispatcher()
 {
@@ -30,7 +59,32 @@ Dispatcher::add(const LazyTimer &lazyTimer, const TimerCommand &command)
 }
 
 void
-Dispatcher::collectEvents()
+Dispatcher::suspend(const Fd &fd)
+{
+	demuxer_->remove(fd);
+}
+
+void
+Dispatcher::resume(const Fd &fd)
+{
+	demuxer_->add(fd);
+}
+
+void
+Dispatcher::lookupAndSchedule(FdEvent event)
+{
+	FdCommands::iterator j(fdCommands_.find(event.fd.get()));
+
+	if (j == fdCommands_.end()) {
+		throw std::runtime_error("invalid fd");
+	}
+
+	suspend(event.fd);
+	backlog_.push(BoundResumingCommand(*j->second, event, *this));
+}
+
+void
+Dispatcher::collectFdEvents()
 {
 	std::auto_ptr<DiffTime> remaining;
 
@@ -39,16 +93,15 @@ Dispatcher::collectEvents()
 	}
 
 	Demuxer::FdEvents fdEvs = demuxer_->demux(remaining.get());
-	for (Demuxer::FdEvents::const_iterator i(fdEvs.begin()); i != fdEvs.end(); ++i) {
-		FdCommands::iterator j(fdCommands_.find(i->fd.get()));
-		if (j == fdCommands_.end()) {
-			throw std::runtime_error("invalid fd");
-		} else {
-			backlog_.push(bindCommand(*j->second, *i));
-		}
-	}
-	timers_.fireAllExpired();
-	lazyTimers_.fireAllExpired();
+	std::for_each(fdEvs.begin(), fdEvs.end(), std::bind1st(std::mem_fun(&Dispatcher::lookupAndSchedule), this));
+}
+
+void
+Dispatcher::collectEvents()
+{
+	collectFdEvents();
+	timers_.scheduleAllExpired();
+	lazyTimers_.scheduleAllExpired();
 }
 
 bool

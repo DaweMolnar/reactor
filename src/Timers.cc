@@ -18,7 +18,7 @@ Timers::add(const Timer &timer, const TimerCommand &timerCommand)
 }
 
 void
-Timers::fireAllExpired()
+Timers::scheduleAllExpired()
 {
 	typedef std::list<TimerAndCommand> Reinsertands;
 	Reinsertands ri;

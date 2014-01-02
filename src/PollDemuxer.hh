@@ -7,10 +7,13 @@
 #include <vector>
 
 class PollDemuxer : public Demuxer {
-	std::vector<struct pollfd> fds_;
+	typedef std::vector<struct pollfd> Fds;
+
+	Fds fds_;
 
 public:
 	virtual void add(const Fd &fd);
+	virtual void remove(const Fd &fd);
 	virtual FdEvents demux(const DiffTime *interval);
 };
 

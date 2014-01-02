@@ -42,7 +42,7 @@ public:
 	~Timers();
 
 	void add(const Timer &timer, const TimerCommand &timerCommand);
-	void fireAllExpired();
+	void scheduleAllExpired();
 	bool isTicking() const;
 	DiffTime remainingTime() const;
 };

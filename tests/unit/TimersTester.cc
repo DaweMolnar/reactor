@@ -77,7 +77,7 @@ public:
 
 		command1Count_ = command2Count_ = 0;
 		now.expect(0);
-		t_->fireAllExpired();
+		t_->scheduleAllExpired();
 		CPPUNIT_ASSERT_EQUAL(true, t_->isTicking());
 		bl_->executeAll();
 		CPPUNIT_ASSERT_EQUAL((size_t)0, command1Count_);
@@ -88,7 +88,7 @@ public:
 		command1Count_ = command2Count_ = 0;
 		now.expect(2);
 		now.expect(2);
-		t_->fireAllExpired();
+		t_->scheduleAllExpired();
 		CPPUNIT_ASSERT_EQUAL(true, t_->isTicking());
 		bl_->executeAll();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, command1Count_);
@@ -99,7 +99,7 @@ public:
 		command1Count_ = command2Count_ = 0;
 		now.expect(3);
 		now.expect(3);
-		t_->fireAllExpired();
+		t_->scheduleAllExpired();
 		CPPUNIT_ASSERT_EQUAL(true, t_->isTicking());
 		bl_->executeAll();
 		CPPUNIT_ASSERT_EQUAL((size_t)0, command1Count_);
@@ -109,7 +109,7 @@ public:
 
 		command1Count_ = command2Count_ = 0;
 		now.expect(4);
-		t_->fireAllExpired();
+		t_->scheduleAllExpired();
 		CPPUNIT_ASSERT_EQUAL(false, t_->isTicking());
 		bl_->executeAll();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, command1Count_);
