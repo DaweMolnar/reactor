@@ -4,15 +4,10 @@
 #include "Runnable.hh"
 #include "Noncopyable.hh"
 
-#include <memory> // std::auto_ptr
-
-struct ThreadImpl;
+class ThreadImpl;
 
 class Thread : public Noncopyable {
-	std::auto_ptr<ThreadImpl> impl_;
-	Runnable &runnable_;
-
-	static void *routine(void *arg);
+	ThreadImpl *impl_;
 
 public:
 	Thread(Runnable &runnable);

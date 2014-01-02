@@ -3,44 +3,59 @@
 #include <pthread.h>
 #include <stdexcept>
 
-struct ThreadImpl {
-	pthread_t thread;
+class ThreadImpl {
+	pthread_t thread_;
+	Runnable &runnable_;
+
+	static void *routine(void *arg);
+
+public:
+	ThreadImpl(Runnable &runnable);
+	~ThreadImpl();
 };
 
 union Castor {
 	void *pthreadArg;
-	Thread *thread;
+	ThreadImpl *threadImpl;
 };
 
 void *
-Thread::routine(void *arg)
+ThreadImpl::routine(void *arg)
 {
 	Castor c;
 	c.pthreadArg = arg;
-	c.thread->runnable_.run();
+	c.threadImpl->runnable_.run();
 	return 0;
 }
 
-Thread::Thread(Runnable &runnable)
-: impl_(new ThreadImpl())
-, runnable_(runnable)
+ThreadImpl::ThreadImpl(Runnable &runnable)
+: runnable_(runnable)
 {
 	int error;
 	Castor c;
 
-	c.thread = this;
-	error = pthread_create(&impl_->thread, 0, &Thread::routine, c.pthreadArg);
+	c.threadImpl = this;
+	error = pthread_create(&thread_, 0, &ThreadImpl::routine, c.pthreadArg);
 	if (error) {
 		throw std::runtime_error("failed to create thread");
 	}
 }
 
-Thread::~Thread()
+ThreadImpl::~ThreadImpl()
 {
-	int error = pthread_join(impl_->thread, 0);
+	int error = pthread_join(thread_, 0);
 
 	if (error) {
 		// XXX: throw in destructor?
 		throw std::runtime_error("failed to join thread");
 	}
+}
+
+Thread::Thread(Runnable &runnable)
+: impl_(new ThreadImpl(runnable))
+{}
+
+Thread::~Thread()
+{
+	delete impl_;
 }
