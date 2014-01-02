@@ -22,6 +22,7 @@ Mocked::~Mocked()
 		if (std::uncaught_exception()) {
 			std::cerr << e.what() << std::endl;
 		} else {
+			// XXX: throw in destructor?
 			throw e;
 		}
 	}

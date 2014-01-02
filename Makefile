@@ -23,6 +23,7 @@ client_TESTABLE_SOURCES := \
 	src/Dispatcher.cc \
 	src/Backlog.cc \
 	src/EventLoop.cc \
+	src/Thread.cc \
 	src/Client.cc
 
 client_SOURCES := \
@@ -45,11 +46,14 @@ testUnits_SOURCES := \
 	tests/unit/TimersTester.cc \
 	tests/unit/AutoFdTester.cc \
 	tests/unit/DispatcherTester.cc \
+	tests/unit/ThreadTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
 CPPFLAGS += -MD
+CPPFLAGS += -pthread
 
+LDFLAGS := -pthread
 
 testUnits_OBJECTS := $(sort $(addprefix out/testUnits.d/,$(addsuffix .o,$(basename $(testUnits_SOURCES)))))
 -include $(addsuffix .d,$(basename $(testUnits_OBJECTS)))
