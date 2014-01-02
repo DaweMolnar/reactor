@@ -49,10 +49,6 @@ Dispatcher::collectEvents()
 	}
 	timers_.fireAllExpired();
 	lazyTimers_.fireAllExpired();
-
-	while (!backlog_.empty()) {
-		backlog_.executeFront();
-	}
 }
 
 bool
