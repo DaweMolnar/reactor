@@ -24,6 +24,7 @@ client_TESTABLE_SOURCES := \
 	src/Backlog.cc \
 	src/EventLoop.cc \
 	src/Thread.cc \
+	src/ThreadPool.cc \
 	src/Client.cc
 
 client_SOURCES := \
@@ -47,6 +48,7 @@ testUnits_SOURCES := \
 	tests/unit/AutoFdTester.cc \
 	tests/unit/DispatcherTester.cc \
 	tests/unit/ThreadTester.cc \
+	tests/unit/ThreadPoolTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
