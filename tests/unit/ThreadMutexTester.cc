@@ -1,0 +1,74 @@
+#include <src/ThreadPool.hh>
+#include <src/ThreadMutex.hh>
+
+#include <cppunit/extensions/HelperMacros.h>
+
+class ThreadMutexTester
+: public CppUnit::TestFixture
+, public Runnable
+{
+	CPPUNIT_TEST_SUITE(ThreadMutexTester);
+	CPPUNIT_TEST(testThreadPoolWithNoLocking);
+	CPPUNIT_TEST(testThreadPoolWithLocking);
+	CPPUNIT_TEST_SUITE_END();
+
+	static const size_t ITERATION_COUNT = 10000;
+	static const size_t THREAD_COUNT = 10;
+
+	ThreadMutex *tm_;
+	size_t count_;
+	bool useLocking_;
+
+public:
+	void
+	setUp()
+	{
+		tm_ = new ThreadMutex();
+		count_ = 0;
+		useLocking_ = false;
+	}
+
+	void
+	tearDown()
+	{
+		delete tm_;
+	}
+
+	virtual void
+	run()
+	{
+		for (size_t i = 0; i < ITERATION_COUNT; ++i) {
+			if (useLocking_) {
+				tm_->acquire();
+			}
+			++count_;
+			if (useLocking_) {
+				tm_->release();
+			}
+		}
+	}
+
+	void
+	runThreadPoolTest(bool useLocking)
+	{
+		useLocking_ = useLocking;
+		count_ = 0;
+		ThreadPool tp(*this, THREAD_COUNT);
+	}
+
+	void
+	testThreadPoolWithNoLocking()
+	{
+		runThreadPoolTest(false);
+		CPPUNIT_ASSERT(THREAD_COUNT * ITERATION_COUNT != count_);
+	}
+
+	void
+	testThreadPoolWithLocking()
+	{
+		runThreadPoolTest(true);
+		CPPUNIT_ASSERT_EQUAL(THREAD_COUNT * ITERATION_COUNT, count_);
+	}
+};
+
+CPPUNIT_TEST_SUITE_REGISTRATION(ThreadMutexTester);

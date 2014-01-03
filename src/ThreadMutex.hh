@@ -1,0 +1,19 @@
+#ifndef REACTOR_THREADMUTEX_HEADER
+#define REACTOR_THREADMUTEX_HEADER
+
+#include "Noncopyable.hh"
+
+class ThreadMutexImpl;
+
+class ThreadMutex : public Noncopyable {
+	ThreadMutexImpl *impl_;
+
+public:
+	ThreadMutex();
+	~ThreadMutex();
+
+	void acquire();
+	void release();
+};
+
+#endif // REACTOR_THREADMUTEX_HEADER
