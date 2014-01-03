@@ -4,6 +4,11 @@
 #include <stdexcept>
 
 class ThreadImpl {
+	union Castor {
+		void *pthreadArg;
+		ThreadImpl *threadImpl;
+	};
+
 	pthread_t thread_;
 	Runnable &runnable_;
 
@@ -12,11 +17,6 @@ class ThreadImpl {
 public:
 	ThreadImpl(Runnable &runnable);
 	~ThreadImpl();
-};
-
-union Castor {
-	void *pthreadArg;
-	ThreadImpl *threadImpl;
 };
 
 void *
