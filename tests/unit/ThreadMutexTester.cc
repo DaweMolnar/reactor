@@ -1,5 +1,6 @@
 #include <src/ThreadPool.hh>
 #include <src/ThreadMutex.hh>
+#include <src/Guard.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -37,13 +38,14 @@ public:
 	virtual void
 	run()
 	{
-		for (size_t i = 0; i < ITERATION_COUNT; ++i) {
-			if (useLocking_) {
-				tm_->acquire();
+		if (useLocking_) {
+			for (size_t i = 0; i < ITERATION_COUNT; ++i) {
+				Guard<ThreadMutex> guard(*tm_);
+				++count_;
 			}
-			++count_;
-			if (useLocking_) {
-				tm_->release();
+		} else {
+			for (size_t i = 0; i < ITERATION_COUNT; ++i) {
+				++count_;
 			}
 		}
 	}
