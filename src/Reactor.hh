@@ -14,7 +14,7 @@ public:
 	{}
 
 	void quit() { quit_ = true; }
-	int run();
+	int loop();
 };
 
 #endif // REACTOR_REACTOR_HEADER

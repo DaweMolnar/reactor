@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 int
-Reactor::run()
+Reactor::loop()
 {
 	while (!quit_) {
 		dispatcher_.stepSingleThread();

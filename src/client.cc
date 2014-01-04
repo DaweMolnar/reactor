@@ -15,7 +15,7 @@ public:
 	void onFdStdin(const FdEvent &);
 	void onFdSock(const FdEvent &);
 	void onTimer(const TimerEvent &);
-	int run() { return reactor_.run(); }
+	int run() { return reactor_.loop(); }
 };
 
 Main::Main(int argc, char *argv[])
