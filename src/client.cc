@@ -1,12 +1,12 @@
 #include "Client.hh"
 
-#include "EventLoop.hh"
+#include "Reactor.hh"
 
 #include <stdexcept>
 
 class Main {
 	Dispatcher dispatcher_;
-	EventLoop eventLoop_;
+	Reactor reactor_;
 	Client client_;
 
 public:
@@ -15,11 +15,11 @@ public:
 	void onFdStdin(const FdEvent &);
 	void onFdSock(const FdEvent &);
 	void onTimer(const TimerEvent &);
-	int run() { return eventLoop_.run(); }
+	int run() { return reactor_.run(); }
 };
 
 Main::Main(int argc, char *argv[])
-: eventLoop_(dispatcher_)
+: reactor_(dispatcher_)
 , client_(dispatcher_)
 {
 	if (argc != 3) throw std::runtime_error("argc must be 3");
@@ -39,7 +39,7 @@ Main::onFdStdin(const FdEvent &event)
 	size_t rd = event.fd.read(buf, sizeof(buf));
 
 	if (!rd) {
-		eventLoop_.quit();
+		reactor_.quit();
 	} else {
 		size_t wr = client_.fd().write(buf, rd);
 
@@ -56,7 +56,7 @@ Main::onFdSock(const FdEvent &event)
 	size_t rd = event.fd.read(buf, sizeof(buf));
 
 	if (!rd) {
-		eventLoop_.quit();
+		reactor_.quit();
 	} else {
 		size_t wr = Fd::STDOUT.write(buf, rd);
 

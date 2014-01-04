@@ -1,9 +1,9 @@
-#include "EventLoop.hh"
+#include "Reactor.hh"
 
 #include <cstdlib>
 
 int
-EventLoop::run()
+Reactor::run()
 {
 	while (!quit_) {
 		dispatcher_.stepSingleThread();

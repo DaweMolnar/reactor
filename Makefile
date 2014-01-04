@@ -22,7 +22,7 @@ client_TESTABLE_SOURCES := \
 	src/PollDemuxer.cc \
 	src/Dispatcher.cc \
 	src/Backlog.cc \
-	src/EventLoop.cc \
+	src/Reactor.cc \
 	src/Thread.cc \
 	src/ThreadPool.cc \
 	src/ThreadMutex.cc \

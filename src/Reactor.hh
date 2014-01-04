@@ -1,14 +1,14 @@
-#ifndef REACTOR_EVENTLOOP_HEADER
-#define REACTOR_EVENTLOOP_HEADER
+#ifndef REACTOR_REACTOR_HEADER
+#define REACTOR_REACTOR_HEADER
 
 #include "Dispatcher.hh"
 
-class EventLoop {
+class Reactor {
 	Dispatcher &dispatcher_;
 	bool quit_;
 
 public:
-	EventLoop(Dispatcher &dispatcher)
+	Reactor(Dispatcher &dispatcher)
 	: dispatcher_(dispatcher)
 	, quit_(false)
 	{}
@@ -17,4 +17,4 @@ public:
 	int run();
 };
 
-#endif // REACTOR_EVENTLOOP_HEADER
+#endif // REACTOR_REACTOR_HEADER
