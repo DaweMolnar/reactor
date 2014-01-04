@@ -12,6 +12,8 @@ class Thread : public Noncopyable {
 public:
 	Thread(Runnable &runnable);
 	~Thread();
+
+	bool hasFinished() const;
 };
 
 #endif // REACTOR_THREAD_HEADER

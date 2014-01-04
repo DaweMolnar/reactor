@@ -26,6 +26,10 @@ client_TESTABLE_SOURCES := \
 	src/Thread.cc \
 	src/ThreadPool.cc \
 	src/ThreadMutex.cc \
+	src/ThreadCondition.cc \
+	src/pthread/PthreadImpl.cc \
+	src/pthread/PthreadMutexImpl.cc \
+	src/pthread/PthreadConditionImpl.cc \
 	src/Client.cc
 
 client_SOURCES := \
@@ -51,6 +55,7 @@ testUnits_SOURCES := \
 	tests/unit/ThreadTester.cc \
 	tests/unit/ThreadPoolTester.cc \
 	tests/unit/ThreadMutexTester.cc \
+	tests/unit/ThreadConditionTester.cc \
 	tests/unit/testUnits.cc
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros

@@ -10,7 +10,7 @@ class ErrnoException : std::exception {
 	std::string what_;
 
 public:
-	explicit ErrnoException(const std::string &name);
+	explicit ErrnoException(const std::string &name, int errorCode = 0);
 	virtual ~ErrnoException() throw() {}
 
 	int errorCode() const { return errorCode_; }

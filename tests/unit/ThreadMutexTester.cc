@@ -9,7 +9,7 @@ class ThreadMutexTester
 , public Runnable
 {
 	CPPUNIT_TEST_SUITE(ThreadMutexTester);
-	CPPUNIT_TEST(testThreadPoolWithNoLocking);
+//	CPPUNIT_TEST(testThreadPoolWithNoLocking);
 	CPPUNIT_TEST(testThreadPoolWithLocking);
 	CPPUNIT_TEST_SUITE_END();
 

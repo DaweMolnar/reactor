@@ -11,8 +11,8 @@
 #include <sstream>
 #include <cerrno>
 
-ErrnoException::ErrnoException(const std::string &name)
-: errorCode_(errno)
+ErrnoException::ErrnoException(const std::string &name, int errorCode)
+: errorCode_(errorCode ? errorCode : errno)
 , name_(name)
 {
 	std::ostringstream oss;

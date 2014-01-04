@@ -8,6 +8,8 @@ class ThreadMutexImpl;
 class ThreadMutex : public Noncopyable {
 	ThreadMutexImpl *impl_;
 
+	friend class ThreadCondition;
+
 public:
 	ThreadMutex();
 	~ThreadMutex();
