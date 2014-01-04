@@ -11,30 +11,21 @@ Backlog::~Backlog()
 }
 
 void
-Backlog::push(const Job &job)
+Backlog::enqueueClone(const Job &job)
 {
 	queue_.push(job.clone());
 }
 
-void
-Backlog::executeOne()
+Backlog::Job *
+Backlog::dequeue()
 {
 	if (!queue_.empty()) {
 		Job *job = queue_.front();
 		queue_.pop();
 
-		job->execute();
-		delete job;
+		return job;
 	} else {
 		throw std::runtime_error("no jobs in backlog to execute");
-	}
-}
-
-void
-Backlog::executeAll()
-{
-	while (!queue_.empty()) {
-		executeOne();
 	}
 }
 

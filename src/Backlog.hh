@@ -18,9 +18,8 @@ private:
 public:
 	~Backlog();
 
-	void push(const Job &job);
-	void executeOne();
-	void executeAll();
+	void enqueueClone(const Job &job);
+	Job *dequeue();
 	bool empty() const;
 };
 

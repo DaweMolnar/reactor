@@ -4,11 +4,12 @@
 #include "Dispatcher.hh"
 
 class Reactor {
+protected:
 	Dispatcher &dispatcher_;
-	bool quit_;
+	volatile bool quit_;
 
 public:
-	Reactor(Dispatcher &dispatcher)
+	explicit Reactor(Dispatcher &dispatcher)
 	: dispatcher_(dispatcher)
 	, quit_(false)
 	{}

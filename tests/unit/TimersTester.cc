@@ -68,6 +68,16 @@ public:
 	}
 
 	void
+	executeAll()
+	{
+		while (!bl_->empty()) {
+			Backlog::Job *job = bl_->dequeue();
+			job->execute();
+			delete job;
+		}
+	}
+
+	void
 	testFireAllExpired()
 	{
 		Mocked now("now");
@@ -77,9 +87,9 @@ public:
 
 		command1Count_ = command2Count_ = 0;
 		now.expect(0);
-		t_->scheduleAllExpired();
+		t_->harvest();
 		CPPUNIT_ASSERT_EQUAL(true, t_->isTicking());
-		bl_->executeAll();
+		executeAll();
 		CPPUNIT_ASSERT_EQUAL((size_t)0, command1Count_);
 		CPPUNIT_ASSERT_EQUAL((size_t)0, command2Count_);
 		now.expect(0);
@@ -88,9 +98,9 @@ public:
 		command1Count_ = command2Count_ = 0;
 		now.expect(2);
 		now.expect(2);
-		t_->scheduleAllExpired();
+		t_->harvest();
 		CPPUNIT_ASSERT_EQUAL(true, t_->isTicking());
-		bl_->executeAll();
+		executeAll();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, command1Count_);
 		CPPUNIT_ASSERT_EQUAL((size_t)0, command2Count_);
 		now.expect(2);
@@ -99,9 +109,9 @@ public:
 		command1Count_ = command2Count_ = 0;
 		now.expect(3);
 		now.expect(3);
-		t_->scheduleAllExpired();
+		t_->harvest();
 		CPPUNIT_ASSERT_EQUAL(true, t_->isTicking());
-		bl_->executeAll();
+		executeAll();
 		CPPUNIT_ASSERT_EQUAL((size_t)0, command1Count_);
 		CPPUNIT_ASSERT_EQUAL((size_t)1, command2Count_);
 		now.expect(3);
@@ -109,9 +119,9 @@ public:
 
 		command1Count_ = command2Count_ = 0;
 		now.expect(4);
-		t_->scheduleAllExpired();
+		t_->harvest();
 		CPPUNIT_ASSERT_EQUAL(false, t_->isTicking());
-		bl_->executeAll();
+		executeAll();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, command1Count_);
 		CPPUNIT_ASSERT_EQUAL((size_t)0, command2Count_);
 	}

@@ -18,7 +18,7 @@ Timers::add(const Timer &timer, const TimerCommand &timerCommand)
 }
 
 void
-Timers::scheduleAllExpired()
+Timers::harvest()
 {
 	typedef std::list<TimerAndCommand> Reinsertands;
 	Reinsertands ri;
@@ -29,8 +29,7 @@ Timers::scheduleAllExpired()
 
 		if (!dt.positive()) {
 			queue_.pop();
-			backlog_.push(bindCommand(*tac.command, TimerEvent(tac.timer)));
-//			tac.command->execute(TimerEvent(tac.timer));
+			backlog_.enqueueClone(bindCommand(*tac.command, TimerEvent(tac.timer)));
 			tac.timer.fire();
 			if (tac.timer.hasRemainingIterations()) {
 				ri.push_back(tac);

@@ -37,8 +37,8 @@ public:
 	~Dispatcher();
 
 	void collectEvents();
-	bool hasPendingEvent() const;
-	void processOneEvent();
+	bool hasPendingEvents() const;
+	Backlog::Job *dequeueEvent();
 	void stepSingleThread();
 
 	void add(const Fd &fd, const FdCommand &command);

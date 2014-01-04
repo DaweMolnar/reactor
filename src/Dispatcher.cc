@@ -15,6 +15,13 @@ public:
 	, dispatcher_(dispatcher)
 	{}
 
+	~BoundResumingCommand()
+	{
+		if (own()) {
+			dispatcher_.resume(Base::p1_.fd);
+		}
+	}
+
 	virtual BoundResumingCommand *
 	clone()
 	const
@@ -27,7 +34,6 @@ public:
 	const
 	{
 		Base::execute();
-		dispatcher_.resume(Base::p1_.fd);
 	}
 };
 
@@ -79,7 +85,7 @@ Dispatcher::lookupAndSchedule(FdEvent event)
 	}
 
 	suspend(event.fd);
-	backlog_.push(BoundResumingCommand(*j->second, event, *this));
+	backlog_.enqueueClone(BoundResumingCommand(*j->second, event, *this));
 }
 
 void
@@ -99,28 +105,30 @@ void
 Dispatcher::collectEvents()
 {
 	collectFdEvents();
-	timers_.scheduleAllExpired();
-	lazyTimers_.scheduleAllExpired();
+	timers_.harvest();
+	lazyTimers_.harvest();
 }
 
 bool
-Dispatcher::hasPendingEvent()
+Dispatcher::hasPendingEvents()
 const
 {
 	return !backlog_.empty();
 }
 
-void
-Dispatcher::processOneEvent()
+Backlog::Job *
+Dispatcher::dequeueEvent()
 {
-	backlog_.executeOne();
+	return backlog_.dequeue();
 }
 
 void
 Dispatcher::stepSingleThread()
 {
 	collectEvents();
-	while (hasPendingEvent()) {
-		processOneEvent();
+	while (hasPendingEvents()) {
+		Backlog::Job *job = dequeueEvent();
+		job->execute();
+		delete job;
 	}
 }

@@ -13,6 +13,14 @@ class BoundCommand0 : public BoundCommand<R> {
 	C *c_;
 	mutable bool own_;
 
+protected:
+	bool
+	own()
+	const
+	{
+		return own_;
+	}
+
 public:
 	BoundCommand0(const C &c)
 	: c_(c.clone())
@@ -44,6 +52,13 @@ class BoundCommand1 : public BoundCommand<R> {
 
 protected:
 	P1 p1_;
+
+	bool
+	own()
+	const
+	{
+		return own_;
+	}
 
 private:
 	BoundCommand1 &operator=(const BoundCommand1 &);

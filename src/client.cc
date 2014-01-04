@@ -1,12 +1,12 @@
 #include "Client.hh"
 
-#include "Reactor.hh"
+#include "MultiReactor.hh"
 
 #include <stdexcept>
 
 class Main {
 	Dispatcher dispatcher_;
-	Reactor reactor_;
+	MultiReactor reactor_;
 	Client client_;
 
 public:
@@ -19,7 +19,7 @@ public:
 };
 
 Main::Main(int argc, char *argv[])
-: reactor_(dispatcher_)
+: reactor_(dispatcher_, 2)
 , client_(dispatcher_)
 {
 	if (argc != 3) throw std::runtime_error("argc must be 3");
