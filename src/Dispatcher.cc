@@ -37,6 +37,15 @@ public:
 	}
 };
 
+Dispatcher::Dispatcher(Demuxer *demuxer, const Timers::NowFunc nowFunc)
+: timers_(backlog_, nowFunc)
+, lazyTimers_(backlog_, nowFunc)
+, defaultDemuxer_(demuxer ? 0 : new DefaultDemuxer())
+, demuxer_(demuxer ? demuxer : defaultDemuxer_.get())
+{
+	demuxer_->add(notifier_.readFd());
+}
+
 Dispatcher::~Dispatcher()
 {
 	for (FdCommands::const_iterator i(fdCommands_.begin()); i != fdCommands_.end(); ++i) {
@@ -78,6 +87,11 @@ Dispatcher::resume(const Fd &fd)
 void
 Dispatcher::lookupAndSchedule(FdEvent event)
 {
+	if (event.fd == notifier_.readFd()) {
+		handleNotification(event);
+		return;
+	}
+
 	FdCommands::iterator j(fdCommands_.find(event.fd));
 
 	if (j == fdCommands_.end()) {
@@ -131,4 +145,17 @@ Dispatcher::stepSingleThread()
 		job->execute();
 		delete job;
 	}
+}
+
+void
+Dispatcher::notify()
+{
+	notifier_.write("A", 1);
+}
+
+void
+Dispatcher::handleNotification(const FdEvent &event)
+{
+	char dummy;
+	event.fd.read(&dummy, sizeof(dummy));
 }

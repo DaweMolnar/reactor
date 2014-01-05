@@ -20,16 +20,22 @@ void
 MultiReactor::run()
 {
 	while (true) {
-		Guard<ThreadMutex> guard(mutex_);
-		if (quit_) {
-			break;
+		Backlog::Job *job = 0;
+		{
+			Guard<ThreadMutex> guard(mutex_);
+			if (quit_) {
+				break;
+			}
+			if (dispatcher_.hasPendingEvents()) {
+				job = dispatcher_.dequeueEvent();
+			} else {
+				dispatcher_.collectEvents();
+			}
 		}
-		if (dispatcher_.hasPendingEvents()) {
-			Backlog::Job *job = dispatcher_.dequeueEvent();
+		if (job) {
 			job->execute();
+			dispatcher_.notify();
 			delete job;
-		} else {
-			dispatcher_.collectEvents();
 		}
 	}
 }

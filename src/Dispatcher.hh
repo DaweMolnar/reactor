@@ -6,6 +6,7 @@
 #include "DefaultDemuxer.hh"
 #include "FdCommand.hh"
 #include "Backlog.hh"
+#include "Pipe.hh"
 
 #include <map>
 #include <memory> // auto_ptr
@@ -18,28 +19,25 @@ class Dispatcher : public Noncopyable {
 	Timers timers_, lazyTimers_;
 	std::auto_ptr<DefaultDemuxer> defaultDemuxer_;
 	Demuxer *demuxer_;
+	Pipe notifier_;
 
 	void suspend(const Fd &fd);
 	void resume(const Fd &fd);
 	void lookupAndSchedule(FdEvent event);
 	void collectFdEvents();
+	void handleNotification(const FdEvent &event);
 
 	friend class BoundResumingCommand;
 
 public:
-	Dispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = Time::now)
-	: timers_(backlog_, nowFunc)
-	, lazyTimers_(backlog_, nowFunc)
-	, defaultDemuxer_(demuxer ? 0 : new DefaultDemuxer())
-	, demuxer_(demuxer ? demuxer : defaultDemuxer_.get())
-	{}
-
+	Dispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = Time::now);
 	~Dispatcher();
 
 	void collectEvents();
 	bool hasPendingEvents() const;
 	Backlog::Job *dequeueEvent();
 	void stepSingleThread();
+	void notify();
 
 	void add(const Fd &fd, const FdCommand &command);
 	void add(const Timer &timer, const TimerCommand &command);
