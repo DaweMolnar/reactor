@@ -31,6 +31,7 @@ client_TESTABLE_SOURCES := \
 	src/pthread/PthreadMutexImpl.cc \
 	src/pthread/PthreadConditionImpl.cc \
 	src/MultiReactor.cc \
+	src/Pipe.cc \
 	src/Client.cc
 
 client_SOURCES := \
