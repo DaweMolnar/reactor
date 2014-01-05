@@ -20,22 +20,21 @@ void
 MultiReactor::run()
 {
 	while (true) {
-		Backlog::Job *job = 0;
+		std::auto_ptr<Backlog::Job> job;
 		{
 			Guard<ThreadMutex> guard(mutex_);
 			if (quit_) {
 				break;
 			}
 			if (dispatcher_.hasPendingEvents()) {
-				job = dispatcher_.dequeueEvent();
+				job.reset(dispatcher_.dequeueEvent());
 			} else {
 				dispatcher_.collectEvents();
 			}
 		}
-		if (job) {
+		if (job.get()) {
 			job->execute();
 			dispatcher_.notify();
-			delete job;
 		}
 	}
 }
