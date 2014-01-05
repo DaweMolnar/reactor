@@ -3,6 +3,8 @@
 #include "MultiReactor.hh"
 
 #include <stdexcept>
+#include <iostream>
+#include <cstdlib>
 
 class Main {
 	Dispatcher dispatcher_;
@@ -15,7 +17,7 @@ public:
 	void onFdStdin(const FdEvent &);
 	void onFdSock(const FdEvent &);
 	void onTimer(const TimerEvent &);
-	int run() { return reactor_.loop(); }
+	int run();
 };
 
 Main::Main(int argc, char *argv[])
@@ -30,6 +32,17 @@ Main::Main(int argc, char *argv[])
 	dispatcher_.add(Fd::STDIN, commandForMethod(*this, &Main::onFdStdin));
 	dispatcher_.add(client_.fd(), commandForMethod(*this, &Main::onFdSock));
 	dispatcher_.add(Timer(DiffTime::ms(1000), 3), commandForMethod(*this, &Main::onTimer));
+}
+
+int
+Main::run()
+{
+	try {
+		return reactor_.loop();
+	} catch (const std::exception &e) {
+		std::cerr << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 }
 
 void
