@@ -13,7 +13,8 @@ class MultiReactor
 {
 	size_t threadCount_;
 	ThreadMutex mutex_;
-	ThreadCondition cond_;
+	ThreadCondition isLeaderWaitingCond_;
+	volatile bool isLeaderWaiting_;
 
 	virtual void run();
 

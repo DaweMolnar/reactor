@@ -11,7 +11,7 @@ class MyDemuxer : public Demuxer {
 public:
 	virtual void add(const Fd &fd);
 	virtual void remove(const Fd &fd);
-	virtual FdEvents demux(const DiffTime *interval);
+	virtual FdEvents *demux(const DiffTime *interval);
 };
 
 void
@@ -26,16 +26,16 @@ MyDemuxer::remove(const Fd &fd)
 	(void)fd;
 }
 
-MyDemuxer::FdEvents
+MyDemuxer::FdEvents *
 MyDemuxer::demux(const DiffTime *interval)
 {
-	FdEvents result;
+	FdEvents *result = new FdEvents();
 	Mocked &m = MockRegistry::find("demux");
 
 	(void)interval;
 
 	for (int i = m.expectedInt(); i; --i) {
-		result.push_back(FdEvent(Fd(m.expectedInt()), FdEvent::READ));
+		result->push_back(FdEvent(Fd(m.expectedInt()), FdEvent::READ));
 	}
 
 	return result;
@@ -110,7 +110,7 @@ public:
 
 		disp_->add(fd, fdMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
-		CPPUNIT_ASSERT_THROW(disp_->collectEvents(), std::runtime_error);
+		CPPUNIT_ASSERT_THROW(disp_->collectEvents(disp_->wait()), std::runtime_error);
 	}
 
 	static Time

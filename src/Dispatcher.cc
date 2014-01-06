@@ -102,23 +102,26 @@ Dispatcher::lookupAndSchedule(FdEvent event)
 	backlog_.enqueueClone(BoundResumingCommand(*j->second, event, *this));
 }
 
-void
-Dispatcher::collectFdEvents()
+DiffTime *
+Dispatcher::remaining()
+const
 {
-	std::auto_ptr<DiffTime> remaining;
+	return timers_.isTicking() ? new DiffTime(timers_.remainingTime()) : 0;
+}
 
-	if (timers_.isTicking()) {
-		remaining.reset(new DiffTime(timers_.remainingTime()));
-	}
-
-	Demuxer::FdEvents fdEvs = demuxer_->demux(remaining.get());
-	std::for_each(fdEvs.begin(), fdEvs.end(), std::bind1st(std::mem_fun(&Dispatcher::lookupAndSchedule), this));
+Dispatcher::FdEvents *
+Dispatcher::wait(const DiffTime *remaining)
+const
+{
+	std::auto_ptr<const DiffTime> dt(remaining);
+	return demuxer_->demux(dt.get());
 }
 
 void
-Dispatcher::collectEvents()
+Dispatcher::collectEvents(FdEvents *fdEvents)
 {
-	collectFdEvents();
+	std::auto_ptr<FdEvents> e(fdEvents);
+	std::for_each(e->begin(), e->end(), std::bind1st(std::mem_fun(&Dispatcher::lookupAndSchedule), this));
 	timers_.harvest();
 	lazyTimers_.harvest();
 }
@@ -139,7 +142,7 @@ Dispatcher::dequeueEvent()
 void
 Dispatcher::stepSingleThread()
 {
-	collectEvents();
+	collectEvents(wait(remaining()));
 	while (hasPendingEvents()) {
 		Backlog::Job *job = dequeueEvent();
 		job->execute();

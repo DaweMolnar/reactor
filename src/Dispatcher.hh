@@ -12,6 +12,10 @@
 #include <memory> // auto_ptr
 
 class Dispatcher : public Noncopyable {
+public:
+	typedef Demuxer::FdEvents FdEvents;
+
+private:
 	typedef std::map<Fd, FdCommand *> FdCommands;
 
 	FdCommands fdCommands_;
@@ -33,10 +37,12 @@ public:
 	Dispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = Time::now);
 	~Dispatcher();
 
-	void collectEvents();
+	void collectEvents(FdEvents *fdEvents);
 	bool hasPendingEvents() const;
 	Backlog::Job *dequeueEvent();
 	void stepSingleThread();
+	DiffTime *remaining() const;
+	FdEvents *wait(const DiffTime *remaining = 0) const;
 	void notify();
 
 	void add(const Fd &fd, const FdCommand &command);

@@ -26,8 +26,11 @@ Main::Main(int argc, char *argv[])
 {
 	if (argc != 3) throw std::runtime_error("argc must be 3");
 //	client_.setTarget(Ip("127.0.0.1"), Port("8080"));
+	std::cerr << "resolving names..." << std::endl;
 	client_.setTarget(Host(argv[1]), Service(argv[2]));
+	std::cerr << "connecting..." << std::endl;
 	client_.connect();
+	std::cerr << "connected." << std::endl;
 
 	dispatcher_.add(Fd::STDIN, commandForMethod(*this, &Main::onFdStdin));
 	dispatcher_.add(client_.fd(), commandForMethod(*this, &Main::onFdSock));
@@ -83,6 +86,8 @@ void
 Main::onTimer(const TimerEvent &)
 {
 	Fd::STDERR.write("timer\n", 6);
+//	for (int i = 0; i < 1000000000; ++i);
+//	Fd::STDERR.write("timer done\n", 11);
 }
 
 int

@@ -100,6 +100,8 @@ out/testUnits: $(testUnits_OBJECTS)
 client_OBJECTS := $(sort $(addprefix out/client.d/,$(addsuffix .o,$(basename $(client_SOURCES)))))
 -include $(addsuffix .d,$(basename $(client_OBJECTS)))
 
+out/client: CPPFLAGS += -g -O0
+
 out/client.d/%.o: %.cc
 	$Qmkdir -p $(@D)
 	$(if $Q,@echo "  CC    $@")

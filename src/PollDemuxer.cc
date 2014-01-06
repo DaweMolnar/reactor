@@ -28,7 +28,7 @@ PollDemuxer::remove(const Fd &fd)
 	}
 }
 
-PollDemuxer::FdEvents
+PollDemuxer::FdEvents *
 PollDemuxer::demux(const DiffTime *interval)
 {
 	int ms = interval ? interval->ms() : -1;
@@ -37,14 +37,14 @@ PollDemuxer::demux(const DiffTime *interval)
 	if (ret < 0) {
 		throw ErrnoException("poll");
 	} else {
-		FdEvents result;
+		FdEvents *result = new FdEvents();
 
 		for (size_t i = 0; i < fds_.size(); ++i) {
 			if ((fds_[i].revents & POLLIN) == POLLIN) {
-				result.push_back(FdEvent(Fd(fds_[i].fd), FdEvent::READ));
+				result->push_back(FdEvent(Fd(fds_[i].fd), FdEvent::READ));
 			}
 			if ((fds_[i].revents & POLLOUT) == POLLOUT) {
-				result.push_back(FdEvent(Fd(fds_[i].fd), FdEvent::WRITE));
+				result->push_back(FdEvent(Fd(fds_[i].fd), FdEvent::WRITE));
 			}
 		}
 

@@ -14,7 +14,7 @@ class PollDemuxer : public Demuxer {
 public:
 	virtual void add(const Fd &fd);
 	virtual void remove(const Fd &fd);
-	virtual FdEvents demux(const DiffTime *interval);
+	virtual FdEvents *demux(const DiffTime *interval);
 };
 
 #endif // REACTOR_POLLDEMUXER_HEADER
