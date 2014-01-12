@@ -3,13 +3,6 @@
 client_SOURCES := \
 	src/client.cc
 
-CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
-CPPFLAGS += -MD
-CPPFLAGS += -pthread
-
-LDFLAGS := -pthread
-
-
 client_OBJECTS := $(sort $(addprefix out/client.d/,$(addsuffix .o,$(basename $(client_SOURCES)))))
 -include $(addsuffix .d,$(basename $(client_OBJECTS)))
 

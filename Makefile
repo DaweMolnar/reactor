@@ -1,5 +1,11 @@
 TARGETS := out/client
 
+CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
+CPPFLAGS += -MD
+CPPFLAGS += -pthread
+
+LDFLAGS := -pthread
+
 ifndef V
 Q := @
 endif
