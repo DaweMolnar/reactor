@@ -32,8 +32,8 @@ Main::Main(int argc, char *argv[])
 	client_.connect();
 	std::cerr << "connected." << std::endl;
 
-	dispatcher_.add(Fd::STDIN, commandForMethod(*this, &Main::onFdStdin));
-	dispatcher_.add(client_.fd(), commandForMethod(*this, &Main::onFdSock));
+	dispatcher_.add(FdEvent(Fd::STDIN, FdEvent::READ), commandForMethod(*this, &Main::onFdStdin));
+	dispatcher_.add(FdEvent(client_.fd(), FdEvent::READ), commandForMethod(*this, &Main::onFdSock));
 	dispatcher_.add(Timer(DiffTime::ms(1000), 3), commandForMethod(*this, &Main::onTimer));
 }
 

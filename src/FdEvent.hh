@@ -14,6 +14,17 @@ struct FdEvent {
 	: fd(fd0)
 	, what(what0)
 	{}
+
+	bool
+	operator<(const FdEvent &rhs)
+	const
+	{
+		if (fd != rhs.fd) {
+			return fd < rhs.fd;
+		} else {
+			return what < rhs.what;
+		}
+	}
 };
 
 #endif // REACTOR_FDEVENT_HEADER

@@ -12,8 +12,8 @@ class PollDemuxer : public Demuxer {
 	Fds fds_;
 
 public:
-	virtual void add(const Fd &fd);
-	virtual void remove(const Fd &fd);
+	virtual void add(const FdEvent &fdEvent);
+	virtual void remove(const FdEvent &fdEvent);
 	virtual FdEvents *demux(const DiffTime *interval);
 };
 

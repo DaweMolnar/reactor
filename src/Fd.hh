@@ -30,6 +30,7 @@ public:
 
 	bool operator<(const Fd &rhs) const { return fd_ < rhs.fd_; }
 	bool operator==(const Fd &rhs) const { return fd_ == rhs.fd_; }
+	bool operator!=(const Fd &rhs) const { return fd_ != rhs.fd_; }
 };
 
 #endif // REACTOR_FD_HEADER

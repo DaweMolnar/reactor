@@ -16,7 +16,7 @@ public:
 	typedef Demuxer::FdEvents FdEvents;
 
 private:
-	typedef std::map<Fd, FdCommand *> FdCommands;
+	typedef std::map<FdEvent, FdCommand *> FdCommands;
 
 	FdCommands fdCommands_;
 	Backlog backlog_;
@@ -25,8 +25,8 @@ private:
 	Demuxer *demuxer_;
 	Pipe notifier_;
 
-	void suspend(const Fd &fd);
-	void resume(const Fd &fd);
+	void suspend(const FdEvent &fdEvent);
+	void resume(const FdEvent &fdEvent);
 	void lookupAndSchedule(FdEvent event);
 	void collectFdEvents();
 	void handleNotification(const FdEvent &event);
@@ -45,7 +45,7 @@ public:
 	FdEvents *wait(const DiffTime *remaining = 0) const;
 	void notify();
 
-	void add(const Fd &fd, const FdCommand &command);
+	void add(const FdEvent &fdEvent, const FdCommand &command);
 	void add(const Timer &timer, const TimerCommand &command);
 	void add(const LazyTimer &lazyTimer, const TimerCommand &command);
 };

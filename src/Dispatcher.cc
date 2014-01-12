@@ -18,7 +18,7 @@ public:
 	~BoundResumingCommand()
 	{
 		if (own()) {
-			dispatcher_.resume(Base::p1_.fd);
+			dispatcher_.resume(Base::p1_);
 		}
 	}
 
@@ -43,7 +43,7 @@ Dispatcher::Dispatcher(Demuxer *demuxer, const Timers::NowFunc nowFunc)
 , defaultDemuxer_(demuxer ? 0 : new DefaultDemuxer())
 , demuxer_(demuxer ? demuxer : defaultDemuxer_.get())
 {
-	demuxer_->add(notifier_.readFd());
+	demuxer_->add(FdEvent(notifier_.readFd(), FdEvent::READ));
 }
 
 Dispatcher::~Dispatcher()
@@ -54,10 +54,10 @@ Dispatcher::~Dispatcher()
 }
 
 void
-Dispatcher::add(const Fd &fd, const FdCommand &command)
+Dispatcher::add(const FdEvent &fdEvent, const FdCommand &command)
 {
-	demuxer_->add(fd);
-	fdCommands_.insert(std::make_pair(fd, command.clone()));
+	demuxer_->add(fdEvent);
+	fdCommands_.insert(std::make_pair(fdEvent, command.clone()));
 }
 
 void
@@ -73,15 +73,15 @@ Dispatcher::add(const LazyTimer &lazyTimer, const TimerCommand &command)
 }
 
 void
-Dispatcher::suspend(const Fd &fd)
+Dispatcher::suspend(const FdEvent &fdEvent)
 {
-	demuxer_->remove(fd);
+	demuxer_->remove(fdEvent);
 }
 
 void
-Dispatcher::resume(const Fd &fd)
+Dispatcher::resume(const FdEvent &fdEvent)
 {
-	demuxer_->add(fd);
+	demuxer_->add(fdEvent);
 }
 
 void
@@ -92,13 +92,13 @@ Dispatcher::lookupAndSchedule(FdEvent event)
 		return;
 	}
 
-	FdCommands::iterator j(fdCommands_.find(event.fd));
+	FdCommands::iterator j(fdCommands_.find(event));
 
 	if (j == fdCommands_.end()) {
 		throw std::runtime_error("invalid fd");
 	}
 
-	suspend(event.fd);
+	suspend(event);
 	backlog_.enqueueClone(BoundResumingCommand(*j->second, event, *this));
 }
 

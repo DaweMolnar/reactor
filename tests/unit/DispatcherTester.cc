@@ -9,21 +9,21 @@
 
 class MyDemuxer : public Demuxer {
 public:
-	virtual void add(const Fd &fd);
-	virtual void remove(const Fd &fd);
+	virtual void add(const FdEvent &fdEvent);
+	virtual void remove(const FdEvent &fdEvent);
 	virtual FdEvents *demux(const DiffTime *interval);
 };
 
 void
-MyDemuxer::add(const Fd &fd)
+MyDemuxer::add(const FdEvent &fdEvent)
 {
-	(void)fd;
+	(void)fdEvent;
 }
 
 void
-MyDemuxer::remove(const Fd &fd)
+MyDemuxer::remove(const FdEvent &fdEvent)
 {
-	(void)fd;
+	(void)fdEvent;
 }
 
 MyDemuxer::FdEvents *
@@ -96,7 +96,7 @@ public:
 		Mocked demux("demux");
 		Fd fd(42);
 
-		disp_->add(fd, fdMethodCommand_);
+		disp_->add(FdEvent(fd, FdEvent::READ), fdMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		disp_->stepSingleThread();
 		CPPUNIT_ASSERT_EQUAL((size_t)1, fdCommandCount_);
@@ -108,7 +108,7 @@ public:
 		Mocked demux("demux");
 		Fd fd(43);
 
-		disp_->add(fd, fdMethodCommand_);
+		disp_->add(FdEvent(fd, FdEvent::READ), fdMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		CPPUNIT_ASSERT_THROW(disp_->collectEvents(disp_->wait()), std::runtime_error);
 	}
@@ -143,7 +143,7 @@ public:
 		Fd fd(42);
 		LazyTimer lt(DiffTime::raw(2), 0, Time::raw(0));
 
-		disp_->add(fd, fdMethodCommand_);
+		disp_->add(FdEvent(fd, FdEvent::READ), fdMethodCommand_);
 		disp_->add(lt, timerMethodCommand_);
 		demux.expectf("%d%d", 1, 42);
 		now.expect(2);
