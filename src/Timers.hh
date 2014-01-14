@@ -1,10 +1,11 @@
 #ifndef REACTOR_TIMERS_HEADER
 #define REACTOR_TIMERS_HEADER
 
-#include "Noncopyable.hh"
 #include "LazyTimer.hh"
 #include "TimerCommand.hh"
 #include "Backlog.hh"
+
+#include <util/Noncopyable.hh>
 
 #include <queue>
 

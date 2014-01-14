@@ -2,8 +2,9 @@
 #define REACTOR_MULTIREACTOR_HEADER
 
 #include "Reactor.hh"
-#include "Runnable.hh"
 #include "ThreadCondition.hh"
+
+#include <util/Runnable.hh>
 
 #include <stddef.h>
 

@@ -1,4 +1,4 @@
-#include <src/DiffTime.hh>
+#include <util/DiffTime.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 

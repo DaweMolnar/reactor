@@ -1,6 +1,6 @@
 #include "PollDemuxer.hh"
 
-#include "ErrnoException.hh"
+#include <util/ErrnoException.hh>
 
 void
 PollDemuxer::add(const FdEvent &fdEvent)

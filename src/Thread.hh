@@ -1,8 +1,8 @@
 #ifndef REACTOR_THREAD_HEADER
 #define REACTOR_THREAD_HEADER
 
-#include "Runnable.hh"
-#include "Noncopyable.hh"
+#include <util/Runnable.hh>
+#include <util/Noncopyable.hh>
 
 class ThreadImpl;
 

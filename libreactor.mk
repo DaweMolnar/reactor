@@ -1,15 +1,10 @@
 # libreactor.mk
 
 libreactor_SOURCES := \
-	src/ErrnoException.cc \
-	src/Fd.cc \
-	src/AutoFd.cc \
 	src/Host.cc \
 	src/Ip.cc \
 	src/Service.cc \
 	src/Socket.cc \
-	src/DiffTime.cc \
-	src/Time.cc \
 	src/Timer.cc \
 	src/Timers.cc \
 	src/PollDemuxer.cc \
@@ -24,7 +19,6 @@ libreactor_SOURCES := \
 	src/pthread/PthreadMutexImpl.cc \
 	src/pthread/PthreadConditionImpl.cc \
 	src/MultiReactor.cc \
-	src/Pipe.cc \
 	src/Client.cc
 
 libreactor_OBJECTS := $(sort $(addprefix out/libreactor.a.d/,$(addsuffix .o,$(basename $(libreactor_SOURCES)))))

@@ -1,7 +1,7 @@
 #ifndef REACTOR_BACKLOG_HEADER
 #define REACTOR_BACKLOG_HEADER
 
-#include "BoundCommand.hh"
+#include <util/BoundCommand.hh>
 
 #include <queue>
 #include <cstddef>

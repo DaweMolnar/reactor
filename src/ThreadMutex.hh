@@ -1,7 +1,7 @@
 #ifndef REACTOR_THREADMUTEX_HEADER
 #define REACTOR_THREADMUTEX_HEADER
 
-#include "Noncopyable.hh"
+#include <util/Noncopyable.hh>
 
 class ThreadMutexImpl;
 

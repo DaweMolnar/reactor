@@ -1,6 +1,6 @@
-#include <src/AutoFd.hh>
+#include <util/AutoFd.hh>
 
-#include <src/ErrnoException.hh>
+#include <util/ErrnoException.hh>
 
 #include <tests/unit/mock/MockedFunction.hh>
 #include <tests/unit/mock/unistd.h>

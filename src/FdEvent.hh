@@ -1,6 +1,8 @@
 #ifndef REACTOR_FDEVENT_HEADER
 #define REACTOR_FDEVENT_HEADER
 
+#include <util/Fd.hh>
+
 struct FdEvent {
 	enum What {
 		READ = 4,

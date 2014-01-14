@@ -1,8 +1,9 @@
 #ifndef REACTOR_FDCOMMAND_HEADER
 #define REACTOR_FDCOMMAND_HEADER
 
-#include "Command.hh"
 #include "FdEvent.hh"
+
+#include <util/Command.hh>
 
 typedef Command1<void, const FdEvent &> FdCommand;
 

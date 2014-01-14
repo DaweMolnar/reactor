@@ -1,7 +1,8 @@
 #include "PthreadConditionImpl.hh"
 
 #include "PthreadMutexImpl.hh"
-#include "../ErrnoException.hh"
+
+#include <util/ErrnoException.hh>
 
 #include <iostream>
 

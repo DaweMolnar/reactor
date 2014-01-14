@@ -1,10 +1,11 @@
 #ifndef REACTOR_DEMUXER_HEADER
 #define REACTOR_DEMUXER_HEADER
 
-#include "Noncopyable.hh"
-#include "Fd.hh"
-#include "DiffTime.hh"
 #include "FdEvent.hh"
+
+#include <util/DiffTime.hh>
+#include <util/Fd.hh>
+#include <util/Noncopyable.hh>
 
 #include <list>
 

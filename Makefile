@@ -4,6 +4,7 @@ all:
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
 CPPFLAGS += -MD
 CPPFLAGS += -pthread
+CPPFLAGS += -I.
 
 LDFLAGS := -pthread
 
@@ -12,6 +13,7 @@ Q := @
 endif
 
 include libreactor.mk
+include util/module.mk
 include tests/unit/module.mk
 include client.mk
 include coverage.mk

@@ -2,7 +2,8 @@
 #define REACTOR_THREADCONDITION_HEADER
 
 #include "ThreadMutex.hh"
-#include "Noncopyable.hh"
+
+#include <util/Noncopyable.hh>
 
 class ThreadConditionImpl;
 

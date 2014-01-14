@@ -1,6 +1,6 @@
 #include "PthreadImpl.hh"
 
-#include "../ErrnoException.hh"
+#include <util/ErrnoException.hh>
 
 #include <iostream>
 

@@ -1,8 +1,9 @@
 #ifndef REACTOR_TIMERCOMMAND_HEADER
 #define REACTOR_TIMERCOMMAND_HEADER
 
-#include "Command.hh"
 #include "TimerEvent.hh"
+
+#include <util/Command.hh>
 
 typedef Command1<void, const TimerEvent &> TimerCommand;
 

@@ -1,12 +1,13 @@
 #ifndef REACTOR_DISPATCHER_HEADER
 #define REACTOR_DISPATCHER_HEADER
 
-#include "Noncopyable.hh"
 #include "Timers.hh"
 #include "DefaultDemuxer.hh"
 #include "FdCommand.hh"
 #include "Backlog.hh"
-#include "Pipe.hh"
+
+#include <util/Pipe.hh>
+#include <util/Noncopyable.hh>
 
 #include <map>
 #include <memory> // auto_ptr

@@ -16,7 +16,8 @@ out/client.d/%.o: %.cc
 	$Q$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< $(OUTPUT_OPTION)
 
 out/client: out/libreactor.a
-out/client: LDLIBS += -lreactor
+out/client: out/libutil.a
+out/client: LDLIBS += -lreactor -lutil
 out/client: LDFLAGS += -Lout/
 
 out/client: $(client_OBJECTS)

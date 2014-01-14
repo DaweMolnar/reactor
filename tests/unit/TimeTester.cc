@@ -1,6 +1,6 @@
-#include <src/Time.hh>
+#include <util/Time.hh>
 
-#include <src/ErrnoException.hh>
+#include <util/ErrnoException.hh>
 
 #include <tests/unit/mock/MockedFunction.hh>
 #include <tests/unit/mock/time.h>

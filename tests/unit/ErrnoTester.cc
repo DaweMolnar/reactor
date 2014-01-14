@@ -1,4 +1,4 @@
-#include <src/ErrnoException.hh>
+#include <util/ErrnoException.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 

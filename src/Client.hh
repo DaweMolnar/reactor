@@ -1,11 +1,12 @@
 #ifndef REACTOR_CLIENT_HEADER
 #define REACTOR_CLIENT_HEADER
 
-#include "Noncopyable.hh"
 #include "Dispatcher.hh"
 #include "Host.hh"
 #include "Service.hh"
 #include "StreamSock.hh"
+
+#include <util/Noncopyable.hh>
 
 class Client : public Noncopyable {
 	Dispatcher &dispatcher_;

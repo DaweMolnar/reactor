@@ -1,7 +1,7 @@
 #ifndef REACTOR_TIMER_HEADER
 #define REACTOR_TIMER_HEADER
 
-#include "Time.hh"
+#include <util/Time.hh>
 
 #include <stddef.h>
 

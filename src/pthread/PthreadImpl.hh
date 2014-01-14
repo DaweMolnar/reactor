@@ -2,7 +2,8 @@
 #define REACTOR_PTHREAD_PTHREADIMPL_HEADER
 
 #include "../ThreadImpl.hh"
-#include "../Runnable.hh"
+
+#include <util/Runnable.hh>
 
 #include <pthread.h>
 
