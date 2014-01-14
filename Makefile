@@ -14,7 +14,7 @@ endif
 all: $(TARGETS)
 
 include libreactor.mk
-include testunits.mk
+include tests/unit/module.mk
 include client.mk
 include coverage.mk
 
