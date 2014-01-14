@@ -45,7 +45,7 @@ MultiReactor::run()
 			if (fdEvents.get()) {
 				dispatcher_.collectEvents(fdEvents.release());
 				isLeaderWaiting_ = iNeedToWait = false;
-				isLeaderWaitingCond_.notify();
+				isLeaderWaitingCond_.notifyAll();
 			}
 			if (dispatcher_.hasPendingEvents()) {
 				job.reset(dispatcher_.dequeueEvent());
