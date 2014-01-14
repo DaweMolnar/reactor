@@ -1,4 +1,4 @@
-#include <src/Thread.hh>
+#include <thread/Thread.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 

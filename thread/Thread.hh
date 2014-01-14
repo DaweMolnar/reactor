@@ -1,5 +1,5 @@
-#ifndef REACTOR_THREAD_HEADER
-#define REACTOR_THREAD_HEADER
+#ifndef REACTOR_THREAD_THREAD_HEADER
+#define REACTOR_THREAD_THREAD_HEADER
 
 #include <util/Runnable.hh>
 #include <util/Noncopyable.hh>
@@ -16,4 +16,4 @@ public:
 	bool hasFinished() const;
 };
 
-#endif // REACTOR_THREAD_HEADER
+#endif // REACTOR_THREAD_THREAD_HEADER

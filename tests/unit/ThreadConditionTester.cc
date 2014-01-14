@@ -1,6 +1,6 @@
-#include <src/ThreadCondition.hh>
-#include <src/Thread.hh>
-#include <src/Guard.hh>
+#include <thread/ThreadCondition.hh>
+#include <thread/Thread.hh>
+#include <thread/Guard.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 

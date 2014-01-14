@@ -1,7 +1,7 @@
 #include "MultiReactor.hh"
 
-#include "ThreadPool.hh"
-#include "Guard.hh"
+#include <thread/ThreadPool.hh>
+#include <thread/Guard.hh>
 
 #include <cstdlib>
 #include <stdexcept>

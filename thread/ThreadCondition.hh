@@ -1,7 +1,7 @@
-#ifndef REACTOR_THREADCONDITION_HEADER
-#define REACTOR_THREADCONDITION_HEADER
+#ifndef REACTOR_THREAD_THREADCONDITION_HEADER
+#define REACTOR_THREAD_THREADCONDITION_HEADER
 
-#include "ThreadMutex.hh"
+#include <thread/ThreadMutex.hh>
 
 #include <util/Noncopyable.hh>
 
@@ -19,4 +19,4 @@ public:
 	void notifyAll();
 };
 
-#endif // REACTOR_THREADCONDITION_HEADER
+#endif // REACTOR_THREAD_THREADCONDITION_HEADER

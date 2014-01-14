@@ -1,7 +1,7 @@
-#ifndef REACTOR_THREADPOOL_HEADER
-#define REACTOR_THREADPOOL_HEADER
+#ifndef REACTOR_THREAD_THREADPOOL_HEADER
+#define REACTOR_THREAD_THREADPOOL_HEADER
 
-#include "Thread.hh"
+#include <thread/Thread.hh>
 
 #include <vector>
 #include <cstddef>
@@ -17,4 +17,4 @@ public:
 	~ThreadPool();
 };
 
-#endif // REACTOR_THREADPOOL_HEADER
+#endif // REACTOR_THREAD_THREADPOOL_HEADER

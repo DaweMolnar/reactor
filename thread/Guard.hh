@@ -1,5 +1,5 @@
-#ifndef REACTOR_GUARD_HEADER
-#define REACTOR_GUARD_HEADER
+#ifndef REACTOR_THREAD_GUARD_HEADER
+#define REACTOR_THREAD_GUARD_HEADER
 
 template <class L>
 class Guard {
@@ -18,4 +18,4 @@ public:
 	}
 };
 
-#endif // REACTOR_GUARD_HEADER
+#endif // REACTOR_THREAD_GUARD_HEADER

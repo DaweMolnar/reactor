@@ -11,13 +11,6 @@ libreactor_SOURCES := \
 	src/Dispatcher.cc \
 	src/Backlog.cc \
 	src/Reactor.cc \
-	src/Thread.cc \
-	src/ThreadPool.cc \
-	src/ThreadMutex.cc \
-	src/ThreadCondition.cc \
-	src/pthread/PthreadImpl.cc \
-	src/pthread/PthreadMutexImpl.cc \
-	src/pthread/PthreadConditionImpl.cc \
 	src/MultiReactor.cc \
 	src/Client.cc
 

@@ -1,6 +1,6 @@
-#include <src/ThreadPool.hh>
-#include <src/ThreadMutex.hh>
-#include <src/Guard.hh>
+#include <thread/ThreadPool.hh>
+#include <thread/ThreadMutex.hh>
+#include <thread/Guard.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 

@@ -11,10 +11,6 @@ testUnits_SOURCES := \
 	tests/unit/TimerTester.cc \
 	tests/unit/TimersTester.cc \
 	tests/unit/DispatcherTester.cc \
-	tests/unit/ThreadTester.cc \
-	tests/unit/ThreadPoolTester.cc \
-	tests/unit/ThreadMutexTester.cc \
-	tests/unit/ThreadConditionTester.cc \
 	tests/unit/testUnits.cc
 
 testUnits_SOURCES += \
@@ -24,6 +20,13 @@ testUnits_SOURCES += \
 	tests/unit/DiffTimeTester.cc \
 	tests/unit/TimeTester.cc \
 	tests/unit/AutoFdTester.cc
+
+testUnits_SOURCES += \
+	$(libthread_SOURCES) \
+	tests/unit/ThreadTester.cc \
+	tests/unit/ThreadPoolTester.cc \
+	tests/unit/ThreadMutexTester.cc \
+	tests/unit/ThreadConditionTester.cc
 
 testUnits_OBJECTS := $(sort $(addprefix out/testUnits.d/,$(addsuffix .o,$(basename $(testUnits_SOURCES)))))
 -include $(addsuffix .d,$(basename $(testUnits_OBJECTS)))
