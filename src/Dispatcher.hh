@@ -12,7 +12,7 @@
 #include <map>
 #include <memory> // auto_ptr
 
-class Dispatcher : public Noncopyable {
+class Dispatcher : public util::Noncopyable {
 public:
 	typedef Demuxer::FdEvents FdEvents;
 
@@ -24,7 +24,7 @@ private:
 	Timers timers_, lazyTimers_;
 	std::auto_ptr<DefaultDemuxer> defaultDemuxer_;
 	Demuxer *demuxer_;
-	Pipe notifier_;
+	util::Pipe notifier_;
 
 	void suspend(const FdEvent &fdEvent);
 	void resume(const FdEvent &fdEvent);
@@ -35,15 +35,15 @@ private:
 	friend class BoundResumingCommand;
 
 public:
-	Dispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = Time::now);
+	Dispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = util::Time::now);
 	~Dispatcher();
 
 	void collectEvents(FdEvents *fdEvents);
 	bool hasPendingEvents() const;
 	Backlog::Job *dequeueEvent();
 	void stepSingleThread();
-	DiffTime *remaining() const;
-	FdEvents *wait(const DiffTime *remaining = 0) const;
+	util::DiffTime *remaining() const;
+	FdEvents *wait(const util::DiffTime *remaining = 0) const;
 	void notify();
 
 	void add(const FdEvent &fdEvent, const FdCommand &command);

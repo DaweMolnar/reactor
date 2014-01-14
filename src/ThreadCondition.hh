@@ -7,7 +7,7 @@
 
 class ThreadConditionImpl;
 
-class ThreadCondition : public Noncopyable {
+class ThreadCondition : public util::Noncopyable {
 	ThreadConditionImpl *impl_;
 
 public:

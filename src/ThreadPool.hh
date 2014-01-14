@@ -9,11 +9,11 @@
 class ThreadPool {
 	typedef std::vector<Thread *> Threads;
 
-	Runnable &runnable_;
+	util::Runnable &runnable_;
 	Threads threads_;
 
 public:
-	ThreadPool(Runnable &runnable, size_t count);
+	ThreadPool(util::Runnable &runnable, size_t count);
 	~ThreadPool();
 };
 

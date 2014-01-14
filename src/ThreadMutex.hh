@@ -5,7 +5,7 @@
 
 class ThreadMutexImpl;
 
-class ThreadMutex : public Noncopyable {
+class ThreadMutex : public util::Noncopyable {
 	ThreadMutexImpl *impl_;
 
 	friend class ThreadCondition;

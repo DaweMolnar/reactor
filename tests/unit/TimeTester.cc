@@ -7,6 +7,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+using namespace util;
+
 class TimeTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(TimeTester);
 	CPPUNIT_TEST(testConstruction);

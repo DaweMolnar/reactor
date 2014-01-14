@@ -4,6 +4,8 @@
 
 #include <cerrno>
 
+using namespace util;
+
 class ErrnoTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(ErrnoTester);
 	CPPUNIT_TEST(testConstruction);

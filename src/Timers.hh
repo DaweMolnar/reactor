@@ -9,9 +9,9 @@
 
 #include <queue>
 
-class Timers : public Noncopyable {
+class Timers : public util::Noncopyable {
 public:
-	typedef Time (*NowFunc)();
+	typedef util::Time (*NowFunc)();
 
 private:
 	struct TimerAndCommand {
@@ -35,7 +35,7 @@ private:
 	NowFunc nowFunc_;
 
 public:
-	Timers(Backlog &backlog, const NowFunc &nowFunc = Time::now)
+	Timers(Backlog &backlog, const NowFunc &nowFunc = util::Time::now)
 	: backlog_(backlog)
 	, nowFunc_(nowFunc)
 	{}
@@ -45,7 +45,7 @@ public:
 	void add(const Timer &timer, const TimerCommand &timerCommand);
 	void harvest();
 	bool isTicking() const;
-	DiffTime remainingTime() const;
+	util::DiffTime remainingTime() const;
 };
 
 #endif // REACTOR_TIMERS_HEADER

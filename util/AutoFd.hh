@@ -1,8 +1,10 @@
-#ifndef REACTOR_AUTO_FD_HEADER
-#define REACTOR_AUTO_FD_HEADER
+#ifndef REACTOR_UTIL_AUTO_FD_HEADER
+#define REACTOR_UTIL_AUTO_FD_HEADER
 
-#include "Fd.hh"
-#include "Noncopyable.hh"
+#include <util/Fd.hh>
+#include <util/Noncopyable.hh>
+
+namespace util {
 
 class AutoFd : public Fd, public Noncopyable {
 	void closeIfValid();
@@ -15,4 +17,6 @@ public:
 	void reset(int fd = INVALID);
 };
 
-#endif // REACTOR_AUTO_FD_HEADER
+} // namespace util
+
+#endif // REACTOR_UTIL_AUTO_FD_HEADER

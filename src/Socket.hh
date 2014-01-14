@@ -7,8 +7,8 @@
 #include <util/AutoFd.hh>
 #include <util/Noncopyable.hh>
 
-class Socket : public Noncopyable {
-	AutoFd fd_;
+class Socket : public util::Noncopyable {
+	util::AutoFd fd_;
 	int type_;
 
 public:
@@ -19,7 +19,7 @@ public:
 	Socket(int type) : type_(type) {}
 
 	void connect(const Host &targetHost, const Service &targetServ);
-	const Fd &fd() const { return fd_; }
+	const util::Fd &fd() const { return fd_; }
 };
 
 #endif // REACTOR_SOCKET_HEADER

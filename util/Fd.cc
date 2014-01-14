@@ -5,6 +5,8 @@
 #include <fcntl.h> // blocking
 #include <unistd.h>
 
+using namespace util;
+
 const Fd Fd::STDIN(STDIN_FILENO);
 const Fd Fd::STDOUT(STDOUT_FILENO);
 const Fd Fd::STDERR(STDERR_FILENO);

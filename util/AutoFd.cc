@@ -1,5 +1,7 @@
 #include "AutoFd.hh"
 
+using namespace util;
+
 AutoFd::~AutoFd()
 {
 	closeIfValid();

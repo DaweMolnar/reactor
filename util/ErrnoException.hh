@@ -1,8 +1,10 @@
-#ifndef REACTOR_ERRNOEXCEPTION_HEADER
-#define REACTOR_ERRNOEXCEPTION_HEADER
+#ifndef REACTOR_UTIL_ERRNOEXCEPTION_HEADER
+#define REACTOR_UTIL_ERRNOEXCEPTION_HEADER
 
 #include <exception>
 #include <string>
+
+namespace util {
 
 class ErrnoException : std::exception {
 	int errorCode_;
@@ -18,4 +20,6 @@ public:
 	virtual const char *what() const throw() { return what_.c_str(); }
 };
 
-#endif // REACTOR_ERRNOEXCEPTION_HEADER
+} // namespace util
+
+#endif // REACTOR_UTIL_ERRNOEXCEPTION_HEADER

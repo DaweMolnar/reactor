@@ -5,6 +5,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+using namespace util;
+
 class TimersTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(TimersTester);
 	CPPUNIT_TEST(testAddTimerActions);

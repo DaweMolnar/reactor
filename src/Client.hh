@@ -8,7 +8,7 @@
 
 #include <util/Noncopyable.hh>
 
-class Client : public Noncopyable {
+class Client : public util::Noncopyable {
 	Dispatcher &dispatcher_;
 	Host targetHost_;
 	Service targetServ_;
@@ -23,7 +23,7 @@ public:
 	void setTarget(const Host &targetHost, const Service &targetServ);
 	void connect();
 
-	const Fd &fd() const { return sock_.fd(); }
+	const util::Fd &fd() const { return sock_.fd(); }
 };
 
 #endif // REACTOR_CLIENT_HEADER

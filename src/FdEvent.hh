@@ -9,10 +9,10 @@ struct FdEvent {
 		WRITE = 2
 	};
 
-	Fd fd;
+	util::Fd fd;
 	What what;
 
-	FdEvent(const Fd &fd0, What what0)
+	FdEvent(const util::Fd &fd0, What what0)
 	: fd(fd0)
 	, what(what0)
 	{}

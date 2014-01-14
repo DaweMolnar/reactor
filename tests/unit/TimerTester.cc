@@ -4,6 +4,8 @@
 
 #include <stdexcept>
 
+using namespace util;
+
 class TimerTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(TimerTester);
 	CPPUNIT_TEST(testConstruction);

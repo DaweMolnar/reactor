@@ -1,7 +1,9 @@
-#ifndef REACTOR_TIME_HEADER
-#define REACTOR_TIME_HEADER
+#ifndef REACTOR_UTIL_TIME_HEADER
+#define REACTOR_UTIL_TIME_HEADER
 
-#include "DiffTime.hh"
+#include <util/DiffTime.hh>
+
+namespace util {
 
 class Time {
 	uint64_t time_;
@@ -31,4 +33,6 @@ public:
 	uint32_t nsFraction() const { return fraction(1000 * 1000 * 1000); }
 };
 
-#endif // REACTOR_TIME_HEADER
+} // namespace util
+
+#endif // REACTOR_UTIL_TIME_HEADER

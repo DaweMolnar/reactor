@@ -1,5 +1,7 @@
-#ifndef REACTOR_NONCOPYABLE_HEADER
-#define REACTOR_NONCOPYABLE_HEADER
+#ifndef REACTOR_UTIL_NONCOPYABLE_HEADER
+#define REACTOR_UTIL_NONCOPYABLE_HEADER
+
+namespace util {
 
 class Noncopyable {
 	Noncopyable(const Noncopyable &);
@@ -9,4 +11,6 @@ public:
 	Noncopyable(void) {}
 };
 
-#endif // REACTOR_NONCOPYABLE_HEADER
+} // namespace util
+
+#endif // REACTOR_UTIL_NONCOPYABLE_HEADER

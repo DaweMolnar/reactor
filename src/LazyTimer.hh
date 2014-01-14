@@ -5,7 +5,7 @@
 
 class LazyTimer : public Timer {
 public:
-	LazyTimer(const DiffTime &interval, size_t iterationLimit = 0, const Time &t0 = Time::now())
+	LazyTimer(const util::DiffTime &interval, size_t iterationLimit = 0, const util::Time &t0 = util::Time::now())
 	: Timer(interval, iterationLimit, t0)
 	{}
 };

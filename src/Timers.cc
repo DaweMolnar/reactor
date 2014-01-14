@@ -25,7 +25,7 @@ Timers::harvest()
 
 	while (!queue_.empty()) {
 		TimerAndCommand tac(queue_.top());
-		const DiffTime dt(tac.timer.expiration() - nowFunc_());
+		const util::DiffTime dt(tac.timer.expiration() - nowFunc_());
 
 		if (!dt.positive()) {
 			queue_.pop();
@@ -52,7 +52,7 @@ const
 	return !queue_.empty();
 }
 
-DiffTime
+util::DiffTime
 Timers::remainingTime()
 const
 {
@@ -61,6 +61,6 @@ const
 	}
 
 	TimerAndCommand tac(queue_.top());
-	DiffTime dt(tac.timer.expiration() - nowFunc_());
-	return dt.positive() ? dt : DiffTime::raw(0);
+	util::DiffTime dt(tac.timer.expiration() - nowFunc_());
+	return dt.positive() ? dt : util::DiffTime::raw(0);
 }

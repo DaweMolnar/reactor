@@ -10,7 +10,7 @@
 
 class MultiReactor
 : public Reactor
-, public Runnable
+, public util::Runnable
 {
 	size_t threadCount_;
 	ThreadMutex mutex_;

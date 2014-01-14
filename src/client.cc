@@ -32,9 +32,9 @@ Main::Main(int argc, char *argv[])
 	client_.connect();
 	std::cerr << "connected." << std::endl;
 
-	dispatcher_.add(FdEvent(Fd::STDIN, FdEvent::READ), commandForMethod(*this, &Main::onFdStdin));
-	dispatcher_.add(FdEvent(client_.fd(), FdEvent::READ), commandForMethod(*this, &Main::onFdSock));
-	dispatcher_.add(Timer(DiffTime::ms(1000), 3), commandForMethod(*this, &Main::onTimer));
+	dispatcher_.add(FdEvent(util::Fd::STDIN, FdEvent::READ), util::commandForMethod(*this, &Main::onFdStdin));
+	dispatcher_.add(FdEvent(client_.fd(), FdEvent::READ), util::commandForMethod(*this, &Main::onFdSock));
+	dispatcher_.add(Timer(util::DiffTime::ms(1000), 3), util::commandForMethod(*this, &Main::onTimer));
 }
 
 int
@@ -74,7 +74,7 @@ Main::onFdSock(const FdEvent &event)
 	if (!rd) {
 		reactor_.quit();
 	} else {
-		size_t wr = Fd::STDOUT.write(buf, rd);
+		size_t wr = util::Fd::STDOUT.write(buf, rd);
 
 		if (wr != rd) {
 			throw std::runtime_error("partial send");
@@ -85,7 +85,7 @@ Main::onFdSock(const FdEvent &event)
 void
 Main::onTimer(const TimerEvent &)
 {
-	Fd::STDERR.write("timer\n", 6);
+	util::Fd::STDERR.write("timer\n", 6);
 //	for (int i = 0; i < 1000000000; ++i);
 //	Fd::STDERR.write("timer done\n", 11);
 }

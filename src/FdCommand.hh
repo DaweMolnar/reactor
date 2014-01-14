@@ -5,6 +5,6 @@
 
 #include <util/Command.hh>
 
-typedef Command1<void, const FdEvent &> FdCommand;
+typedef util::Command1<void, const FdEvent &> FdCommand;
 
 #endif // REACTOR_FDCOMMAND_HEADER

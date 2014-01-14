@@ -23,7 +23,7 @@ MultiReactor::run()
 	bool iNeedToWait = false;
 	std::auto_ptr<Dispatcher::FdEvents> fdEvents;
 	std::auto_ptr<Backlog::Job> job;
-	std::auto_ptr<DiffTime> remaining;
+	std::auto_ptr<util::DiffTime> remaining;
 
 	while (true) {
 		if (iNeedToWait) {

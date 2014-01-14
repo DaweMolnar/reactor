@@ -2,6 +2,8 @@
 
 #include <cstdlib> // abs()
 
+using namespace util;
+
 DiffTime
 DiffTime::ms(int32_t ms)
 {

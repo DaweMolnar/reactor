@@ -6,14 +6,14 @@
 #include <stddef.h>
 
 class Timer {
-	DiffTime interval_;
-	Time expiration_;
+	util::DiffTime interval_;
+	util::Time expiration_;
 	size_t iterationCount_;
 	size_t iterationLimit_;
 
 
 public:
-	Timer(const DiffTime &interval, size_t iterationLimit = 0, const Time &t0 = Time::now())
+	Timer(const util::DiffTime &interval, size_t iterationLimit = 0, const util::Time &t0 = util::Time::now())
 	: interval_(interval)
 	, expiration_(t0 + interval)
 	, iterationCount_(0)
@@ -22,8 +22,8 @@ public:
 
 	bool operator<(const Timer &rhs) const { return expiration_ < rhs.expiration_; }
 
-	const DiffTime &interval() const { return interval_; }
-	const Time &expiration() const { return expiration_; }
+	const util::DiffTime &interval() const { return interval_; }
+	const util::Time &expiration() const { return expiration_; }
 	size_t iterationCount() const { return iterationCount_; }
 	size_t iterationLimit() const { return iterationLimit_; }
 

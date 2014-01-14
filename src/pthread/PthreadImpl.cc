@@ -16,7 +16,7 @@ PthreadImpl::routine(void *arg)
 	return 0;
 }
 
-PthreadImpl::PthreadImpl(Runnable &runnable)
+PthreadImpl::PthreadImpl(util::Runnable &runnable)
 : runnable_(runnable)
 , finished_(false)
 {
@@ -24,14 +24,14 @@ PthreadImpl::PthreadImpl(Runnable &runnable)
 
 	c.pthreadImpl = this;
 	if (int error = pthread_create(&thread_, 0, &PthreadImpl::routine, c.pthreadArg)) {
-		throw ErrnoException("pthread_create", error);
+		throw util::ErrnoException("pthread_create", error);
 	}
 }
 
 PthreadImpl::~PthreadImpl()
 {
 	if (int error = pthread_join(thread_, 0)) {
-		ErrnoException e("pthread_join", error);
+		util::ErrnoException e("pthread_join", error);
 		if (std::uncaught_exception()) {
 			std::cerr << e.what() << std::endl;
 		} else {

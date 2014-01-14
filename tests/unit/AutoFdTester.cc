@@ -9,6 +9,8 @@
 
 #include <fcntl.h>
 
+using namespace util;
+
 class AutoFdTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(AutoFdTester);
 	CPPUNIT_TEST(testConstruction);

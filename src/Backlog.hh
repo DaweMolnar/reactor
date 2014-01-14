@@ -8,7 +8,7 @@
 
 class Backlog {
 public:
-	typedef Command0<void> Job;
+	typedef util::Command0<void> Job;
 
 private:
 	typedef std::queue<Job *> Queue;

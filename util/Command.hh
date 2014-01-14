@@ -1,5 +1,7 @@
-#ifndef REACTOR_COMMAND_HEADER
-#define REACTOR_COMMAND_HEADER
+#ifndef REACTOR_UTIL_COMMAND_HEADER
+#define REACTOR_UTIL_COMMAND_HEADER
+
+namespace util {
 
 template <typename R>
 class Command0 {
@@ -61,4 +63,6 @@ commandForMethod(T &t, R (T::*m)(P1))
 	return MethodCommand1<R, T, P1>(t, m);
 }
 
-#endif // REACTOR_COMMAND_HEADER
+} // namespace util
+
+#endif // REACTOR_UTIL_COMMAND_HEADER

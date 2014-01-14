@@ -16,14 +16,14 @@ class PthreadImpl : public ThreadImpl {
 	};
 
 	pthread_t thread_;
-	Runnable &runnable_;
+	util::Runnable &runnable_;
 	volatile bool finished_;
 
 	static void *routine(void *arg);
 	void run();
 
 public:
-	PthreadImpl(Runnable &runnable);
+	PthreadImpl(util::Runnable &runnable);
 	~PthreadImpl();
 
 	virtual bool hasFinished() const { return finished_; }

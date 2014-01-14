@@ -5,6 +5,6 @@
 
 #include <util/Command.hh>
 
-typedef Command1<void, const TimerEvent &> TimerCommand;
+typedef util::Command1<void, const TimerEvent &> TimerCommand;
 
 #endif // REACTOR_TIMERCOMMAND_HEADER

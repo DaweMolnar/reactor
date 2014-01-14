@@ -1,7 +1,9 @@
-#ifndef REACTOR_DIFFTIME_HEADER
-#define REACTOR_DIFFTIME_HEADER
+#ifndef REACTOR_UTIL_DIFFTIME_HEADER
+#define REACTOR_UTIL_DIFFTIME_HEADER
 
 #include <stdint.h>
+
+namespace util {
 
 class DiffTime {
 	int64_t raw_;
@@ -19,4 +21,6 @@ public:
 	bool positive() const { return raw_ > 0; }
 };
 
-#endif // REACTOR_DIFFTIME_HEADER
+} // namespace util
+
+#endif // REACTOR_UTIL_DIFFTIME_HEADER

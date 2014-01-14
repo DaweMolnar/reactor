@@ -10,7 +10,7 @@
 
 class ThreadConditionTester
 : public CppUnit::TestFixture
-, public Runnable
+, public util::Runnable
 {
 	CPPUNIT_TEST_SUITE(ThreadConditionTester);
 	CPPUNIT_TEST(testNotify);

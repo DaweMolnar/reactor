@@ -4,7 +4,7 @@
 
 class ThreadPoolTester
 : public CppUnit::TestFixture
-, public Runnable
+, public util::Runnable
 {
 	CPPUNIT_TEST_SUITE(ThreadPoolTester);
 	CPPUNIT_TEST(testConstruction);

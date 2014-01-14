@@ -4,6 +4,8 @@
 
 #include <limits>
 
+using namespace util;
+
 class DiffTimeTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(DiffTimeTester);
 	CPPUNIT_TEST(testConstruction);

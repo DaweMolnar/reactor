@@ -4,6 +4,8 @@
 
 #include <sys/time.h> // gettimeofday()
 
+using namespace util;
+
 Time
 Time::now()
 {

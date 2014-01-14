@@ -3,9 +3,9 @@
 #include <algorithm> // std::for_each
 #include <stdexcept>
 
-class BoundResumingCommand : public BoundCommand1<void, FdEvent, Command1<void, const FdEvent &> > {
-	typedef Command1<void, const FdEvent &> C;
-	typedef BoundCommand1<void, FdEvent, C> Base;
+class BoundResumingCommand : public util::BoundCommand1<void, FdEvent, util::Command1<void, const FdEvent &> > {
+	typedef util::Command1<void, const FdEvent &> C;
+	typedef util::BoundCommand1<void, FdEvent, C> Base;
 
 	Dispatcher &dispatcher_;
 
@@ -102,18 +102,18 @@ Dispatcher::lookupAndSchedule(FdEvent event)
 	backlog_.enqueueClone(BoundResumingCommand(*j->second, event, *this));
 }
 
-DiffTime *
+util::DiffTime *
 Dispatcher::remaining()
 const
 {
-	return timers_.isTicking() ? new DiffTime(timers_.remainingTime()) : 0;
+	return timers_.isTicking() ? new util::DiffTime(timers_.remainingTime()) : 0;
 }
 
 Dispatcher::FdEvents *
-Dispatcher::wait(const DiffTime *remaining)
+Dispatcher::wait(const util::DiffTime *remaining)
 const
 {
-	std::auto_ptr<const DiffTime> dt(remaining);
+	std::auto_ptr<const util::DiffTime> dt(remaining);
 	return demuxer_->demux(dt.get());
 }
 

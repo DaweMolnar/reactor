@@ -6,7 +6,7 @@
 
 class ThreadMutexTester
 : public CppUnit::TestFixture
-, public Runnable
+, public util::Runnable
 {
 	CPPUNIT_TEST_SUITE(ThreadMutexTester);
 //	CPPUNIT_TEST(testThreadPoolWithNoLocking);

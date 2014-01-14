@@ -6,11 +6,11 @@
 
 class ThreadImpl;
 
-class Thread : public Noncopyable {
+class Thread : public util::Noncopyable {
 	ThreadImpl *impl_;
 
 public:
-	Thread(Runnable &runnable);
+	Thread(util::Runnable &runnable);
 	~Thread();
 
 	bool hasFinished() const;

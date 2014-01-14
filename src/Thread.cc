@@ -2,7 +2,7 @@
 
 #include "pthread/PthreadImpl.hh"
 
-Thread::Thread(Runnable &runnable)
+Thread::Thread(util::Runnable &runnable)
 : impl_(new pthread::PthreadImpl(runnable))
 {}
 

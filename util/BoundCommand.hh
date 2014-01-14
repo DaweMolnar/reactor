@@ -1,9 +1,11 @@
-#ifndef BOUNDCOMMAND_HEADER
-#define BOUNDCOMMAND_HEADER
+#ifndef REACTOR_UTIL_BOUNDCOMMAND_HEADER
+#define REACTOR_UTIL_BOUNDCOMMAND_HEADER
 
-#include "Command.hh"
+#include <util/Command.hh>
 
 #include <memory> // auto_ptr
+
+namespace util {
 
 template <typename R>
 class BoundCommand : public Command0<R> {};
@@ -110,4 +112,6 @@ bindCommand(const Command1<R, const P1 &> &c, const P1 &p1)
 	return BoundCommand1<R, P1, Command1<R, const P1 &> >(c, p1);
 }
 
-#endif // BOUNDCOMMAND_HEADER
+} // namespace util
+
+#endif // REACTOR_UTIL_BOUNDCOMMAND_HEADER

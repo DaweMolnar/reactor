@@ -1,7 +1,9 @@
-#ifndef REACTOR_PIPE_HEADER
-#define REACTOR_PIPE_HEADER
+#ifndef REACTOR_UTIL_PIPE_HEADER
+#define REACTOR_UTIL_PIPE_HEADER
 
-#include "AutoFd.hh"
+#include <util/AutoFd.hh>
+
+namespace util {
 
 class Pipe {
 	AutoFd readFd_;
@@ -15,4 +17,6 @@ public:
 	size_t write(const void *buffer, size_t length) const;
 };
 
-#endif // REACTOR_PIPE_HEADER
+} // namespace util
+
+#endif // REACTOR_UTIL_PIPE_HEADER

@@ -7,6 +7,8 @@
 
 #include <stdexcept>
 
+using namespace util;
+
 class MyDemuxer : public Demuxer {
 public:
 	virtual void add(const FdEvent &fdEvent);

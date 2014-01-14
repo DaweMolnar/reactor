@@ -4,7 +4,7 @@
 
 class ThreadTester
 : public CppUnit::TestFixture
-, public Runnable
+, public util::Runnable
 {
 	CPPUNIT_TEST_SUITE(ThreadTester);
 	CPPUNIT_TEST(testConstruction);

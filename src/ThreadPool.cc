@@ -1,6 +1,6 @@
 #include "ThreadPool.hh"
 
-ThreadPool::ThreadPool(Runnable &runnable, size_t count)
+ThreadPool::ThreadPool(util::Runnable &runnable, size_t count)
 : runnable_(runnable)
 {
 	for (size_t i = 0; i < count; ++i) {

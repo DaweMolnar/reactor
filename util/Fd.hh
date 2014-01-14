@@ -1,7 +1,9 @@
-#ifndef REACTOR_FD_HEADER
-#define REACTOR_FD_HEADER
+#ifndef REACTOR_UTIL_FD_HEADER
+#define REACTOR_UTIL_FD_HEADER
 
 #include <cstddef>
+
+namespace util {
 
 class Fd {
 protected:
@@ -33,4 +35,6 @@ public:
 	bool operator!=(const Fd &rhs) const { return fd_ != rhs.fd_; }
 };
 
-#endif // REACTOR_FD_HEADER
+} // namespace util
+
+#endif // REACTOR_UTIL_FD_HEADER

@@ -4,6 +4,8 @@
 
 #include <unistd.h>
 
+using namespace util;
+
 Pipe::Pipe()
 {
 	int fds[2];
