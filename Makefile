@@ -1,4 +1,5 @@
-TARGETS := out/client
+.PHONY: all
+all:
 
 CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
 CPPFLAGS += -MD
@@ -9,9 +10,6 @@ LDFLAGS := -pthread
 ifndef V
 Q := @
 endif
-
-.PHONY: all
-all: $(TARGETS)
 
 include libreactor.mk
 include tests/unit/module.mk

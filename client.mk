@@ -1,5 +1,7 @@
 # client.mk
 
+all: out/client
+
 client_SOURCES := \
 	src/client.cc
 
