@@ -1,11 +1,11 @@
 #include "Thread.hh"
 
-#include "pthread/PthreadImpl.hh"
+#include "ConcreteImplFactory.hh"
 
 using namespace thread;
 
 Thread::Thread(util::Runnable &runnable)
-: impl_(new pthread::PthreadImpl(runnable))
+: impl_(ConcreteImplFactory::getInstance().createThreadImpl(runnable))
 {}
 
 Thread::~Thread()

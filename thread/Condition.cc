@@ -1,11 +1,11 @@
 #include "Condition.hh"
 
-#include "pthread/PthreadConditionImpl.hh"
+#include "ConcreteImplFactory.hh"
 
 using namespace thread;
 
 Condition::Condition(Mutex &mutex)
-: impl_(new pthread::PthreadConditionImpl(*mutex.impl_))
+: impl_(ConcreteImplFactory::getInstance().createConditionImpl(*mutex.impl_))
 {}
 
 Condition::~Condition()

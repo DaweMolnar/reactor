@@ -6,10 +6,12 @@ libthread_SOURCE_NAMES := \
 	pthread/PthreadConditionImpl.cc \
 	pthread/PthreadImpl.cc \
 	pthread/PthreadMutexImpl.cc \
+	pthread/PthreadImplFactory.cc \
 	Thread.cc \
 	Condition.cc \
 	Mutex.cc \
-	Pool.cc
+	Pool.cc \
+	ConcreteImplFactory.cc
 
 libthread_SOURCES := $(addprefix thread/,$(libthread_SOURCE_NAMES))
 libthread_OBJECTS := $(sort $(addprefix out/libthread.a.d/,$(addsuffix .o,$(basename $(libthread_SOURCES)))))

@@ -1,11 +1,11 @@
 #include "Mutex.hh"
 
-#include "pthread/PthreadMutexImpl.hh"
+#include "ConcreteImplFactory.hh"
 
 using namespace thread;
 
 Mutex::Mutex()
-: impl_(new pthread::PthreadMutexImpl())
+: impl_(ConcreteImplFactory::getInstance().createMutexImpl())
 {}
 
 Mutex::~Mutex()
