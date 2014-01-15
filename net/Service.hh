@@ -1,7 +1,9 @@
-#ifndef REACTOR_SERVICE_HEADER
-#define REACTOR_SERVICE_HEADER
+#ifndef REACTOR_NET_SERVICE_HEADER
+#define REACTOR_NET_SERVICE_HEADER
 
-#include "Specifier.hh"
+#include <net/Specifier.hh>
+
+namespace net {
 
 class Service : public Specifier {
 public:
@@ -12,4 +14,6 @@ public:
 	{}
 };
 
-#endif // REACTOR_SERVICE_HEADER
+} // namespace net
+
+#endif // REACTOR_NET_SERVICE_HEADER

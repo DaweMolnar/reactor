@@ -18,7 +18,8 @@ out/client.d/%.o: %.cc
 out/client: out/libreactor.a
 out/client: out/libutil.a
 out/client: out/libthread.a
-out/client: LDLIBS += -lreactor -lutil -lthread
+out/client: out/libnet.a
+out/client: LDLIBS += -lreactor -lutil -lthread -lnet
 out/client: LDFLAGS += -Lout/
 
 out/client: $(client_OBJECTS)

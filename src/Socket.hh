@@ -1,9 +1,8 @@
 #ifndef REACTOR_SOCKET_HEADER
 #define REACTOR_SOCKET_HEADER
 
-#include "Host.hh"
-#include "Service.hh"
-
+#include <net/Host.hh>
+#include <net/Service.hh>
 #include <util/AutoFd.hh>
 #include <util/Noncopyable.hh>
 
@@ -18,7 +17,7 @@ public:
 
 	Socket(int type) : type_(type) {}
 
-	void connect(const Host &targetHost, const Service &targetServ);
+	void connect(const net::Host &targetHost, const net::Service &targetServ);
 	const util::Fd &fd() const { return fd_; }
 };
 

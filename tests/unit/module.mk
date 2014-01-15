@@ -7,7 +7,6 @@ testUnits_SOURCES := \
 	tests/unit/mock/Mocked.cc \
 	tests/unit/mock/unistd.cc \
 	tests/unit/mock/time.cc \
-	tests/unit/SpecifierTester.cc \
 	tests/unit/TimerTester.cc \
 	tests/unit/TimersTester.cc \
 	tests/unit/DispatcherTester.cc \
@@ -27,6 +26,10 @@ testUnits_SOURCES += \
 	tests/unit/ThreadPoolTester.cc \
 	tests/unit/ThreadMutexTester.cc \
 	tests/unit/ThreadConditionTester.cc
+
+testUnits_SOURCES += \
+	$(libnet_SOURCES) \
+	tests/unit/SpecifierTester.cc
 
 testUnits_OBJECTS := $(sort $(addprefix out/testUnits.d/,$(addsuffix .o,$(basename $(testUnits_SOURCES)))))
 -include $(addsuffix .d,$(basename $(testUnits_OBJECTS)))

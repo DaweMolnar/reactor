@@ -1,7 +1,7 @@
 #include "Client.hh"
 
 void
-Client::setTarget(const Host &targetHost, const Service &targetServ)
+Client::setTarget(const net::Host &targetHost, const net::Service &targetServ)
 {
 	targetHost_ = targetHost;
 	targetServ_ = targetServ;

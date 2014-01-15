@@ -9,7 +9,7 @@ const int Socket::STREAM = SOCK_STREAM;
 const int Socket::DGRAM = SOCK_DGRAM;
 
 void
-Socket::connect(const Host &targetHost, const Service &targetServ)
+Socket::connect(const net::Host &targetHost, const net::Service &targetServ)
 {
 	int ret;
 	struct addrinfo hints, *res;

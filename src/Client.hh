@@ -2,17 +2,17 @@
 #define REACTOR_CLIENT_HEADER
 
 #include "Dispatcher.hh"
-#include "Host.hh"
-#include "Service.hh"
 #include "StreamSock.hh"
 
+#include <net/Host.hh>
+#include <net/Service.hh>
 #include <util/Noncopyable.hh>
 
 class Client : public util::Noncopyable {
 	Dispatcher &dispatcher_;
-	Host targetHost_;
-	Service targetServ_;
-	Host sourceHost_;
+	net::Host targetHost_;
+	net::Service targetServ_;
+	net::Host sourceHost_;
 	StreamSock sock_;
 
 public:
@@ -20,7 +20,7 @@ public:
 	: dispatcher_(dispatcher)
 	{}
 
-	void setTarget(const Host &targetHost, const Service &targetServ);
+	void setTarget(const net::Host &targetHost, const net::Service &targetServ);
 	void connect();
 
 	const util::Fd &fd() const { return sock_.fd(); }

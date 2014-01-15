@@ -1,9 +1,6 @@
 # libreactor.mk
 
 libreactor_SOURCES := \
-	src/Host.cc \
-	src/Ip.cc \
-	src/Service.cc \
 	src/Socket.cc \
 	src/Timer.cc \
 	src/Timers.cc \

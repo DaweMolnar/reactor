@@ -1,7 +1,9 @@
-#ifndef REACTOR_IP_HEADER
-#define REACTOR_IP_HEADER
+#ifndef REACTOR_NET_IP_HEADER
+#define REACTOR_NET_IP_HEADER
 
-#include "Host.hh"
+#include <net/Host.hh>
+
+namespace net {
 
 class Ip : public Host {
 public:
@@ -12,4 +14,6 @@ public:
 	{}
 };
 
-#endif // REACTOR_IP_HEADER
+} // namespace net
+
+#endif // REACTOR_NET_IP_HEADER

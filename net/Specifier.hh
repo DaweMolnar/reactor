@@ -1,7 +1,9 @@
-#ifndef REACTOR_SPECIFIER_HEADER
-#define REACTOR_SPECIFIER_HEADER
+#ifndef REACTOR_NET_SPECIFIER_HEADER
+#define REACTOR_NET_SPECIFIER_HEADER
 
 #include <string>
+
+namespace net {
 
 class Specifier {
 	std::string spec_;
@@ -17,4 +19,6 @@ public:
 	int aiFlags() const { return aiFlags_; }
 };
 
-#endif // REACTOR_SPECIFIER_HEADER
+} // namespace net
+
+#endif // REACTOR_NET_SPECIFIER_HEADER

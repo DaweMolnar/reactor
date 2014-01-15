@@ -1,7 +1,9 @@
-#include <src/Ip.hh>
-#include <src/Port.hh>
+#include <net/Ip.hh>
+#include <net/Port.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
+
+using namespace net;
 
 class SpecifierTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(SpecifierTester);
