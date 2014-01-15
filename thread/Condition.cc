@@ -1,32 +1,32 @@
-#include "ThreadCondition.hh"
+#include "Condition.hh"
 
 #include "pthread/PthreadConditionImpl.hh"
 
 using namespace thread;
 
-ThreadCondition::ThreadCondition(ThreadMutex &mutex)
+Condition::Condition(Mutex &mutex)
 : impl_(new pthread::PthreadConditionImpl(*mutex.impl_))
 {}
 
-ThreadCondition::~ThreadCondition()
+Condition::~Condition()
 {
 	delete impl_;
 }
 
 void
-ThreadCondition::wait()
+Condition::wait()
 {
 	impl_->wait();
 }
 
 void
-ThreadCondition::notify()
+Condition::notify()
 {
 	impl_->notify();
 }
 
 void
-ThreadCondition::notifyAll()
+Condition::notifyAll()
 {
 	impl_->notifyAll();
 }

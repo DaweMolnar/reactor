@@ -1,5 +1,5 @@
-#include <thread/ThreadPool.hh>
-#include <thread/ThreadMutex.hh>
+#include <thread/Pool.hh>
+#include <thread/Mutex.hh>
 #include <thread/Guard.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
@@ -18,7 +18,7 @@ class ThreadMutexTester
 	static const size_t ITERATION_COUNT = 10000;
 	static const size_t THREAD_COUNT = 10;
 
-	ThreadMutex *tm_;
+	Mutex *tm_;
 	size_t count_;
 	bool useLocking_;
 
@@ -26,7 +26,7 @@ public:
 	void
 	setUp()
 	{
-		tm_ = new ThreadMutex();
+		tm_ = new Mutex();
 		count_ = 0;
 		useLocking_ = false;
 	}
@@ -42,7 +42,7 @@ public:
 	{
 		if (useLocking_) {
 			for (size_t i = 0; i < ITERATION_COUNT; ++i) {
-				Guard<ThreadMutex> guard(*tm_);
+				Guard<Mutex> guard(*tm_);
 				++count_;
 			}
 		} else {
@@ -57,7 +57,7 @@ public:
 	{
 		useLocking_ = useLocking;
 		count_ = 0;
-		ThreadPool tp(*this, THREAD_COUNT);
+		Pool tp(*this, THREAD_COUNT);
 	}
 
 	void

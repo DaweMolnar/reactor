@@ -3,7 +3,7 @@
 
 #include "Reactor.hh"
 
-#include <thread/ThreadCondition.hh>
+#include <thread/Condition.hh>
 #include <util/Runnable.hh>
 
 #include <stddef.h>
@@ -13,8 +13,8 @@ class MultiReactor
 , public util::Runnable
 {
 	size_t threadCount_;
-	thread::ThreadMutex mutex_;
-	thread::ThreadCondition isLeaderWaitingCond_;
+	thread::Mutex mutex_;
+	thread::Condition isLeaderWaitingCond_;
 	volatile bool isLeaderWaiting_;
 
 	virtual void run();

@@ -1,20 +1,20 @@
-#ifndef REACTOR_PTHREAD_PTHREADCONDITIONIMPL_HEADER
-#define REACTOR_PTHREAD_PTHREADCONDITIONIMPL_HEADER
+#ifndef REACTOR_THREAD_PTHREAD_PTHREADCONDITIONIMPL_HEADER
+#define REACTOR_THREAD_PTHREAD_PTHREADCONDITIONIMPL_HEADER
 
-#include "../ThreadConditionImpl.hh"
-#include "../ThreadMutexImpl.hh"
+#include "../ConditionImpl.hh"
+#include "../MutexImpl.hh"
 
 #include <pthread.h>
 
 namespace thread {
 namespace pthread {
 
-class PthreadConditionImpl : public ThreadConditionImpl {
+class PthreadConditionImpl : public ConditionImpl {
 	pthread_mutex_t &mutex_;
 	pthread_cond_t cond_;
 
 public:
-	PthreadConditionImpl(ThreadMutexImpl &mutexImpl);
+	PthreadConditionImpl(MutexImpl &mutexImpl);
 	~PthreadConditionImpl();
 
 	void wait();
@@ -25,4 +25,4 @@ public:
 } // namespace pthread
 } // namespace thread
 
-#endif // REACTOR_PTHREAD_PTHREADCONDITIONIMPL_HEADER
+#endif // REACTOR_THREAD_PTHREAD_PTHREADCONDITIONIMPL_HEADER

@@ -1,14 +1,14 @@
-#ifndef REACTOR_PTHREAD_THREADMUTEXIMPL_HEADER
-#define REACTOR_PTHREAD_THREADMUTEXIMPL_HEADER
+#ifndef REACTOR_THREAD_PTHREAD_THREADMUTEXIMPL_HEADER
+#define REACTOR_THREAD_PTHREAD_THREADMUTEXIMPL_HEADER
 
-#include "../ThreadMutexImpl.hh"
+#include "../MutexImpl.hh"
 
 #include <pthread.h>
 
 namespace thread {
 namespace pthread {
 
-class PthreadMutexImpl : public ThreadMutexImpl {
+class PthreadMutexImpl : public MutexImpl {
 	pthread_mutex_t mutex_;
 
 	friend class PthreadConditionImpl;
@@ -24,4 +24,4 @@ public:
 } // namespace pthread
 } // namespace thread
 
-#endif // REACTOR_PTHREAD_THREADMUTEXIMPL_HEADER
+#endif // REACTOR_THREAD_PTHREAD_THREADMUTEXIMPL_HEADER

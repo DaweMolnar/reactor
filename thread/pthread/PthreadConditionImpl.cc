@@ -8,7 +8,7 @@
 
 using namespace thread::pthread;
 
-PthreadConditionImpl::PthreadConditionImpl(ThreadMutexImpl &mutex)
+PthreadConditionImpl::PthreadConditionImpl(MutexImpl &mutex)
 : mutex_(dynamic_cast<PthreadMutexImpl &>(mutex).mutex_)
 {
 	if (int error = pthread_cond_init(&cond_, 0)) {

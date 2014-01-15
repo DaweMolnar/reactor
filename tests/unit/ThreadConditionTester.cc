@@ -1,4 +1,4 @@
-#include <thread/ThreadCondition.hh>
+#include <thread/Condition.hh>
 #include <thread/Thread.hh>
 #include <thread/Guard.hh>
 
@@ -18,8 +18,8 @@ class ThreadConditionTester
 	CPPUNIT_TEST(testNotify);
 	CPPUNIT_TEST_SUITE_END();
 
-	ThreadMutex *mutex_;
-	ThreadCondition *cond_;
+	Mutex *mutex_;
+	Condition *cond_;
 
 	enum {
 		STATE_WAITING_THREAD,
@@ -32,8 +32,8 @@ public:
 	void
 	setUp()
 	{
-		mutex_ = new ThreadMutex();
-		cond_ = new ThreadCondition(*mutex_);
+		mutex_ = new Mutex();
+		cond_ = new Condition(*mutex_);
 	}
 
 	void
@@ -46,7 +46,7 @@ public:
 	virtual void
 	run()
 	{
-		Guard<ThreadMutex> guard(*mutex_);
+		Guard<Mutex> guard(*mutex_);
 		CPPUNIT_ASSERT_EQUAL(STATE_WAITING_THREAD, state_);
 		state_ = STATE_THREAD_OK;
 		cond_->notify();
@@ -64,7 +64,7 @@ public:
 		Thread th(*this);
 
 		{
-			Guard<ThreadMutex> guard(*mutex_);
+			Guard<Mutex> guard(*mutex_);
 			while (state_ != STATE_THREAD_OK) {
 				cond_->wait();
 			}

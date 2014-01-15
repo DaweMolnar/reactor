@@ -1,4 +1,4 @@
-#include <thread/ThreadPool.hh>
+#include <thread/Pool.hh>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -31,7 +31,7 @@ public:
 	testConstruction()
 	{
 		{
-			ThreadPool tp(*this, 1);
+			Pool tp(*this, 1);
 		}
 		CPPUNIT_ASSERT_EQUAL(1, (int)count_);
 	}

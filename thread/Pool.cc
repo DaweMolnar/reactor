@@ -1,8 +1,8 @@
-#include "ThreadPool.hh"
+#include "Pool.hh"
 
 using namespace thread;
 
-ThreadPool::ThreadPool(util::Runnable &runnable, size_t count)
+Pool::Pool(util::Runnable &runnable, size_t count)
 : runnable_(runnable)
 {
 	for (size_t i = 0; i < count; ++i) {
@@ -10,7 +10,7 @@ ThreadPool::ThreadPool(util::Runnable &runnable, size_t count)
 	}
 }
 
-ThreadPool::~ThreadPool()
+Pool::~Pool()
 {
 	for (Threads::const_iterator i(threads_.begin()); i != threads_.end(); ++i) {
 		delete *i;

@@ -1,26 +1,26 @@
-#include "ThreadMutex.hh"
+#include "Mutex.hh"
 
 #include "pthread/PthreadMutexImpl.hh"
 
 using namespace thread;
 
-ThreadMutex::ThreadMutex()
+Mutex::Mutex()
 : impl_(new pthread::PthreadMutexImpl())
 {}
 
-ThreadMutex::~ThreadMutex()
+Mutex::~Mutex()
 {
 	delete impl_;
 }
 
 void
-ThreadMutex::acquire()
+Mutex::acquire()
 {
 	impl_->acquire();
 }
 
 void
-ThreadMutex::release()
+Mutex::release()
 {
 	impl_->release();
 }

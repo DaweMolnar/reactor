@@ -1,6 +1,6 @@
 #include "MultiReactor.hh"
 
-#include <thread/ThreadPool.hh>
+#include <thread/Pool.hh>
 #include <thread/Guard.hh>
 
 #include <cstdlib>
@@ -34,7 +34,7 @@ MultiReactor::run()
 		}
 
 		{
-			thread::Guard<thread::ThreadMutex> guard(mutex_);
+			thread::Guard<thread::Mutex> guard(mutex_);
 			if (job.get()) {
 				job.reset(0);
 				dispatcher_.notify();
@@ -62,7 +62,7 @@ MultiReactor::run()
 int
 MultiReactor::loop()
 {
-	thread::ThreadPool tp(*this, threadCount_ - 1);
+	thread::Pool tp(*this, threadCount_ - 1);
 	run();
 
 	return EXIT_SUCCESS;
