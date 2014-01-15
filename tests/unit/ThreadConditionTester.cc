@@ -21,12 +21,14 @@ class ThreadConditionTester
 	Mutex *mutex_;
 	Condition *cond_;
 
-	enum {
+	enum State {
 		STATE_WAITING_THREAD,
 		STATE_THREAD_OK,
 		STATE_FINISH_REQUESTED,
 		STATE_FINISHED
-	} state_;
+	};
+
+	State state_;
 
 public:
 	void
