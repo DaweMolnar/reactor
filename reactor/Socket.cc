@@ -4,6 +4,8 @@
 #include <netdb.h>
 #include <cstring> // memset()
 
+using namespace reactor;
+
 const int Socket::ANY = 0;
 const int Socket::STREAM = SOCK_STREAM;
 const int Socket::DGRAM = SOCK_DGRAM;

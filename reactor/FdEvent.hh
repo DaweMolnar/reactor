@@ -3,6 +3,8 @@
 
 #include <util/Fd.hh>
 
+namespace reactor {
+
 struct FdEvent {
 	enum What {
 		READ = 4,
@@ -28,5 +30,7 @@ struct FdEvent {
 		}
 	}
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_FDEVENT_HEADER

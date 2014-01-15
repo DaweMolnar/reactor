@@ -6,6 +6,8 @@
 #include <queue>
 #include <cstddef>
 
+namespace reactor {
+
 class Backlog {
 public:
 	typedef util::Command0<void> Job;
@@ -22,5 +24,7 @@ public:
 	Job *dequeue();
 	bool empty() const;
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_BACKLOG_HEADER

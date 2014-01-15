@@ -9,6 +9,8 @@
 
 #include <queue>
 
+namespace reactor {
+
 class Timers : public util::Noncopyable {
 public:
 	typedef util::Time (*NowFunc)();
@@ -47,5 +49,7 @@ public:
 	bool isTicking() const;
 	util::DiffTime remainingTime() const;
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_TIMERS_HEADER

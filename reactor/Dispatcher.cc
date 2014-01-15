@@ -3,6 +3,10 @@
 #include <algorithm> // std::for_each
 #include <stdexcept>
 
+using namespace reactor;
+
+namespace reactor {
+
 class BoundResumingCommand : public util::BoundCommand1<void, FdEvent, util::Command1<void, const FdEvent &> > {
 	typedef util::Command1<void, const FdEvent &> C;
 	typedef util::BoundCommand1<void, FdEvent, C> Base;
@@ -36,6 +40,8 @@ public:
 		Base::execute();
 	}
 };
+
+} // namespace reactor
 
 Dispatcher::Dispatcher(Demuxer *demuxer, const Timers::NowFunc nowFunc)
 : timers_(backlog_, nowFunc)

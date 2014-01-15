@@ -9,6 +9,8 @@
 
 #include <list>
 
+namespace reactor {
+
 class Demuxer : public util::Noncopyable {
 public:
 	typedef std::list<FdEvent> FdEvents;
@@ -19,5 +21,7 @@ public:
 	virtual void remove(const FdEvent &fdEvent) = 0;
 	virtual FdEvents *demux(const util::DiffTime *interval) = 0;
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_DEMUXER_HEADER

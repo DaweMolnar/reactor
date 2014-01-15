@@ -2,6 +2,8 @@
 
 #include <util/ErrnoException.hh>
 
+using namespace reactor;
+
 void
 PollDemuxer::add(const FdEvent &fdEvent)
 {

@@ -1,5 +1,7 @@
 #include "Client.hh"
 
+using namespace reactor;
+
 void
 Client::setTarget(const net::Host &targetHost, const net::Service &targetServ)
 {

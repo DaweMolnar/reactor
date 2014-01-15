@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <stdexcept>
 
+using namespace reactor;
+
 MultiReactor::MultiReactor(Dispatcher &dispatcher, size_t threadCount)
 : Reactor(dispatcher)
 , threadCount_(threadCount)

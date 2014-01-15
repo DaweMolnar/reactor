@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cstdlib>
 
+using namespace reactor;
+
 class Main {
 	Dispatcher dispatcher_;
 	MultiReactor reactor_;

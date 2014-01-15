@@ -5,6 +5,10 @@
 
 #include <util/Command.hh>
 
+namespace reactor {
+
 typedef util::Command1<void, const FdEvent &> FdCommand;
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_FDCOMMAND_HEADER

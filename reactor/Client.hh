@@ -8,6 +8,8 @@
 #include <net/Service.hh>
 #include <util/Noncopyable.hh>
 
+namespace reactor {
+
 class Client : public util::Noncopyable {
 	Dispatcher &dispatcher_;
 	net::Host targetHost_;
@@ -25,5 +27,7 @@ public:
 
 	const util::Fd &fd() const { return sock_.fd(); }
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_CLIENT_HEADER

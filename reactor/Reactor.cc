@@ -2,6 +2,8 @@
 
 #include <cstdlib>
 
+using namespace reactor;
+
 int
 Reactor::loop()
 {

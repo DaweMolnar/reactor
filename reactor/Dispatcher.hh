@@ -12,6 +12,8 @@
 #include <map>
 #include <memory> // auto_ptr
 
+namespace reactor {
+
 class Dispatcher : public util::Noncopyable {
 public:
 	typedef Demuxer::FdEvents FdEvents;
@@ -50,5 +52,7 @@ public:
 	void add(const Timer &timer, const TimerCommand &command);
 	void add(const LazyTimer &lazyTimer, const TimerCommand &command);
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_DISPATCHER_HEADER

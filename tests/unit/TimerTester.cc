@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 using namespace util;
+using namespace reactor;
 
 class TimerTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(TimerTester);

@@ -8,6 +8,8 @@
 
 #include <stddef.h>
 
+namespace reactor {
+
 class MultiReactor
 : public Reactor
 , public util::Runnable
@@ -24,5 +26,7 @@ public:
 
 	int loop();
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_MULTIREACTOR_REACTOR_HEADER

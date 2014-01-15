@@ -6,6 +6,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace util;
+using namespace reactor;
 
 class TimersTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(TimersTester);

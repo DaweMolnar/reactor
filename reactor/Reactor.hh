@@ -3,6 +3,8 @@
 
 #include <reactor/Dispatcher.hh>
 
+namespace reactor {
+
 class Reactor {
 protected:
 	Dispatcher &dispatcher_;
@@ -17,5 +19,7 @@ public:
 	void quit() { quit_ = true; }
 	int loop();
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_REACTOR_REACTOR_HEADER

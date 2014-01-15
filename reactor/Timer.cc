@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+using namespace reactor;
+
 bool
 Timer::hasRemainingIterations()
 const

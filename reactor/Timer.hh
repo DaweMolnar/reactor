@@ -5,6 +5,8 @@
 
 #include <stddef.h>
 
+namespace reactor {
+
 class Timer {
 	util::DiffTime interval_;
 	util::Time expiration_;
@@ -30,5 +32,7 @@ public:
 	bool hasRemainingIterations() const;
 	void fire();
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_TIMER_HEADER

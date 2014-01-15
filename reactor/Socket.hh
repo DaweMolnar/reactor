@@ -6,6 +6,8 @@
 #include <util/AutoFd.hh>
 #include <util/Noncopyable.hh>
 
+namespace reactor {
+
 class Socket : public util::Noncopyable {
 	util::AutoFd fd_;
 	int type_;
@@ -20,5 +22,7 @@ public:
 	void connect(const net::Host &targetHost, const net::Service &targetServ);
 	const util::Fd &fd() const { return fd_; }
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_SOCKET_HEADER

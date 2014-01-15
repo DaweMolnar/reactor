@@ -8,6 +8,7 @@
 #include <stdexcept>
 
 using namespace util;
+using namespace reactor;
 
 class MyDemuxer : public Demuxer {
 public:

@@ -3,6 +3,8 @@
 
 #include <reactor/Timer.hh>
 
+namespace reactor {
+
 struct TimerEvent {
 	Timer timer;
 
@@ -10,5 +12,7 @@ struct TimerEvent {
 	: timer(timer0)
 	{}
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_TIMEREVENT_HEADER

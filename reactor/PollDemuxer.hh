@@ -6,6 +6,8 @@
 #include <poll.h>
 #include <vector>
 
+namespace reactor {
+
 class PollDemuxer : public Demuxer {
 	typedef std::vector<struct pollfd> Fds;
 
@@ -16,5 +18,7 @@ public:
 	virtual void remove(const FdEvent &fdEvent);
 	virtual FdEvents *demux(const util::DiffTime *interval);
 };
+
+} // namespace reactor
 
 #endif // REACTOR_REACTOR_POLLDEMUXER_HEADER

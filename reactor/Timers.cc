@@ -3,6 +3,8 @@
 #include <list>
 #include <stdexcept>
 
+using namespace reactor;
+
 Timers::~Timers()
 {
 	while (!queue_.empty()) {

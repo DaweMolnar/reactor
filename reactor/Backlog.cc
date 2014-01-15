@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+using namespace reactor;
+
 Backlog::~Backlog()
 {
 	while (!queue_.empty()) {
