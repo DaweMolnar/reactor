@@ -4,6 +4,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+using namespace thread;
+
 class ThreadMutexTester
 : public CppUnit::TestFixture
 , public util::Runnable

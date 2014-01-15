@@ -5,6 +5,8 @@
 
 #include <util/Noncopyable.hh>
 
+namespace thread {
+
 class ThreadConditionImpl;
 
 class ThreadCondition : public util::Noncopyable {
@@ -18,5 +20,7 @@ public:
 	void notify();
 	void notifyAll();
 };
+
+} // namespace thread
 
 #endif // REACTOR_THREAD_THREADCONDITION_HEADER

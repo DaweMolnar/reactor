@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-using namespace pthread;
+using namespace thread::pthread;
 
 PthreadMutexImpl::PthreadMutexImpl()
 {

@@ -34,7 +34,7 @@ MultiReactor::run()
 		}
 
 		{
-			Guard<ThreadMutex> guard(mutex_);
+			thread::Guard<thread::ThreadMutex> guard(mutex_);
 			if (job.get()) {
 				job.reset(0);
 				dispatcher_.notify();
@@ -62,7 +62,7 @@ MultiReactor::run()
 int
 MultiReactor::loop()
 {
-	ThreadPool tp(*this, threadCount_ - 1);
+	thread::ThreadPool tp(*this, threadCount_ - 1);
 	run();
 
 	return EXIT_SUCCESS;

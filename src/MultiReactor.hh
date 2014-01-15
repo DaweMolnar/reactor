@@ -13,8 +13,8 @@ class MultiReactor
 , public util::Runnable
 {
 	size_t threadCount_;
-	ThreadMutex mutex_;
-	ThreadCondition isLeaderWaitingCond_;
+	thread::ThreadMutex mutex_;
+	thread::ThreadCondition isLeaderWaitingCond_;
 	volatile bool isLeaderWaiting_;
 
 	virtual void run();

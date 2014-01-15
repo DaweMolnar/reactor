@@ -6,6 +6,7 @@
 
 #include <pthread.h>
 
+namespace thread {
 namespace pthread {
 
 class PthreadConditionImpl : public ThreadConditionImpl {
@@ -22,5 +23,6 @@ public:
 };
 
 } // namespace pthread
+} // namespace thread
 
 #endif // REACTOR_PTHREAD_PTHREADCONDITIONIMPL_HEADER

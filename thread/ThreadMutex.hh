@@ -3,6 +3,8 @@
 
 #include <util/Noncopyable.hh>
 
+namespace thread {
+
 class ThreadMutexImpl;
 
 class ThreadMutex : public util::Noncopyable {
@@ -17,5 +19,7 @@ public:
 	void acquire();
 	void release();
 };
+
+} // namespace thread
 
 #endif // REACTOR_THREAD_THREADMUTEX_HEADER

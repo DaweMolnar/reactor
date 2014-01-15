@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-using namespace pthread;
+using namespace thread::pthread;
 
 PthreadConditionImpl::PthreadConditionImpl(ThreadMutexImpl &mutex)
 : mutex_(dynamic_cast<PthreadMutexImpl &>(mutex).mutex_)

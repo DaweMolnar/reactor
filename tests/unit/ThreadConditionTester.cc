@@ -8,6 +8,8 @@
 
 #define DEBUG(s) fprintf(stderr, "%s\n", s)
 
+using namespace thread;
+
 class ThreadConditionTester
 : public CppUnit::TestFixture
 , public util::Runnable

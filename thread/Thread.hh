@@ -4,6 +4,8 @@
 #include <util/Runnable.hh>
 #include <util/Noncopyable.hh>
 
+namespace thread {
+
 class ThreadImpl;
 
 class Thread : public util::Noncopyable {
@@ -15,5 +17,7 @@ public:
 
 	bool hasFinished() const;
 };
+
+} // namespace thread
 
 #endif // REACTOR_THREAD_THREAD_HEADER

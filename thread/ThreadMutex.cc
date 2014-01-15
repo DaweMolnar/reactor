@@ -2,6 +2,8 @@
 
 #include "pthread/PthreadMutexImpl.hh"
 
+using namespace thread;
+
 ThreadMutex::ThreadMutex()
 : impl_(new pthread::PthreadMutexImpl())
 {}

@@ -1,5 +1,7 @@
 #include "ThreadPool.hh"
 
+using namespace thread;
+
 ThreadPool::ThreadPool(util::Runnable &runnable, size_t count)
 : runnable_(runnable)
 {

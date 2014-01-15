@@ -2,6 +2,8 @@
 
 #include "pthread/PthreadConditionImpl.hh"
 
+using namespace thread;
+
 ThreadCondition::ThreadCondition(ThreadMutex &mutex)
 : impl_(new pthread::PthreadConditionImpl(*mutex.impl_))
 {}

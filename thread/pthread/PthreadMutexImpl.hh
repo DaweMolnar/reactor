@@ -5,6 +5,7 @@
 
 #include <pthread.h>
 
+namespace thread {
 namespace pthread {
 
 class PthreadMutexImpl : public ThreadMutexImpl {
@@ -21,5 +22,6 @@ public:
 };
 
 } // namespace pthread
+} // namespace thread
 
 #endif // REACTOR_PTHREAD_THREADMUTEXIMPL_HEADER

@@ -7,6 +7,7 @@
 
 #include <pthread.h>
 
+namespace thread {
 namespace pthread {
 
 class PthreadImpl : public ThreadImpl {
@@ -30,5 +31,6 @@ public:
 };
 
 } // namespace pthread
+} // namespace thread
 
 #endif // REACTOR_PTHREAD_PTHREADIMPL_HEADER

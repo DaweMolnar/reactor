@@ -2,6 +2,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+using namespace thread;
+
 class ThreadTester
 : public CppUnit::TestFixture
 , public util::Runnable

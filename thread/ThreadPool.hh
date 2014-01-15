@@ -6,6 +6,8 @@
 #include <vector>
 #include <cstddef>
 
+namespace thread {
+
 class ThreadPool {
 	typedef std::vector<Thread *> Threads;
 
@@ -16,5 +18,7 @@ public:
 	ThreadPool(util::Runnable &runnable, size_t count);
 	~ThreadPool();
 };
+
+} // namespace thread
 
 #endif // REACTOR_THREAD_THREADPOOL_HEADER

@@ -2,6 +2,8 @@
 
 #include "pthread/PthreadImpl.hh"
 
+using namespace thread;
+
 Thread::Thread(util::Runnable &runnable)
 : impl_(new pthread::PthreadImpl(runnable))
 {}
