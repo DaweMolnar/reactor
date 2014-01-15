@@ -1,7 +1,7 @@
-#ifndef REACTOR_MULTIREACTOR_HEADER
-#define REACTOR_MULTIREACTOR_HEADER
+#ifndef REACTOR_REACTOR_MULTIREACTOR_REACTOR_HEADER
+#define REACTOR_REACTOR_MULTIREACTOR_REACTOR_HEADER
 
-#include "Reactor.hh"
+#include <reactor/Reactor.hh>
 
 #include <thread/Condition.hh>
 #include <util/Runnable.hh>
@@ -25,4 +25,4 @@ public:
 	int loop();
 };
 
-#endif // REACTOR_MULTIREACTOR_HEADER
+#endif // REACTOR_REACTOR_MULTIREACTOR_REACTOR_HEADER

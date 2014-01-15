@@ -1,5 +1,5 @@
-#ifndef REACTOR_TIMER_HEADER
-#define REACTOR_TIMER_HEADER
+#ifndef REACTOR_REACTOR_TIMER_HEADER
+#define REACTOR_REACTOR_TIMER_HEADER
 
 #include <util/Time.hh>
 
@@ -31,4 +31,4 @@ public:
 	void fire();
 };
 
-#endif // REACTOR_TIMER_HEADER
+#endif // REACTOR_REACTOR_TIMER_HEADER

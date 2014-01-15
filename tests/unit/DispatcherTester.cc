@@ -1,4 +1,4 @@
-#include <src/Dispatcher.hh>
+#include <reactor/Dispatcher.hh>
 
 #include <tests/unit/mock/Mocked.hh>
 #include <tests/unit/mock/MockRegistry.hh>

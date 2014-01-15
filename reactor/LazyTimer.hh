@@ -1,7 +1,7 @@
-#ifndef REACTOR_LAZYTIMER_HEADER
-#define REACTOR_LAZYTIMER_HEADER
+#ifndef REACTOR_REACTOR_LAZYTIMER_HEADER
+#define REACTOR_REACTOR_LAZYTIMER_HEADER
 
-#include "Timer.hh"
+#include <reactor/Timer.hh>
 
 class LazyTimer : public Timer {
 public:
@@ -10,4 +10,4 @@ public:
 	{}
 };
 
-#endif // REACTOR_LAZYTIMER_HEADER
+#endif // REACTOR_REACTOR_LAZYTIMER_HEADER

@@ -1,7 +1,7 @@
-#ifndef REACTOR_POLLDEMUXER_HEADER
-#define REACTOR_POLLDEMUXER_HEADER
+#ifndef REACTOR_REACTOR_POLLDEMUXER_HEADER
+#define REACTOR_REACTOR_POLLDEMUXER_HEADER
 
-#include "Demuxer.hh"
+#include <reactor/Demuxer.hh>
 
 #include <poll.h>
 #include <vector>
@@ -17,4 +17,4 @@ public:
 	virtual FdEvents *demux(const util::DiffTime *interval);
 };
 
-#endif // REACTOR_POLLDEMUXER_HEADER
+#endif // REACTOR_REACTOR_POLLDEMUXER_HEADER

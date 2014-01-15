@@ -1,5 +1,5 @@
-#ifndef REACTOR_BACKLOG_HEADER
-#define REACTOR_BACKLOG_HEADER
+#ifndef REACTOR_REACTOR_BACKLOG_HEADER
+#define REACTOR_REACTOR_BACKLOG_HEADER
 
 #include <util/BoundCommand.hh>
 
@@ -23,4 +23,4 @@ public:
 	bool empty() const;
 };
 
-#endif // REACTOR_BACKLOG_HEADER
+#endif // REACTOR_REACTOR_BACKLOG_HEADER

@@ -1,16 +1,19 @@
-# libreactor.mk
+# reactor/module.mk
 
-libreactor_SOURCES := \
-	src/Socket.cc \
-	src/Timer.cc \
-	src/Timers.cc \
-	src/PollDemuxer.cc \
-	src/Dispatcher.cc \
-	src/Backlog.cc \
-	src/Reactor.cc \
-	src/MultiReactor.cc \
-	src/Client.cc
+all: out/libreactor.a
 
+libreactor_SOURCE_NAMES := \
+	Backlog.cc \
+	Client.cc \
+	Dispatcher.cc \
+	MultiReactor.cc \
+	PollDemuxer.cc \
+	Reactor.cc \
+	Socket.cc \
+	Timer.cc \
+	Timers.cc
+
+libreactor_SOURCES := $(addprefix reactor/,$(libreactor_SOURCE_NAMES))
 libreactor_OBJECTS := $(sort $(addprefix out/libreactor.a.d/,$(addsuffix .o,$(basename $(libreactor_SOURCES)))))
 -include $(addsuffix .d,$(basename $(libreactor_OBJECTS)))
 

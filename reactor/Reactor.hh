@@ -1,7 +1,7 @@
-#ifndef REACTOR_REACTOR_HEADER
-#define REACTOR_REACTOR_HEADER
+#ifndef REACTOR_REACTOR_REACTOR_REACTOR_HEADER
+#define REACTOR_REACTOR_REACTOR_REACTOR_HEADER
 
-#include "Dispatcher.hh"
+#include <reactor/Dispatcher.hh>
 
 class Reactor {
 protected:
@@ -18,4 +18,4 @@ public:
 	int loop();
 };
 
-#endif // REACTOR_REACTOR_HEADER
+#endif // REACTOR_REACTOR_REACTOR_REACTOR_HEADER

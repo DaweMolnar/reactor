@@ -12,10 +12,10 @@ ifndef V
 Q := @
 endif
 
-include libreactor.mk
 include util/module.mk
 include thread/module.mk
 include net/module.mk
+include reactor/module.mk
 include tests/unit/module.mk
 include client.mk
 include coverage.mk

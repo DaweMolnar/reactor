@@ -1,7 +1,7 @@
-#ifndef REACTOR_DEMUXER_HEADER
-#define REACTOR_DEMUXER_HEADER
+#ifndef REACTOR_REACTOR_DEMUXER_HEADER
+#define REACTOR_REACTOR_DEMUXER_HEADER
 
-#include "FdEvent.hh"
+#include <reactor/FdEvent.hh>
 
 #include <util/DiffTime.hh>
 #include <util/Fd.hh>
@@ -20,4 +20,4 @@ public:
 	virtual FdEvents *demux(const util::DiffTime *interval) = 0;
 };
 
-#endif // REACTOR_DEMUXER_HEADER
+#endif // REACTOR_REACTOR_DEMUXER_HEADER

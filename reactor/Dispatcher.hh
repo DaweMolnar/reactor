@@ -1,10 +1,10 @@
-#ifndef REACTOR_DISPATCHER_HEADER
-#define REACTOR_DISPATCHER_HEADER
+#ifndef REACTOR_REACTOR_DISPATCHER_HEADER
+#define REACTOR_REACTOR_DISPATCHER_HEADER
 
-#include "Timers.hh"
-#include "DefaultDemuxer.hh"
-#include "FdCommand.hh"
-#include "Backlog.hh"
+#include <reactor/Timers.hh>
+#include <reactor/DefaultDemuxer.hh>
+#include <reactor/FdCommand.hh>
+#include <reactor/Backlog.hh>
 
 #include <util/Pipe.hh>
 #include <util/Noncopyable.hh>
@@ -51,4 +51,4 @@ public:
 	void add(const LazyTimer &lazyTimer, const TimerCommand &command);
 };
 
-#endif // REACTOR_DISPATCHER_HEADER
+#endif // REACTOR_REACTOR_DISPATCHER_HEADER

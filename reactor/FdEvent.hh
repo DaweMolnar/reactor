@@ -1,5 +1,5 @@
-#ifndef REACTOR_FDEVENT_HEADER
-#define REACTOR_FDEVENT_HEADER
+#ifndef REACTOR_REACTOR_FDEVENT_HEADER
+#define REACTOR_REACTOR_FDEVENT_HEADER
 
 #include <util/Fd.hh>
 
@@ -29,4 +29,4 @@ struct FdEvent {
 	}
 };
 
-#endif // REACTOR_FDEVENT_HEADER
+#endif // REACTOR_REACTOR_FDEVENT_HEADER

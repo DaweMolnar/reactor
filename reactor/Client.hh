@@ -1,8 +1,8 @@
-#ifndef REACTOR_CLIENT_HEADER
-#define REACTOR_CLIENT_HEADER
+#ifndef REACTOR_REACTOR_CLIENT_HEADER
+#define REACTOR_REACTOR_CLIENT_HEADER
 
-#include "Dispatcher.hh"
-#include "StreamSock.hh"
+#include <reactor/Dispatcher.hh>
+#include <reactor/StreamSock.hh>
 
 #include <net/Host.hh>
 #include <net/Service.hh>
@@ -26,4 +26,4 @@ public:
 	const util::Fd &fd() const { return sock_.fd(); }
 };
 
-#endif // REACTOR_CLIENT_HEADER
+#endif // REACTOR_REACTOR_CLIENT_HEADER

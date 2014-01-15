@@ -1,6 +1,5 @@
-#include "Client.hh"
-
-#include "MultiReactor.hh"
+#include <reactor/Client.hh>
+#include <reactor/MultiReactor.hh>
 
 #include <stdexcept>
 #include <iostream>

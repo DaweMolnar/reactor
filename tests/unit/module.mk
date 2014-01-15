@@ -1,15 +1,11 @@
 # tests/unit/module.mk
 
 testUnits_SOURCES := \
-	$(libreactor_SOURCES) \
 	tests/unit/mock/PrimitiveByFormatFactory.cc \
 	tests/unit/mock/MockRegistry.cc \
 	tests/unit/mock/Mocked.cc \
 	tests/unit/mock/unistd.cc \
 	tests/unit/mock/time.cc \
-	tests/unit/TimerTester.cc \
-	tests/unit/TimersTester.cc \
-	tests/unit/DispatcherTester.cc \
 	tests/unit/testUnits.cc
 
 testUnits_SOURCES += \
@@ -30,6 +26,12 @@ testUnits_SOURCES += \
 testUnits_SOURCES += \
 	$(libnet_SOURCES) \
 	tests/unit/SpecifierTester.cc
+
+testUnits_SOURCES += \
+	$(libreactor_SOURCES) \
+	tests/unit/TimerTester.cc \
+	tests/unit/TimersTester.cc \
+	tests/unit/DispatcherTester.cc
 
 testUnits_OBJECTS := $(sort $(addprefix out/testUnits.d/,$(addsuffix .o,$(basename $(testUnits_SOURCES)))))
 -include $(addsuffix .d,$(basename $(testUnits_OBJECTS)))

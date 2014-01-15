@@ -1,9 +1,9 @@
-#ifndef REACTOR_TIMERS_HEADER
-#define REACTOR_TIMERS_HEADER
+#ifndef REACTOR_REACTOR_TIMERS_HEADER
+#define REACTOR_REACTOR_TIMERS_HEADER
 
-#include "LazyTimer.hh"
-#include "TimerCommand.hh"
-#include "Backlog.hh"
+#include <reactor/LazyTimer.hh>
+#include <reactor/TimerCommand.hh>
+#include <reactor/Backlog.hh>
 
 #include <util/Noncopyable.hh>
 
@@ -48,4 +48,4 @@ public:
 	util::DiffTime remainingTime() const;
 };
 
-#endif // REACTOR_TIMERS_HEADER
+#endif // REACTOR_REACTOR_TIMERS_HEADER

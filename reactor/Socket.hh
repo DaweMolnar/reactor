@@ -1,5 +1,5 @@
-#ifndef REACTOR_SOCKET_HEADER
-#define REACTOR_SOCKET_HEADER
+#ifndef REACTOR_REACTOR_SOCKET_HEADER
+#define REACTOR_REACTOR_SOCKET_HEADER
 
 #include <net/Host.hh>
 #include <net/Service.hh>
@@ -21,4 +21,4 @@ public:
 	const util::Fd &fd() const { return fd_; }
 };
 
-#endif // REACTOR_SOCKET_HEADER
+#endif // REACTOR_REACTOR_SOCKET_HEADER
