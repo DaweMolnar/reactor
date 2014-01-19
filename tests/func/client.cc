@@ -1,3 +1,5 @@
+#include "FunctionalTest.hh"
+
 #include <reactor/Client.hh>
 #include <reactor/MultiReactor.hh>
 
@@ -7,21 +9,21 @@
 
 using namespace reactor;
 
-class Main {
+class ClientTester : public FunctionalTest {
 	Dispatcher dispatcher_;
 	MultiReactor reactor_;
 	Client client_;
 
 public:
-	Main(int argc, char *argv[]);
+	ClientTester(int argc, char *argv[]);
 
 	void onFdStdin(const FdEvent &);
 	void onFdSock(const FdEvent &);
 	void onTimer(const TimerEvent &);
-	int run();
+	virtual int run();
 };
 
-Main::Main(int argc, char *argv[])
+ClientTester::ClientTester(int argc, char *argv[])
 : reactor_(dispatcher_, 2)
 , client_(dispatcher_)
 {
@@ -33,13 +35,13 @@ Main::Main(int argc, char *argv[])
 	client_.connect();
 	std::cerr << "connected." << std::endl;
 
-	dispatcher_.add(FdEvent(util::Fd::STDIN, FdEvent::READ), util::commandForMethod(*this, &Main::onFdStdin));
-	dispatcher_.add(FdEvent(client_.fd(), FdEvent::READ), util::commandForMethod(*this, &Main::onFdSock));
-	dispatcher_.add(Timer(util::DiffTime::ms(1000), 3), util::commandForMethod(*this, &Main::onTimer));
+	dispatcher_.add(FdEvent(util::Fd::STDIN, FdEvent::READ), util::commandForMethod(*this, &ClientTester::onFdStdin));
+	dispatcher_.add(FdEvent(client_.fd(), FdEvent::READ), util::commandForMethod(*this, &ClientTester::onFdSock));
+	dispatcher_.add(Timer(util::DiffTime::ms(1000), 3), util::commandForMethod(*this, &ClientTester::onTimer));
 }
 
 int
-Main::run()
+ClientTester::run()
 {
 	try {
 		return reactor_.loop();
@@ -50,7 +52,7 @@ Main::run()
 }
 
 void
-Main::onFdStdin(const FdEvent &event)
+ClientTester::onFdStdin(const FdEvent &event)
 {
 	char buf[128];
 	size_t rd = event.fd.read(buf, sizeof(buf));
@@ -67,7 +69,7 @@ Main::onFdStdin(const FdEvent &event)
 }
 
 void
-Main::onFdSock(const FdEvent &event)
+ClientTester::onFdSock(const FdEvent &event)
 {
 	char buf[128];
 	size_t rd = event.fd.read(buf, sizeof(buf));
@@ -84,15 +86,11 @@ Main::onFdSock(const FdEvent &event)
 }
 
 void
-Main::onTimer(const TimerEvent &)
+ClientTester::onTimer(const TimerEvent &)
 {
 	util::Fd::STDERR.write("timer\n", 6);
 //	for (int i = 0; i < 1000000000; ++i);
 //	Fd::STDERR.write("timer done\n", 11);
 }
 
-int
-main(int argc, char *argv[])
-{
-	return Main(argc, argv).run();
-}
+REGISTER_FUNCTIONAL_TEST(ClientTester);
