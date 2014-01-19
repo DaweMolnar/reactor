@@ -30,11 +30,11 @@ PollDemuxer::remove(const FdEvent &fdEvent)
 	// XXX: we can possibly do better than linear search
 	for (Fds::iterator i(fds_.begin()); i != fds_.end(); ++i) {
 		if (i->fd == fdEvent.fd.get()) {
-			if (((i->events & POLLIN) == POLLIN) && (fdEvent.what == FdEvent::READ)) {
+			if ((i->events & POLLIN) && (fdEvent.what == FdEvent::READ)) {
 				fds_.erase(i);
 				break;
 			}
-			if (((i->events & POLLOUT) == POLLOUT) && (fdEvent.what == FdEvent::WRITE)) {
+			if ((i->events & POLLOUT) && (fdEvent.what == FdEvent::WRITE)) {
 				fds_.erase(i);
 				break;
 			}
@@ -54,10 +54,10 @@ PollDemuxer::demux(const util::DiffTime *interval)
 		FdEvents *result = new FdEvents();
 
 		for (size_t i = 0; i < fds_.size(); ++i) {
-			if ((fds_[i].revents & POLLIN) == POLLIN) {
+			if (fds_[i].revents & (POLLIN | POLLHUP)) {
 				result->push_back(FdEvent(util::Fd(fds_[i].fd), FdEvent::READ));
 			}
-			if ((fds_[i].revents & POLLOUT) == POLLOUT) {
+			if (fds_[i].revents & POLLOUT) {
 				result->push_back(FdEvent(util::Fd(fds_[i].fd), FdEvent::WRITE));
 			}
 		}
