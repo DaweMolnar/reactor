@@ -4,6 +4,7 @@
 #include <util/Noncopyable.hh>
 
 #include <map>
+#include <list>
 #include <string>
 
 struct FunctionalTest {
@@ -20,6 +21,10 @@ createFunctionalTest(int argc, char *argv[])
 }
 
 class FunctionalTestRegistry : public util::Noncopyable {
+public:
+	typedef std::list<std::string> TestNames;
+
+private:
 	typedef FunctionalTest *(*CreateFunc)(int, char *[]);
 	struct Item {
 		CreateFunc createFunc;
@@ -60,6 +65,18 @@ public:
 		} else {
 			return 0;
 		};
+	}
+
+	TestNames
+	getTestNames()
+	{
+		TestNames result;
+
+		for (Items::const_iterator i(items_.begin()); i != items_.end(); ++i) {
+			result.push_back(i->first);
+		}
+
+		return result;
 	}
 };
 
