@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if nc -V | grep 'GNU Netcat' >/dev/null 2>&1; then
+if nc -V 2>&1 | grep 'GNU Netcat' >/dev/null; then
 	NCOPTS=-lp
 else
 	NCOPTS=-l
