@@ -3,8 +3,8 @@
 check: out/testFuncs
 
 testFuncs_SOURCES := \
-	tests/func/client.cc \
-	tests/func/main.cc
+	tests/func/ClientTester.cc \
+	tests/func/testFuncs.cc
 
 testFuncs_OBJECTS := $(sort $(addprefix out/testFuncs.d/,$(addsuffix .o,$(basename $(testFuncs_SOURCES)))))
 -include $(addsuffix .d,$(basename $(testFuncs_OBJECTS)))
