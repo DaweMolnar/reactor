@@ -19,7 +19,6 @@ public:
 
 	void onFdStdin(const FdEvent &);
 	void onFdSock(const FdEvent &);
-	void onTimer(const TimerEvent &);
 	virtual int run();
 };
 
@@ -37,7 +36,6 @@ ClientTester::ClientTester(int argc, char *argv[])
 
 	dispatcher_.add(FdEvent(util::Fd::STDIN, FdEvent::READ), util::commandForMethod(*this, &ClientTester::onFdStdin));
 	dispatcher_.add(FdEvent(client_.fd(), FdEvent::READ), util::commandForMethod(*this, &ClientTester::onFdSock));
-	dispatcher_.add(Timer(util::DiffTime::ms(1000), 3), util::commandForMethod(*this, &ClientTester::onTimer));
 }
 
 int
@@ -83,14 +81,6 @@ ClientTester::onFdSock(const FdEvent &event)
 			throw std::runtime_error("partial send");
 		}
 	}
-}
-
-void
-ClientTester::onTimer(const TimerEvent &)
-{
-	util::Fd::STDERR.write("timer\n", 6);
-//	for (int i = 0; i < 1000000000; ++i);
-//	Fd::STDERR.write("timer done\n", 11);
 }
 
 REGISTER_FUNCTIONAL_TEST(ClientTester);

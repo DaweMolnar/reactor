@@ -1,9 +1,19 @@
 # tests/func/module.mk
 
-check: out/testFuncs
+check: run_funcTests
+
+.PHONY: run_funcTests
+run_funcTests: tests/func/script/run-tests.sh out/testFuncs
+	$(if $Q,@echo "  RUN   $<")
+	$Q$< $(FUNCTIONAL_TESTS)
+
+testFuncs_TESTER_SOURCES := \
+	tests/func/ClientTester.cc
+
+FUNCTIONAL_TESTS := $(notdir $(basename $(testFuncs_TESTER_SOURCES)))
 
 testFuncs_SOURCES := \
-	tests/func/ClientTester.cc \
+	$(testFuncs_TESTER_SOURCES) \
 	tests/func/testFuncs.cc
 
 testFuncs_OBJECTS := $(sort $(addprefix out/testFuncs.d/,$(addsuffix .o,$(basename $(testFuncs_SOURCES)))))
