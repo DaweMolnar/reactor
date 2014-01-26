@@ -5,6 +5,7 @@ all: out/libnet.a
 libnet_SOURCE_NAMES := \
 	Host.cc \
 	Ip.cc \
+	Port.cc \
 	Service.cc
 
 libnet_SOURCES := $(addprefix net/,$(libnet_SOURCE_NAMES))

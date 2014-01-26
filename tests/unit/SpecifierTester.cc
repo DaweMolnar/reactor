@@ -3,6 +3,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <stdexcept>
+
 using namespace net;
 
 class SpecifierTester : public CppUnit::TestFixture {
@@ -22,8 +24,10 @@ public:
 		Specifier spec;
 		Host host("localhost");
 		Ip ip("127.0.0.1");
+		Ip ip6("10::c0de");
+		CPPUNIT_ASSERT_THROW(Ip("something.com"), std::invalid_argument);
 		Service serv("http");
-		Port port("80");
+		Port port(80);
 	}
 
 	void
@@ -68,7 +72,7 @@ public:
 	void
 	testPort()
 	{
-		Port port("80");
+		Port port(80);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("80"), port.spec());
 		CPPUNIT_ASSERT_EQUAL(Service::NUMERIC, port.aiFlags());

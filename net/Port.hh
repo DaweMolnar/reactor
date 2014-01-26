@@ -3,12 +3,16 @@
 
 #include <net/Service.hh>
 
+#include <stdint.h>
+
 namespace net {
 
 class Port : public Service {
+	static std::string makeValidPort(uint16_t port);
+
 public:
-	Port(const std::string &port = "", int aiFlags = 0)
-	: Service(port, aiFlags | NUMERIC)
+	Port(uint16_t port, int aiFlags = 0)
+	: Service(makeValidPort(port), aiFlags | NUMERIC)
 	{}
 };
 
