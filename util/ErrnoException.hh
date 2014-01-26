@@ -6,7 +6,7 @@
 
 namespace util {
 
-class ErrnoException : std::exception {
+class ErrnoException : public std::exception {
 	int errorCode_;
 	const std::string name_;
 	std::string what_;
