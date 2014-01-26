@@ -44,6 +44,13 @@ MyDemuxer::demux(const DiffTime *interval)
 	return result;
 }
 
+class MyDispatcher : public Dispatcher {
+public:
+	MyDispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = util::Time::now)
+	: Dispatcher(demuxer, nowFunc)
+	{}
+};
+
 class DispatcherTester : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(DispatcherTester);
 	CPPUNIT_TEST(testFdAction);
@@ -55,7 +62,7 @@ class DispatcherTester : public CppUnit::TestFixture {
 	const MethodCommand1<void, DispatcherTester, const FdEvent &> fdMethodCommand_;
 	const MethodCommand1<void, DispatcherTester, const TimerEvent &> timerMethodCommand_;
 	MyDemuxer *dmx_;
-	Dispatcher *disp_;
+	MyDispatcher *disp_;
 	size_t fdCommandCount_;
 	size_t timerCommandCount_;
 
@@ -69,7 +76,7 @@ public:
 	setUp()
 	{
 		dmx_ = new MyDemuxer();
-		disp_ = new Dispatcher(dmx_, &DispatcherTester::now);
+		disp_ = new MyDispatcher(dmx_, &DispatcherTester::now);
 		fdCommandCount_ = 0;
 		timerCommandCount_ = 0;
 	}

@@ -36,9 +36,12 @@ private:
 
 	friend class BoundResumingCommand;
 
-public:
+protected:
 	Dispatcher(Demuxer *demuxer = 0, const Timers::NowFunc nowFunc = util::Time::now);
 	~Dispatcher();
+
+public:
+	static Dispatcher &instance();
 
 	void collectEvents(FdEvents *fdEvents);
 	bool hasPendingEvents() const;

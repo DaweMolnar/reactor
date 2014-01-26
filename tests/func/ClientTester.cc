@@ -1,5 +1,6 @@
 #include "FunctionalTest.hh"
 
+#include <reactor/Dispatcher.hh>
 #include <reactor/Client.hh>
 #include <reactor/MultiReactor.hh>
 
@@ -10,7 +11,6 @@
 using namespace reactor;
 
 class ClientTester : public FunctionalTest {
-	Dispatcher dispatcher_;
 	MultiReactor reactor_;
 	Client client_;
 
@@ -23,8 +23,7 @@ public:
 };
 
 ClientTester::ClientTester(int argc, char *argv[])
-: reactor_(dispatcher_, 2)
-, client_(dispatcher_)
+: reactor_(2)
 {
 	if (argc != 3) throw std::runtime_error("argc must be 3");
 //	client_.setTarget(Ip("127.0.0.1"), Port("8080"));
@@ -34,8 +33,9 @@ ClientTester::ClientTester(int argc, char *argv[])
 	client_.connect();
 	std::cerr << "connected." << std::endl;
 
-	dispatcher_.add(FdEvent(util::Fd::STDIN, FdEvent::READ), util::commandForMethod(*this, &ClientTester::onFdStdin));
-	dispatcher_.add(FdEvent(client_.fd(), FdEvent::READ), util::commandForMethod(*this, &ClientTester::onFdSock));
+	Dispatcher &d = Dispatcher::instance();
+	d.add(FdEvent(util::Fd::STDIN, FdEvent::READ), util::commandForMethod(*this, &ClientTester::onFdStdin));
+	d.add(FdEvent(client_.fd(), FdEvent::READ), util::commandForMethod(*this, &ClientTester::onFdSock));
 }
 
 int

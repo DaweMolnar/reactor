@@ -1,5 +1,7 @@
 #include "MultiReactor.hh"
 
+#include "Dispatcher.hh"
+
 #include <thread/Pool.hh>
 #include <thread/Guard.hh>
 
@@ -8,9 +10,8 @@
 
 using namespace reactor;
 
-MultiReactor::MultiReactor(Dispatcher &dispatcher, size_t threadCount)
-: Reactor(dispatcher)
-, threadCount_(threadCount)
+MultiReactor::MultiReactor(size_t threadCount)
+: threadCount_(threadCount)
 , isLeaderWaitingCond_(mutex_)
 , isLeaderWaiting_(false)
 {
@@ -22,6 +23,7 @@ MultiReactor::MultiReactor(Dispatcher &dispatcher, size_t threadCount)
 void
 MultiReactor::run()
 {
+	Dispatcher &dispatcher = Dispatcher::instance();
 	bool iNeedToWait = false;
 	std::auto_ptr<Dispatcher::FdEvents> fdEvents;
 	std::auto_ptr<Backlog::Job> job;
@@ -29,7 +31,7 @@ MultiReactor::run()
 
 	while (true) {
 		if (iNeedToWait) {
-			fdEvents.reset(dispatcher_.wait(remaining.release()));
+			fdEvents.reset(dispatcher.wait(remaining.release()));
 		}
 		if (job.get()) {
 			job->execute();
@@ -39,21 +41,21 @@ MultiReactor::run()
 			thread::Guard<thread::Mutex> guard(mutex_);
 			if (job.get()) {
 				job.reset(0);
-				dispatcher_.notify();
+				dispatcher.notify();
 			}
 			if (quit_) {
 				break;
 			}
 			if (fdEvents.get()) {
-				dispatcher_.collectEvents(fdEvents.release());
+				dispatcher.collectEvents(fdEvents.release());
 				isLeaderWaiting_ = iNeedToWait = false;
 				isLeaderWaitingCond_.notifyAll();
 			}
-			if (dispatcher_.hasPendingEvents()) {
-				job.reset(dispatcher_.dequeueEvent());
+			if (dispatcher.hasPendingEvents()) {
+				job.reset(dispatcher.dequeueEvent());
 			} else if (!isLeaderWaiting_) {
 				isLeaderWaiting_ = iNeedToWait = true;
-				remaining.reset(dispatcher_.remaining());
+				remaining.reset(dispatcher.remaining());
 			} else {
 				isLeaderWaitingCond_.wait();
 			}

@@ -59,6 +59,14 @@ Dispatcher::~Dispatcher()
 	}
 }
 
+Dispatcher &
+Dispatcher::instance()
+{
+	static Dispatcher instance;
+
+	return instance;
+}
+
 void
 Dispatcher::add(const FdEvent &fdEvent, const FdCommand &command)
 {

@@ -22,7 +22,7 @@ class MultiReactor
 	virtual void run();
 
 public:
-	MultiReactor(Dispatcher &dispatcher, size_t threadCount);
+	explicit MultiReactor(size_t threadCount);
 
 	int loop();
 };
