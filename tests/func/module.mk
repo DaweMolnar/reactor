@@ -1,6 +1,6 @@
 # tests/func/module.mk
 
-check: run_funcTests
+check: out/testFuncs
 
 .PHONY: run_funcTests
 run_funcTests: tests/func/script/run-tests.sh out/testFuncs
