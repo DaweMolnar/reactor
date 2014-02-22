@@ -16,7 +16,7 @@ libutil_OBJECTS := $(sort $(addprefix out/libutil.a.d/,$(addsuffix .o,$(basename
 
 out/libutil.a.d/%.o: %.cc
 	$Qmkdir -p $(@D)
-	$(if $Q,@echo "  CC    $@")
+	$(if $Q,@echo "  CXX   $@")
 	$Q$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< $(OUTPUT_OPTION)
 
 out/libutil.a: $(libutil_OBJECTS)

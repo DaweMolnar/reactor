@@ -14,7 +14,7 @@ libnet_OBJECTS := $(sort $(addprefix out/libnet.a.d/,$(addsuffix .o,$(basename $
 
 out/libnet.a.d/%.o: %.cc
 	$Qmkdir -p $(@D)
-	$(if $Q,@echo "  CC    $@")
+	$(if $Q,@echo "  CXX   $@")
 	$Q$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< $(OUTPUT_OPTION)
 
 out/libnet.a: $(libnet_OBJECTS)

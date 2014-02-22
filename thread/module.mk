@@ -19,7 +19,7 @@ libthread_OBJECTS := $(sort $(addprefix out/libthread.a.d/,$(addsuffix .o,$(base
 
 out/libthread.a.d/%.o: %.cc
 	$Qmkdir -p $(@D)
-	$(if $Q,@echo "  CC    $@")
+	$(if $Q,@echo "  CXX   $@")
 	$Q$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< $(OUTPUT_OPTION)
 
 out/libthread.a: $(libthread_OBJECTS)

@@ -19,7 +19,7 @@ libreactor_OBJECTS := $(sort $(addprefix out/libreactor.a.d/,$(addsuffix .o,$(ba
 
 out/libreactor.a.d/%.o: %.cc
 	$Qmkdir -p $(@D)
-	$(if $Q,@echo "  CC    $@")
+	$(if $Q,@echo "  CXX   $@")
 	$Q$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< $(OUTPUT_OPTION)
 
 out/libreactor.a: $(libreactor_OBJECTS)

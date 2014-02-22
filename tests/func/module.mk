@@ -23,7 +23,7 @@ out/testFuncs: CPPFLAGS += -g -O0
 
 out/testFuncs.d/%.o: %.cc
 	$Qmkdir -p $(@D)
-	$(if $Q,@echo "  CC    $@")
+	$(if $Q,@echo "  CXX   $@")
 	$Q$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< $(OUTPUT_OPTION)
 
 out/testFuncs: out/libreactor.a
