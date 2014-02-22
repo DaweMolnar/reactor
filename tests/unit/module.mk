@@ -14,7 +14,8 @@ testUnits_SOURCES += \
 	tests/unit/FdTester.cc \
 	tests/unit/DiffTimeTester.cc \
 	tests/unit/TimeTester.cc \
-	tests/unit/AutoFdTester.cc
+	tests/unit/AutoFdTester.cc \
+	tests/unit/SharedPtrTester.cc
 
 testUnits_SOURCES += \
 	$(libthread_SOURCES) \
