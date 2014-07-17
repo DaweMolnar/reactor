@@ -5,6 +5,8 @@
 
 #include </usr/include/cppunit/TestAssert.h>
 
+#include <sys/time.h>
+
 REDIRECT_MOCK_C_FUNCTION2(gettimeofday, int, struct timeval *, tp, struct timezone *, tzp)
 
 int
