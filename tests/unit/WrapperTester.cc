@@ -8,39 +8,65 @@ using namespace util;
 
 namespace {
 
-class Counter {
-	int count_;
-
-	Counter() : count_(0) {}
-
+template <class T, class L>
+class LockerWrapper : public Wrapper<T, typename L::Acquirer, typename L::Releaser> {
 public:
-	static Counter &instance() { static Counter instance; return instance; }
+	typedef typename L::Acquirer Acquirer;
+	typedef typename L::Releaser Releaser;
 
-	void clear() { count_ = 0; }
-	void prefix() { ++count_; }
-	void suffix() { --count_; }
-	int count() const { return count_; }
+	LockerWrapper(T& t, L& l)
+	: Wrapper<T, Acquirer, Releaser>(t, Acquirer(l), Releaser(l))
+	{}
+
+	LockerWrapper(T* t, L& l)
+	: Wrapper<T, Acquirer, Releaser>(t, Acquirer(l), Releaser(l))
+	{}
 };
 
-struct Prefix {
-	void operator()() { Counter::instance().prefix(); }
-};
-
-struct Suffix {
-	void operator()() { Counter::instance().suffix(); }
-};
-
-class A {
-	int expected_;
-
+class MyMutex {
 public:
-	A(int expected) : expected_(expected) {}
+	MyMutex() : lockLevel_(0) {}
 
-	void
-	f()
-	{
-		CPPUNIT_ASSERT_EQUAL(expected_, Counter::instance().count());
-	}
+	void acquire() { ++lockLevel_; }
+	void release() { --lockLevel_; }
+	int lockLevel() const { return lockLevel_; }
+
+	class Acquirer {
+	public:
+		Acquirer(MyMutex& mutex) : mutex_(&mutex) {}
+		void operator()() { mutex_->acquire(); }
+
+	private:
+		MyMutex* mutex_;
+	};
+
+	class Releaser {
+	public:
+		Releaser(MyMutex& mutex) : mutex_(&mutex) {}
+		void operator()() { mutex_->release(); }
+
+	private:
+		MyMutex* mutex_;
+	};
+
+private:
+	int lockLevel_;
+};
+
+template <class T>
+class MutexWrapper : public LockerWrapper<T, MyMutex> {
+public:
+	MutexWrapper(T& t) : LockerWrapper<T, MyMutex>(t, mutex_) {}
+	MutexWrapper(T* t) : LockerWrapper<T, MyMutex>(t, mutex_) {}
+
+	const MyMutex& mutex() const { return mutex_; }
+
+private:
+	MyMutex mutex_;
+};
+
+struct A {
+	void f(int level, const MyMutex& mutex) { CPPUNIT_ASSERT_EQUAL(level, mutex.lockLevel()); }
 };
 
 class WrapperTester : public CppUnit::TestFixture {
@@ -54,27 +80,28 @@ public:
 	void
 	testWrapped()
 	{
-		A a(1);
-		Wrapper<A, Prefix, Suffix> w(a, Prefix(), Suffix());
-		w->f();
-		CPPUNIT_ASSERT_EQUAL(0, Counter::instance().count());
+		A a;
+		MutexWrapper<A> w(a);
+		w->f(1, w.mutex());
+		CPPUNIT_ASSERT_EQUAL(0, w.mutex().lockLevel());
 	}
 
 	void
 	testDirect()
 	{
-		A a(0);
-		Wrapper<A, Prefix, Suffix> w(a, Prefix(), Suffix());
-		w.direct().f();
-		CPPUNIT_ASSERT_EQUAL(0, Counter::instance().count());
+		A a;
+		MutexWrapper<A> w(a);
+		w.direct().f(0, w.mutex());
+		CPPUNIT_ASSERT_EQUAL(0, w.mutex().lockLevel());
 	}
 
 	void
 	testOwned()
 	{
-		Wrapper<A, Prefix, Suffix> w(new A(1), Prefix(), Suffix());
-		w->f();
-		CPPUNIT_ASSERT_EQUAL(0, Counter::instance().count());
+		MutexWrapper<A> w(new A);
+		w->f(1, w.mutex());
+		w.direct().f(0, w.mutex());
+		CPPUNIT_ASSERT_EQUAL(0, w.mutex().lockLevel());
 	}
 };
 
