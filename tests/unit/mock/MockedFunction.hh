@@ -3,7 +3,7 @@
 
 #include <tests/unit/mock/Mocked.hh>
 
-#include <memory> // std::auto_ptr
+#include <memory> // std::unique_ptr
 
 template <typename F>
 class MockedFunction : public Mocked {
@@ -34,7 +34,7 @@ createMockedFunction(const std::string &name, F *wrap, F mock)
 }
 
 #define MOCK_FUNCTION(name, mock_name) \
-	std::auto_ptr<Mocked> name(createMockedFunction(#name, &__wrap_ ## name ## _ptr, mock_name))
+	std::unique_ptr<Mocked> name(createMockedFunction(#name, &__wrap_ ## name ## _ptr, mock_name))
 
 #define MOCK_FUNCTION_DEFAULT(name) \
 	MOCK_FUNCTION(name, mock_ ## name)
