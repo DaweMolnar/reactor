@@ -5,6 +5,7 @@ CPPFLAGS := -Wall -Wextra -pedantic -Wno-variadic-macros
 CPPFLAGS += -MD
 CPPFLAGS += -pthread
 CPPFLAGS += -I.
+CXXFLAGS += -std=c++11
 
 LDFLAGS := -pthread
 

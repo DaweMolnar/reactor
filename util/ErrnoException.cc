@@ -1,10 +1,4 @@
-#ifdef _GNU_SOURCE
-#undef _GNU_SOURCE
-#endif
-#include <string.h> // strerror_r()
-#ifdef _GNU_SOURCE
-#error "Failed to undef _GNU_SOURCE"
-#endif
+#include <string.h> // strerror()
 
 #include "ErrnoException.hh"
 
@@ -18,15 +12,7 @@ ErrnoException::ErrnoException(const std::string &name, int errorCode)
 , name_(name)
 {
 	std::ostringstream oss;
-	char buf[256];
-	int error = strerror_r(errorCode_, buf, sizeof(buf));
-
-	oss << name_ << ": ";
-	if (!error) {
-		oss << buf;
-	} else {
-		oss << "[strerror_r() failure (" << error << ")]";
-	}
+	oss << name_ << ": " << strerror(errorCode_);
 	oss << " (" << errorCode_ << ")";
 	what_ = oss.str();
 }

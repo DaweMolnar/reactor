@@ -48,7 +48,7 @@ public:
 		CPPUNIT_ASSERT_EQUAL(-1, e.errorCode());
 		CPPUNIT_ASSERT_EQUAL(std::string("valami"), e.name());
 		// EINVAL = 22
-		CPPUNIT_ASSERT_EQUAL(std::string("valami: [strerror_r() failure (22)] (-1)"), std::string(e.what()));
+		CPPUNIT_ASSERT_EQUAL(std::string("valami: Unknown error -1 (-1)"), std::string(e.what()));
 	}
 };
 
