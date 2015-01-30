@@ -14,9 +14,7 @@ testUnits_SOURCES += \
 	tests/unit/FdTester.cc \
 	tests/unit/DiffTimeTester.cc \
 	tests/unit/TimeTester.cc \
-	tests/unit/AutoFdTester.cc \
-	tests/unit/SharedPtrTester.cc \
-	tests/unit/WrapperTester.cc
+	tests/unit/AutoFdTester.cc
 
 testUnits_SOURCES += \
 	$(libnet_SOURCES) \
