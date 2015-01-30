@@ -14,7 +14,6 @@ Q := @
 endif
 
 include util/module.mk
-include thread/module.mk
 include net/module.mk
 include reactor/module.mk
 include tests/module.mk

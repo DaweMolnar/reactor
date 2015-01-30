@@ -2,7 +2,7 @@
 
 #include <reactor/Dispatcher.hh>
 #include <reactor/Client.hh>
-#include <reactor/MultiReactor.hh>
+#include <reactor/Reactor.hh>
 
 #include <stdexcept>
 #include <iostream>
@@ -11,7 +11,7 @@
 using namespace reactor;
 
 class ClientTester : public FunctionalTest {
-	MultiReactor reactor_;
+	Reactor reactor_;
 	Client client_;
 
 public:
@@ -23,7 +23,7 @@ public:
 };
 
 ClientTester::ClientTester(int argc, char *argv[])
-: reactor_(2)
+: reactor_()
 {
 	if (argc != 3) throw std::runtime_error("argc must be 3");
 //	client_.setTarget(Ip("127.0.0.1"), Port("8080"));

@@ -19,13 +19,6 @@ testUnits_SOURCES += \
 	tests/unit/WrapperTester.cc
 
 testUnits_SOURCES += \
-	$(libthread_SOURCES) \
-	tests/unit/ThreadTester.cc \
-	tests/unit/ThreadPoolTester.cc \
-	tests/unit/ThreadMutexTester.cc \
-	tests/unit/ThreadConditionTester.cc
-
-testUnits_SOURCES += \
 	$(libnet_SOURCES) \
 	tests/unit/SpecifierTester.cc
 

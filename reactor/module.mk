@@ -6,7 +6,6 @@ libreactor_SOURCE_NAMES := \
 	Backlog.cc \
 	Client.cc \
 	Dispatcher.cc \
-	MultiReactor.cc \
 	PollDemuxer.cc \
 	Reactor.cc \
 	Socket.cc \

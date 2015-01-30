@@ -28,9 +28,8 @@ out/testFuncs.d/%.o: %.cc
 
 out/testFuncs: out/libreactor.a
 out/testFuncs: out/libutil.a
-out/testFuncs: out/libthread.a
 out/testFuncs: out/libnet.a
-out/testFuncs: LDLIBS += -lreactor -lutil -lthread -lnet
+out/testFuncs: LDLIBS += -lreactor -lutil -lnet
 out/testFuncs: LDFLAGS += -Lout/
 
 out/testFuncs: $(testFuncs_OBJECTS)
