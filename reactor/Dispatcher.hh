@@ -10,7 +10,7 @@
 #include <util/Noncopyable.hh>
 
 #include <map>
-#include <memory> // auto_ptr
+#include <memory> // unique_ptr
 
 namespace reactor {
 
@@ -24,7 +24,7 @@ private:
 	FdCommands fdCommands_;
 	Backlog backlog_;
 	Timers timers_, lazyTimers_;
-	std::auto_ptr<DefaultDemuxer> defaultDemuxer_;
+	std::unique_ptr<DefaultDemuxer> defaultDemuxer_;
 	Demuxer *demuxer_;
 	util::Pipe notifier_;
 

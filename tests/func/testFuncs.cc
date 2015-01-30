@@ -19,7 +19,7 @@ public:
 class Main
 : public util::Noncopyable
 {
-	std::auto_ptr<FunctionalTest> test_;
+	std::unique_ptr<FunctionalTest> test_;
 
 	Main(int argc, char *argv[])
 	{

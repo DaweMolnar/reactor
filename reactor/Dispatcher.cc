@@ -127,14 +127,14 @@ Dispatcher::FdEvents *
 Dispatcher::wait(const util::DiffTime *remaining)
 const
 {
-	std::auto_ptr<const util::DiffTime> dt(remaining);
+	std::unique_ptr<const util::DiffTime> dt(remaining);
 	return demuxer_->demux(dt.get());
 }
 
 void
 Dispatcher::collectEvents(FdEvents *fdEvents)
 {
-	std::auto_ptr<FdEvents> e(fdEvents);
+	std::unique_ptr<FdEvents> e(fdEvents);
 	std::for_each(e->begin(), e->end(), std::bind1st(std::mem_fun(&Dispatcher::lookupAndSchedule), this));
 	timers_.harvest();
 	lazyTimers_.harvest();

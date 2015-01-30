@@ -3,8 +3,6 @@
 
 #include <util/Command.hh>
 
-#include <memory> // auto_ptr
-
 namespace util {
 
 template <typename R>

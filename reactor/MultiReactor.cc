@@ -25,9 +25,9 @@ MultiReactor::run()
 {
 	Dispatcher &dispatcher = Dispatcher::instance();
 	bool iNeedToWait = false;
-	std::auto_ptr<Dispatcher::FdEvents> fdEvents;
-	std::auto_ptr<Backlog::Job> job;
-	std::auto_ptr<util::DiffTime> remaining;
+	std::unique_ptr<Dispatcher::FdEvents> fdEvents;
+	std::unique_ptr<Backlog::Job> job;
+	std::unique_ptr<util::DiffTime> remaining;
 
 	while (true) {
 		if (iNeedToWait) {
